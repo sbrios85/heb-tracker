@@ -1,52 +1,49 @@
+[README.md](https://github.com/user-attachments/files/28313909/README.md)
 # heb-tracker
 
-Daily price + availability tracker for H-E-B house-brand products.
-
-## What this does
-
-- Discovers every H-E-B house-brand SKU (HEB, Central Market, Hill Country Fair, H-E-B Select Ingredients, Texas Tough, Primo Picks, etc.).
-- Pulls price, availability, image, and details for each, anchored to a specific store: **H-E-B at 1145 Waldron Rd, Corpus Christi, TX 78418**.
-- Re-checks daily via GitHub Actions, flagging price changes and discontinuations.
-- Dashboard tab to browse, filter, and approve new products into the tracking set.
+Daily price + availability tracker for H-E-B house-brand products, anchored to the **Flour Bluff H-E-B plus! at 1145 Waldron Rd, Corpus Christi (store #57)**.
 
 ## Architecture
 
-Mirrors the existing real estate lead pipeline:
+- **Discovery (GraphQL):** `productSearch` and `browseCategory` against `heb.com/graphql` to enumerate brands and products.
+- **Detail (HTML):** parse `__NEXT_DATA__.props.pageProps.product` from each product page for full price/inventory/image/aisle data.
+
+## Scripts
 
 ```
-heb-tracker/
-├── scraper/
-│   ├── probe_heb_graphql.py     # one-time discovery of API shape (this file)
-│   ├── heb_discover.py          # one-time: enumerate all house-brand SKUs
-│   └── heb_refresh.py           # daily: re-check prices + availability
-├── data/
-│   ├── heb_products.json        # canonical product list (tracked SKUs)
-│   ├── heb_pending.json         # new products awaiting approval
-│   └── heb_price_history.json   # per-SKU price history
-├── dashboard/
-│   └── index.html               # browse, filter, approve
-└── .github/workflows/
-    ├── heb_refresh.yml          # daily 07:00 UTC
-    └── heb_dashboard.yml        # GitHub Pages deploy
+scraper/
+├── lib_heb.py                  # shared helpers (GraphQL, parsing, throttle)
+├── heb_discover_brands.py      # one-time: enumerate all brands
+├── heb_discover_products.py    # one-time: enumerate products per brand   (TODO)
+├── heb_refresh.py              # daily: refresh prices + availability    (TODO)
+└── probe_heb_graphql.py        # historical: schema discovery (kept for reference)
 ```
 
-## How H-E-B exposes data
+## Data files
 
-heb.com is a fully client-rendered Apollo/GraphQL app. The frontend hits `https://www.heb.com/graphql`. The endpoint is publicly accessible — no auth needed for product browsing — and other projects (alfredopzr/heb-scraper, mgwalkerjr95/texas-grocery-mcp, heb-sdk-unofficial) have already proven it works.
-
-The endpoint requires a **store context** (storeId) for prices and availability, since H-E-B pricing varies by store.
-
-## Step 0: run the probe
-
-Before building anything else, we need to confirm the API shape from a real residential IP (not from CI or a sandbox, since some endpoints filter by user-agent/origin).
-
-```bash
-pip install httpx
-python scraper/probe_heb_graphql.py
+```
+data/
+├── brands.json                 # brand catalog: name, isOwnBrand, sample count
+├── products.json               # canonical product list (TODO)
+├── pending.json                # newly-seen products awaiting approval (TODO)
+└── prices/
+    └── YYYY-MM-DD.json         # daily snapshot of price + inventory (TODO)
 ```
 
-This will produce `./probe_output/` with response bodies for several candidate queries. Paste the contents back so we can finalize the real `heb_discover.py` against the actual schema H-E-B uses.
+## Workflows
 
-## Status
+| Workflow | Trigger | Purpose |
+|---|---|---|
+| `discover_brands.yml` | manual | Run once to enumerate all H-E-B brands found in the catalog |
+| `discover_products.yml` | manual | (TODO) Enumerate every product under selected brands |
+| `refresh.yml` | daily 07:00 UTC | (TODO) Refresh prices + flag changes |
+| `probe.yml` | manual | (historical) Schema discovery — no longer needed |
 
-🚧 Pre-build. Step 0 (probe) ready to run.
+## Step 1: Discover brands
+
+1. Go to **Actions** → **Discover Brands** → **Run workflow**
+2. Waits ~5-15 minutes (samples up to 15,000 products under the "Shop" root)
+3. Commits `data/brands.json` to the repo
+4. Open `data/brands.json` — the `own_brands` list at the top is the H-E-B house brand catalog
+
+Then we'll write `heb_discover_products.py` to enumerate every product under those brands.
