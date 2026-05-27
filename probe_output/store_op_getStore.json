@@ -1,1 +1,0 @@
-{"errors":[{"message":"Cannot query field \"getStore\" on type \"Query\".","locations":[{"line":1,"column":11}],"extensions":{"code":"GRAPHQL_VALIDATION_FAILED"}}]}
