@@ -1,0 +1,27 @@
+{
+  "scalar": [],
+  "complex": [],
+  "unknown": [
+    "status",
+    "state",
+    "available",
+    "isAvailable",
+    "inStock",
+    "outOfStock",
+    "level",
+    "code",
+    "type",
+    "kind",
+    "channels",
+    "fulfillmentChannels",
+    "channel",
+    "curbside",
+    "delivery",
+    "pickup",
+    "shipping",
+    "message",
+    "displayMessage",
+    "label"
+  ],
+  "other": []
+}

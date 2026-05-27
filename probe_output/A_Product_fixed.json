@@ -1,27 +1,10 @@
 {
-  "scalar": {},
-  "complex": [
-    {
-      "field": "brand",
-      "type": "Brand"
-    },
-    {
-      "field": "availability",
-      "type": "Availability!"
-    },
-    {
-      "field": "inventory",
-      "type": "Inventory"
-    },
-    {
-      "field": "breadcrumbs",
-      "type": "[CategoryBreadCrumb!]"
-    },
-    {
-      "field": "coupons",
-      "type": "[CouponV2!]"
-    }
+  "scalar": [
+    "id",
+    "displayName",
+    "inAssortment"
   ],
+  "complex": [],
   "unknown": [
     "productId",
     "sku",
@@ -85,6 +68,7 @@
     "slug",
     "productUrl",
     "path",
+    "permalink",
     "ingredients",
     "nutrition",
     "averageRating",
@@ -100,23 +84,11 @@
     "snap",
     "snapEligible",
     "isSnapEligible",
+    "isSnapAble",
     "couponInfo",
     "promotions",
     "savings",
     "fulfillmentChannels"
   ],
-  "other": [
-    [
-      "id",
-      "no_field_in_path: cur_type=list"
-    ],
-    [
-      "displayName",
-      "no_field_in_path: cur_type=list"
-    ],
-    [
-      "inAssortment",
-      "no_field_in_path: cur_type=list"
-    ]
-  ]
+  "other": []
 }

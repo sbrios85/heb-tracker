@@ -1,5 +1,8 @@
 {
-  "scalar": {},
+  "scalar": [
+    "categoryId",
+    "title"
+  ],
   "complex": [],
   "unknown": [
     "id",
@@ -12,12 +15,8 @@
     "depth",
     "level",
     "parentId",
-    "parentCategoryId"
+    "parentCategoryId",
+    "text"
   ],
-  "other": [
-    [
-      "categoryId",
-      "no_field_in_path: cur_type=list"
-    ]
-  ]
+  "other": []
 }

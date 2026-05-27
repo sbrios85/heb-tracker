@@ -1,0 +1,21 @@
+{
+  "scalar": [
+    "inventoryState",
+    "quantity"
+  ],
+  "complex": [],
+  "unknown": [
+    "state",
+    "status",
+    "available",
+    "level",
+    "stockLevel",
+    "count",
+    "inStock",
+    "outOfStock",
+    "displayMessage",
+    "lastUpdated",
+    "updatedAt"
+  ],
+  "other": []
+}
