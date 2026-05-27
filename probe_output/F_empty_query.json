@@ -1,1 +1,0 @@
-{"errors":[{"message":"query or filter is required.","locations":[{"line":2,"column":11}],"path":["productSearch"],"extensions":{"code":"BAD_USER_INPUT"}}],"data":null}
