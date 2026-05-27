@@ -1,21 +1,21 @@
 """
-H-E-B GraphQL Probe — Phase 13
+H-E-B GraphQL Probe — Phase 14
 ------------------------------
-Phase 12 result: productDetail returns ZERO valid fields out of 118 candidates,
-even with a real product ID. This isn't a naming problem — the schema gates
-this query somehow.
+Phase 13 finding: "productDetail" in JS chunks refers only to analytics events,
+NOT a GraphQL operation. The schema uses "productDetails" (plural).
 
-Phase 13: stop guessing field names. Read H-E-B's actual JavaScript bundles
-and find the literal query string their frontend sends for product detail.
+But our queries against productDetails would error with "Cannot query field
+productDetails on type Query" — so SOMETHING else is the right operation.
 
-Strategy:
-1. Download all 50 JS chunks
-2. Search every chunk for the literal text 'productDetail'
-3. For each match, dump 3000 chars of surrounding context to find the
-   compiled GraphQL query string
-4. Also search for 'ProductDetailQuery', 'ProductDetailsPage', operation
-   names with 'Product' in them
-5. Print everything we find — the queries are in there
+Key insight: chunks loaded by the homepage don't contain the product-detail-page
+code. Next.js code-splits by route. We need to fetch a real product page and
+collect ITS JS chunks (which will contain the product detail query).
+
+Plan:
+  1. Fetch a real product page: /product-detail/.../583162
+  2. Extract its JS chunks (will include the PDP-specific ones)
+  3. Search those chunks for actual GraphQL query bodies
+  4. Print every gql template literal we find
 """
 
 import json
@@ -24,11 +24,11 @@ import time
 from pathlib import Path
 import httpx
 
-HOMEPAGE = "https://www.heb.com/"
+PRODUCT_URL = "https://www.heb.com/product-detail/cafe-ol-by-h-e-b-texas-pecan-medium-roast-ground-coffee/583162"
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
-    "Accept": "*/*", "Accept-Language": "en-US,en;q=0.9",
-    "Content-Type": "application/json",
+    "Accept": "*/*",
+    "Accept-Language": "en-US,en;q=0.9",
 }
 OUTDIR = Path(__file__).parent.parent / "probe_output"
 OUTDIR.mkdir(exist_ok=True)
@@ -49,26 +49,59 @@ def section(t):
 
 def main():
     with httpx.Client(headers=HEADERS, follow_redirects=True, timeout=30.0) as c:
-        section("Setup")
-        r = c.get(HOMEPAGE)
-        homepage_html = r.text
-        print(f"  homepage: {r.status_code}, {len(homepage_html)} bytes")
+        # Seed cookies
+        c.get("https://www.heb.com/")
 
-        # Extract all JS chunk URLs
-        js_urls = re.findall(r'<script[^>]+src="([^"]+\.js[^"]*)"', homepage_html)
+        section(f"Fetch product page: {PRODUCT_URL}")
+        r = c.get(PRODUCT_URL)
+        pdp_html = r.text
+        print(f"  status: {r.status_code}, size: {len(pdp_html)}")
+        save("phase14_pdp.html", pdp_html)
+
+        # Extract JS chunks referenced by the PDP
+        js_urls = re.findall(r'<script[^>]+src="([^"]+\.js[^"]*)"', pdp_html)
         cx_urls = [u for u in js_urls if "cx.static.heb.com" in u]
-        print(f"  found {len(cx_urls)} cx.static.heb.com chunks")
+        print(f"  found {len(cx_urls)} cx.static.heb.com chunks on PDP")
+        save("phase14_pdp_chunks.json", cx_urls)
 
-        # Patterns to find — order matters, more specific first
-        SEARCH_PATTERNS = [
-            r'productDetail',
-            r'ProductDetailQuery',
-            r'ProductDetailsPage',
-            r'ProductDetail\w*',
-        ]
+        # Also extract __NEXT_DATA__ which on a product page should contain
+        # the productDetail query result already prefetched
+        m = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', pdp_html, re.DOTALL)
+        if m:
+            print(f"  __NEXT_DATA__ found, size: {len(m.group(1))}")
+            try:
+                nd = json.loads(m.group(1))
+                save("phase14_pdp_next_data.json", nd)
+                # Look for product-shaped data anywhere in it
+                def walk(obj, path=""):
+                    hits = []
+                    if isinstance(obj, dict):
+                        keys = set(obj.keys())
+                        # Spot product-shaped objects
+                        product_keys = {"id", "displayName", "price", "image", "brand"}
+                        if len(keys & product_keys) >= 2:
+                            hits.append({"path": path, "keys": sorted(keys)[:30], "sample": json.dumps(obj)[:600]})
+                        for k, v in obj.items():
+                            hits.extend(walk(v, f"{path}.{k}"))
+                    elif isinstance(obj, list):
+                        for i, v in enumerate(obj[:3]):  # sample first 3
+                            hits.extend(walk(v, f"{path}[{i}]"))
+                    return hits
+                product_hits = walk(nd)
+                print(f"  product-shaped objects found in __NEXT_DATA__: {len(product_hits)}")
+                for h in product_hits[:5]:
+                    print(f"\n    PATH: {h['path']}")
+                    print(f"    KEYS: {h['keys']}")
+                    print(f"    SAMPLE: {h['sample'][:500]}")
+                save("phase14_product_hits.json", product_hits[:30])
+            except json.JSONDecodeError as e:
+                print(f"  __NEXT_DATA__ parse error: {e}")
+        else:
+            print("  no __NEXT_DATA__ found")
 
-        section("Searching each JS chunk for productDetail references")
-        all_findings = {}
+        # Now grep PDP chunks for query bodies
+        section("Grep PDP JS chunks for actual GraphQL query bodies")
+        all_queries = []
         for i, url in enumerate(cx_urls):
             try:
                 r = c.get(url, timeout=30.0)
@@ -76,58 +109,50 @@ def main():
                     continue
                 js = r.text
                 short = url.split("/")[-1]
-                chunk_findings = []
 
-                # For each match of "productDetail" capture 3000 chars context
-                for pat in SEARCH_PATTERNS:
-                    for m in re.finditer(pat, js):
-                        start = max(0, m.start() - 100)
-                        end = min(len(js), m.end() + 3000)
-                        context = js[start:end]
-                        chunk_findings.append({
-                            "pattern": pat,
-                            "position": m.start(),
-                            "context": context,
-                        })
-                        # Don't capture too many from one chunk
-                        if len(chunk_findings) >= 5:
-                            break
-                    if len(chunk_findings) >= 5:
-                        break
+                # Apollo compiled queries appear as JS template literal strings
+                # split by commas inside arrays. Look for any string starting with
+                # "\n  query" or "\n  mutation".
+                for m in re.finditer(r'"(\\n\s*(?:query|mutation)\s+\w+[^"]{50,5000})"', js):
+                    body = m.group(1).replace("\\n", "\n")
+                    # Get operation name
+                    op_match = re.search(r'(?:query|mutation)\s+(\w+)', body)
+                    op = op_match.group(1) if op_match else "?"
+                    all_queries.append({"chunk": short, "operation": op, "body": body})
 
-                if chunk_findings:
-                    all_findings[short] = chunk_findings
-                    print(f"  [{i:2d}] {short[:50]:50s} {len(chunk_findings)} matches")
+                # Also look for shorter Apollo strings spread inside arrays:
+                # ["\n  query Foo(...) {\n    ...\n  }\n", "\n", "\n"]
+                for m in re.finditer(r'\[\s*"(\\n\s*(?:query|mutation)\s+\w+[^"]{50,5000})"', js):
+                    body = m.group(1).replace("\\n", "\n")
+                    op_match = re.search(r'(?:query|mutation)\s+(\w+)', body)
+                    op = op_match.group(1) if op_match else "?"
+                    all_queries.append({"chunk": short, "operation": op, "body": body, "array_form": True})
+
+                ops_in_chunk = set(q["operation"] for q in all_queries if q["chunk"] == short)
+                if ops_in_chunk:
+                    print(f"  [{i:2d}] {short[:55]:55s} ops: {sorted(ops_in_chunk)[:8]}")
             except Exception as e:
                 print(f"  err {url}: {e}")
-            time.sleep(0.2)
+            time.sleep(0.15)
 
-        save("phase13_all_findings.json", all_findings)
+        save("phase14_all_queries.json", all_queries)
 
-        # =====================================================
-        # Print the most useful findings
-        # =====================================================
-        section("Top findings: chunks with most productDetail references")
-        for chunk, findings in sorted(all_findings.items(), key=lambda x: -len(x[1]))[:8]:
-            print(f"\n  ===== CHUNK: {chunk} ({len(findings)} findings) =====")
-            for j, f in enumerate(findings[:3]):
-                print(f"\n  --- finding {j+1} (pattern={f['pattern']}, pos={f['position']}) ---")
-                print(f"  {f['context'][:2500]}")
+        # Find PRODUCT-related queries
+        section("Product-related queries discovered")
+        product_queries = [q for q in all_queries if "product" in q["body"].lower() or "Product" in q["operation"]]
+        # Dedupe by operation+chunk
+        seen = set()
+        unique = []
+        for q in product_queries:
+            key = (q["operation"], q["chunk"])
+            if key not in seen:
+                seen.add(key)
+                unique.append(q)
 
-        # =====================================================
-        # Also harvest ALL GraphQL operation names from all chunks
-        # =====================================================
-        section("All GraphQL operation names harvested")
-        all_ops = set()
-        for chunk, findings in all_findings.items():
-            for f in findings:
-                # Find "query Foo(" or "mutation Foo("
-                for m in re.finditer(r'(query|mutation)\s+([A-Z]\w+)', f['context']):
-                    all_ops.add(m.group(2))
-        # Also grab from raw chunks we haven't loaded yet by searching the homepage
-        for op in sorted(all_ops):
-            print(f"    {op}")
-        save("phase13_operation_names.json", sorted(all_ops))
+        print(f"  total product-related: {len(product_queries)}, unique by op+chunk: {len(unique)}")
+        for q in unique:
+            print(f"\n  === {q['operation']} (from {q['chunk']}) ===")
+            print(q["body"][:2500])
 
     print(f"\nDone.")
 
