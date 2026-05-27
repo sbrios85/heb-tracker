@@ -1,39 +1,34 @@
 """
-H-E-B GraphQL Probe — Phase 10
+H-E-B GraphQL Probe — Phase 11
 ------------------------------
-Phase 9 confirmed:
-  - filter syntax: "brand:<exact brand name>" (others silently ignored)
-  - SearchSortBy enum: only POPULARITY is valid
-  - Product has fields: brand (Brand), availability (Availability!),
-    inventory (Inventory), breadcrumbs ([CategoryBreadCrumb!]),
-    coupons ([CouponV2!])
-  - Server returns total=1170 (everything) when filter is malformed
+Phase 10 confirmed:
+  - Product.id, displayName, inAssortment ✓
+  - Product.brand{name}, inventory{inventoryState,quantity} ✓
+  - Product.breadcrumbs[]{categoryId, title} ✓
+  - filter "brand:X" works ONLY when paired with non-empty query or category
+  - Still missing: price, image, URL/slug, pack size
 
-Phase 10 strategy:
-  - Stop guessing scalar field names — my path-walker had a bug where
-    fields that returned null were classified as "other" instead of valid.
-  - Re-probe Product, CategoryBreadCrumb, Inventory, Availability with
-    fixed logic: if the response has no "errors" and status is 200,
-    the field IS valid regardless of value.
-  - Then assemble a working full query with all valid scalars.
+Phase 11 goals:
+  A) Probe ~120 NEW field name guesses for price/image/url/size
+     (Apollo-style naming, from JS snippets, plural variants, etc.)
+  B) Try browseCategory + brand filter (the working alternative to query="")
+  C) Try productSearch with `category` arg instead of `query`
+  D) Pull a full product with all confirmed fields
+  E) Try a brand-name-only enumeration: pair with category 2864 (Shop root)
 """
 
 import json
 import re
 import time
 from pathlib import Path
-
 import httpx
 
 ENDPOINT = "https://www.heb.com/graphql"
-HOMEPAGE = "https://www.heb.com/"
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
-    "Accept": "*/*",
-    "Accept-Language": "en-US,en;q=0.9",
+    "Accept": "*/*", "Accept-Language": "en-US,en;q=0.9",
     "Content-Type": "application/json",
-    "Origin": "https://www.heb.com",
-    "Referer": "https://www.heb.com/",
+    "Origin": "https://www.heb.com", "Referer": "https://www.heb.com/",
 }
 OUTDIR = Path(__file__).parent.parent / "probe_output"
 OUTDIR.mkdir(exist_ok=True)
@@ -46,7 +41,6 @@ def safe(s):
 def save(name, data):
     p = OUTDIR / safe(name)
     p.write_text(json.dumps(data, indent=2) if isinstance(data, (dict, list)) else str(data))
-    return p
 
 
 def section(t):
@@ -60,16 +54,11 @@ def post(c, q, v=None):
     return c.post(ENDPOINT, json=payload)
 
 
-def probe_fields_fixed(client, query_template, candidates, type_label):
-    """FIXED probe: a field is VALID if no errors come back, regardless of
-    whether the value is null. Complex fields cause 'must have subfields'
-    error and are tracked separately."""
-    valid_scalar = []   # field names known to work (value may be null)
-    valid_complex = []  # field name + inner type
-    unknown = []        # field doesn't exist
-    other = []
+def probe_fields_fixed(client, template, candidates, label):
+    """Field is valid if no errors, regardless of value."""
+    valid_scalar, valid_complex, unknown, other = [], [], [], []
     for f in candidates:
-        q = query_template.replace("__FIELD__", f)
+        q = template.replace("__FIELD__", f)
         try:
             r = post(client, q)
             body = r.json() if r.text.startswith("{") else None
@@ -85,233 +74,187 @@ def probe_fields_fixed(client, query_template, candidates, type_label):
                 m = re.search(r"of type [\"']([\w!\[\]]+)[\"']", em)
                 inner = m.group(1) if m else "?"
                 valid_complex.append({"field": f, "type": inner})
-                print(f"  ⊞ {f:25s} NEEDS_SUBFIELDS type={inner}")
+                print(f"  ⊞ {f:30s} NEEDS_SUBFIELDS type={inner}")
             else:
                 other.append({"field": f, "err": em[:200]})
-                print(f"  ? {f:25s} {em[:200]}")
+                print(f"  ? {f:30s} {em[:200]}")
         else:
-            # No errors at all = field is valid, even if value is null
             valid_scalar.append(f)
-            # Try to extract the value for display
             data = body.get("data")
-            print(f"  ✓ {f:25s} valid (response: {json.dumps(data)[:140] if data else '<no data>'})")
-        time.sleep(0.10)
-    print(f"\n  [{type_label}] scalar={len(valid_scalar)} complex={len(valid_complex)} unknown={len(unknown)} other={len(other)}")
+            # Drill in for display
+            try:
+                cur = data
+                for k in ["productSearch", "records"]:
+                    cur = cur.get(k) if isinstance(cur, dict) else (cur[0] if isinstance(cur, list) and cur else None)
+                    if cur is None:
+                        break
+                if isinstance(cur, list) and cur:
+                    cur = cur[0]
+                v = cur.get(f) if isinstance(cur, dict) else None
+                print(f"  ✓ {f:30s} -> {json.dumps(v)[:140] if v is not None else 'null'}")
+            except Exception:
+                print(f"  ✓ {f:30s} valid (could not extract value)")
+        time.sleep(0.08)
+    print(f"\n  [{label}] scalar={len(valid_scalar)} complex={len(valid_complex)} unknown={len(unknown)}")
     return {"scalar": valid_scalar, "complex": valid_complex, "unknown": unknown, "other": other}
 
 
 def main():
     with httpx.Client(headers=HEADERS, follow_redirects=True, timeout=30.0) as c:
-        section("Setup")
-        c.get(HOMEPAGE)
-
-        product_candidates = [
-            "id", "productId", "sku", "upc", "ean", "productNumber",
-            "primaryProductId", "productGroupId", "code",
-            "name", "displayName", "title", "productName", "label",
-            "brandName", "manufacturer",
-            "price", "pricing", "prices", "regularPrice", "salePrice",
-            "currentPrice", "listPrice", "unitPrice", "perUnitPrice",
-            "displayPrice", "displayedUnitPrice",
-            "image", "images", "imageUrl", "imageUrls", "primaryImage",
-            "thumbnail", "media",
-            "description", "longDescription", "shortDescription", "details",
-            "available", "inStock", "isAvailable",
-            "inventoryState", "stockStatus",
-            "isInStock", "outOfStock", "inAssortment",
-            "isDiscontinued", "isActive",
-            "category", "categories", "department", "taxonomy",
-            "taxonomyPath", "categoryId",
-            "size", "weight", "uom", "unitOfMeasure", "packaging",
-            "packageSize", "containerSize",
-            "url", "slug", "productUrl", "path", "permalink",
-            "ingredients", "nutrition",
-            "averageRating", "reviewCount",
-            "tags", "labels", "attributes",
-            "isPrivateLabel", "ownedBrand", "isHebBrand",
-            "aisle", "aisleLocation",
-            "snap", "snapEligible", "isSnapEligible", "isSnapAble",
-            "couponInfo", "promotions", "savings",
-            "fulfillmentChannels",
-        ]
-
-        # =========================================================
-        # A) Product fields via records[0] — FIXED logic
-        # =========================================================
-        section("A) Product fields via productSearch.records (FIXED probe)")
+        # ====================================================
+        # A) Heavy field probing — focused on price, image, url, size
+        # ====================================================
+        section("A) Probe MANY new field name candidates")
         template = '''query Q {
           productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", filter: "brand:CAFE Olé by H-E-B", limit: 1) {
             records { __FIELD__ }
           }
         }'''
-        result_product = probe_fields_fixed(c, template, product_candidates, "Product")
-        save("A_Product_fixed.json", result_product)
-
-        # =========================================================
-        # B) CategoryBreadCrumb subfields (FIXED probe)
-        # =========================================================
-        section("B) CategoryBreadCrumb subfields (FIXED probe)")
-        cbc_candidates = [
-            "id", "categoryId", "name", "displayName", "label",
-            "slug", "url", "path", "depth", "level",
-            "parentId", "parentCategoryId",
-            "title", "text",
+        candidates = [
+            # IDs and codes
+            "primaryProductId", "productNumber", "primaryId",
+            # Names
+            "name", "title", "fullName", "shortName", "longName",
+            # Pricing — exhaustive
+            "price", "priceInfo", "priceDetails", "priceDisplay",
+            "pricing", "prices", "pricesList",
+            "regularPrice", "salePrice", "currentPrice", "listPrice",
+            "displayPrice", "displayedUnitPrice", "displayedPrice",
+            "unitPrice", "perUnitPrice", "unitOfMeasurePrice",
+            "loyaltyPrice", "memberPrice", "specialPrice", "promoPrice",
+            "shelfPrice", "everydayPrice", "originalPrice",
+            "currentSellingPrice", "displayPriceInfo",
+            "productPricing", "productPrice", "currentPriceDetails",
+            "promotionalPrice", "isOnSale", "onSale",
+            # Images — exhaustive
+            "image", "imageInfo", "primaryImage", "primaryImageUrl",
+            "imageUrl", "imageUri", "imagePath", "imageSrc",
+            "images", "imageGallery", "imageGroup", "media",
+            "thumbnail", "thumbnailUrl", "thumb",
+            "smallImage", "mediumImage", "largeImage",
+            "productImage", "productImages", "productMedia",
+            "imageMetaData", "imageMetadata",
+            "imageReference", "imageReferences",
+            # URLs / slugs
+            "url", "uri", "href", "link", "linkUrl",
+            "slug", "productSlug", "urlSlug",
+            "path", "permalink", "canonicalUrl",
+            "productUrl", "detailUrl", "pdpUrl",
+            "webUrl",
+            # Size and packaging
+            "size", "sizeText", "packageSize", "containerSize",
+            "unitSize", "displaySize", "displayedSize",
+            "uom", "unitOfMeasure", "uomLabel", "uomDisplay",
+            "weight", "weightInfo", "netWeight",
+            "packageInfo", "packaging", "packageType",
+            "productSize", "productWeight", "productUom",
+            # Misc
+            "description", "shortDescription", "longDescription",
+            "details", "productDetails", "productInformation",
+            "info", "summary", "highlights",
+            "aisle", "aisleLocation", "aisleNumber",
+            "isOwnedBrand", "isPrivateLabel", "isHebOwnedBrand",
+            "fulfillmentChannels", "channels",
+            "tags", "labels", "badges", "flags",
+            "snap", "snapEligible", "isSnapEligible", "ebt",
+            "discontinued", "isDiscontinued",
+            "active", "isActive",
+            "ratings", "reviews", "averageRating", "ratingsAverage",
+            "ingredients", "nutrition", "nutritionFacts",
+            "warnings", "allergens", "dietary",
+            # Numbers worth a shot
+            "minSellQuantity", "maxSellQuantity",
+            "isAgeRestricted", "ageRestriction",
         ]
-        cbc_template = '''query Q {
-          browseCategory(storeId: 57, shoppingContext: CURBSIDE_PICKUP, categoryId: "490086") {
-            breadcrumbs { __FIELD__ }
-          }
-        }'''
-        result_cbc = probe_fields_fixed(c, cbc_template, cbc_candidates, "CategoryBreadCrumb")
-        save("B_CBC_fixed.json", result_cbc)
+        result = probe_fields_fixed(c, template, candidates, "Product-heavy")
+        save("A_heavy_probe.json", result)
 
-        # =========================================================
-        # C) Availability and Inventory subfields
-        # =========================================================
-        section("C) Availability subfields")
-        av_candidates = [
-            "status", "state", "available", "isAvailable", "inStock",
-            "outOfStock", "level", "code", "type", "kind",
-            "channels", "fulfillmentChannels", "channel",
-            "curbside", "delivery", "pickup", "shipping",
-            "message", "displayMessage", "label",
+        # ====================================================
+        # B) Probe browseCategory.records (same Product type)
+        # ====================================================
+        section("B) Try browseCategory + brand filter (no query needed?)")
+        # browseCategory might accept filter too
+        for cid in ["2864", "490015", "490036"]:
+            for filt in ['"brand:CAFE Olé by H-E-B"', "null"]:
+                q = f'''query Q {{
+                  browseCategory(storeId: 57, shoppingContext: CURBSIDE_PICKUP, categoryId: "{cid}", filter: {filt}, limit: 1) {{
+                    total
+                    records {{ id displayName brand {{ name }} }}
+                  }}
+                }}'''
+                r = post(c, q)
+                try:
+                    body = r.json()
+                    if "errors" in body:
+                        em = body["errors"][0]["message"]
+                        print(f"  cid={cid} filter={filt[:30]:30s} ERR: {em[:160]}")
+                    else:
+                        ps = (body.get("data") or {}).get("browseCategory", {})
+                        total = ps.get("total")
+                        recs = ps.get("records") or []
+                        sample = recs[0].get("displayName", "")[:50] if recs else ""
+                        print(f"  cid={cid} filter={filt[:30]:30s} total={total} sample={sample}")
+                        save(f"B_cid{cid}_filt{safe(filt)}.json", body)
+                except Exception as e:
+                    print(f"  err: {e}")
+                time.sleep(0.3)
+
+        # ====================================================
+        # C) productSearch with `category` arg
+        # ====================================================
+        section("C) productSearch alternative args")
+        attempts = [
+            ('with category arg', 'query Q { productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, category: "2864", filter: "brand:CAFE Olé by H-E-B", limit: 1) { total records { displayName } } }'),
+            ('with categoryId arg', 'query Q { productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, categoryId: "2864", filter: "brand:CAFE Olé by H-E-B", limit: 1) { total records { displayName } } }'),
+            ('with searchText arg', 'query Q { productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, searchText: "coffee", filter: "brand:CAFE Olé by H-E-B", limit: 1) { total records { displayName } } }'),
+            ('only filter', 'query Q { productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, filter: "brand:CAFE Olé by H-E-B", limit: 1) { total records { displayName } } }'),
         ]
-        av_template = '''query Q {
-          productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", filter: "brand:CAFE Olé by H-E-B", limit: 1) {
-            records { availability { __FIELD__ } }
-          }
-        }'''
-        result_av = probe_fields_fixed(c, av_template, av_candidates, "Availability")
-        save("C_Availability.json", result_av)
+        for tag, q in attempts:
+            r = post(c, q)
+            print(f"  {tag:25s} -> {r.text[:300]}")
+            save(f"C_{safe(tag)}.json", r.text)
+            time.sleep(0.3)
 
-        section("C2) Inventory subfields")
-        inv_candidates = [
-            "state", "inventoryState", "status", "available", "level",
-            "stockLevel", "quantity", "count",
-            "inStock", "outOfStock", "displayMessage",
-            "lastUpdated", "updatedAt",
+        # ====================================================
+        # D) Pull a full product with confirmed + newly-found fields
+        # ====================================================
+        section("D) Final dump with everything we know works")
+        all_scalars = ["id", "displayName", "inAssortment"] + [
+            x for x in result["scalar"] if x not in ("id", "displayName", "inAssortment")
         ]
-        inv_template = '''query Q {
-          productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", filter: "brand:CAFE Olé by H-E-B", limit: 1) {
-            records { inventory { __FIELD__ } }
-          }
-        }'''
-        result_inv = probe_fields_fixed(c, inv_template, inv_candidates, "Inventory")
-        save("C2_Inventory.json", result_inv)
-
-        # =========================================================
-        # D) Big query: pull 3 real products with EVERYTHING valid
-        # =========================================================
-        section("D) Full product dump — 3 CAFE Olé products")
-        scalars = result_product["scalar"]
-        # Expand complex fields with our discovered subfields
-        complex_expansions = ["brand { name }"]
-        if result_av["scalar"]:
-            av_keys = " ".join(result_av["scalar"])
-            complex_expansions.append(f"availability {{ {av_keys} }}")
-        else:
-            complex_expansions.append("availability { __typename }")
-        if result_inv["scalar"]:
-            inv_keys = " ".join(result_inv["scalar"])
-            complex_expansions.append(f"inventory {{ {inv_keys} }}")
-        else:
-            complex_expansions.append("inventory { __typename }")
-        if result_cbc["scalar"]:
-            cbc_keys = " ".join(result_cbc["scalar"])
-            complex_expansions.append(f"breadcrumbs {{ {cbc_keys} }}")
-
-        scalar_part = "\n              ".join(scalars)
-        complex_part = "\n              ".join(complex_expansions)
-        qbig = f'''query Q {{
-          productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", filter: "brand:CAFE Olé by H-E-B", limit: 3) {{
+        complex_part = []
+        for cx in result["complex"]:
+            f, t = cx["field"], cx["type"]
+            # Try __typename for unknown subfields
+            complex_part.append(f"{f} {{ __typename }}")
+        # Always include known-good complex expansions
+        complex_part.extend([
+            'brand { name }',
+            'inventory { inventoryState quantity }',
+            'breadcrumbs { categoryId title }',
+        ])
+        scalar_part = "\n              ".join(all_scalars)
+        complex_part_str = "\n              ".join(complex_part)
+        qfinal = f'''query Q {{
+          productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", filter: "brand:CAFE Olé by H-E-B", limit: 2) {{
             total
             records {{
               __typename
               {scalar_part}
-              {complex_part}
+              {complex_part_str}
             }}
           }}
         }}'''
-        print("  Query being sent:")
-        print(qbig)
-        r = post(c, qbig)
+        print("  Query:")
+        print(qfinal)
+        r = post(c, qfinal)
         print(f"\n  status: {r.status_code}")
         try:
             body = r.json()
-            print(f"  body (truncated):\n{json.dumps(body, indent=2)[:8000]}")
+            print(f"  body:\n{json.dumps(body, indent=2)[:7000]}")
         except Exception:
-            print(f"  raw: {r.text[:5000]}")
-        save("D_FULL_DUMP.json", r.text)
-
-        # =========================================================
-        # E) Brand-filter exploration: list all H-E-B owned brands
-        # =========================================================
-        section("E) Probe known H-E-B brand names")
-        # We saw "CAFE Olé by H-E-B" gives 188 results, "H-E-B" gives 35.
-        # Try other house brands.
-        brands_to_try = [
-            "H-E-B",
-            "Central Market",
-            "Central Market Organics",
-            "Hill Country Fair",
-            "H-E-B Select Ingredients",
-            "CAFE Olé by H-E-B",
-            "CAFE Olé Organics by H-E-B",
-            "H-E-B Bakery",
-            "H-E-B Texas Style",
-            "Primo Picks",
-            "Texas Tough",
-            "Mi Tienda",
-            "Hill Country Essentials",
-            "H-E-B Organics",
-            "H-E-B Pet",
-            "Field & Future by H-E-B",
-            "Creamy Creations",
-            "Country Store by H-E-B",
-        ]
-        brand_results = {}
-        for b in brands_to_try:
-            q = f'''query Q {{
-              productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "", filter: {json.dumps("brand:" + b)}, limit: 1) {{
-                total
-                records {{ brand {{ name }} }}
-              }}
-            }}'''
-            r = post(c, q)
-            try:
-                body = r.json()
-                if "errors" not in body:
-                    total = (body.get("data") or {}).get("productSearch", {}).get("total")
-                    records = (body.get("data") or {}).get("productSearch", {}).get("records") or []
-                    actual_brand = ""
-                    if records:
-                        actual_brand = (records[0].get("brand") or {}).get("name", "?")
-                    brand_results[b] = {"total": total, "actual_brand": actual_brand}
-                    matched = "✓" if actual_brand == b else "—" if total == 1170 else "≠"
-                    print(f"  {matched} brand:{b:38s} total={total:5d}  sample={actual_brand[:40]}")
-                else:
-                    em = body["errors"][0]["message"]
-                    print(f"  ✗ brand:{b:38s} ERR: {em[:160]}")
-            except Exception as e:
-                print(f"  ! brand:{b:38s} {e}")
-            time.sleep(0.3)
-        save("E_brand_results.json", brand_results)
-
-        # =========================================================
-        # F) productSearch with empty query — can we list ALL products?
-        # =========================================================
-        section("F) productSearch with empty query")
-        # If we can pass query: "" and get all products, we can paginate
-        # everything. We've seen empty query work above; check totals.
-        q = '''query Q {
-          productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "", limit: 1) {
-            total
-            records { brand { name } }
-          }
-        }'''
-        r = post(c, q)
-        print(f"  empty query: {r.text[:400]}")
-        save("F_empty_query.json", r.text)
+            print(f"  raw: {r.text[:4000]}")
+        save("D_FINAL_DUMP.json", r.text)
 
     print(f"\nDone. Output in {OUTDIR}")
 
