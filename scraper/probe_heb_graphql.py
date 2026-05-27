@@ -1,29 +1,33 @@
 """
-H-E-B GraphQL Probe
--------------------
-Run this ONCE on your local machine (not in CI) to confirm we can reach
-heb.com/graphql and to discover the operation names + query shapes their
-frontend uses.
+H-E-B GraphQL Probe — Phase 2
+-----------------------------
+Phase 1 confirmed:
+  - GraphQL endpoint at https://www.heb.com/graphql works from GitHub Actions IPs
+  - `productDetail` is a real Query field returning type `ProductDetailResult`
+  - Other guesses (stores, storeSearch, product, productById) DO NOT exist
+  - Introspection is disabled
 
-Usage:
-    pip install httpx
-    python scraper/probe_heb_graphql.py
-
-Outputs to ./probe_output/ — paste the contents back to Claude so we can
-finalize the discovery scraper against the real API shape.
+Phase 2 goals:
+  A) Discover the correct argument name for `productDetail` (it's not `productId`).
+  B) Discover the actual field names on `ProductDetailResult`.
+  C) Find the store-lookup operation name (none of our guesses matched).
+  D) Extract JS bundle URLs from the homepage so we can read the real Apollo
+     queries hard-coded in H-E-B's frontend code.
 
 Strategy:
-1. GET homepage to seed cookies.
-2. Try introspection (likely disabled, but worth checking).
-3. Try several plausible store-lookup operation shapes.
-4. Try several plausible product-detail operation shapes for a known SKU
-   (Central Market Organics Instant Coffee, product ID 1510154).
-
-We're polite: serial requests, real user-agent, 1s between calls.
+  - GraphQL errors leak schema info. Asking for the wrong field returns
+    "Cannot query field X on type Y" which confirms Y is the right type.
+  - Some Apollo servers include "Did you mean ..." suggestions. We try
+    many guesses to see if any trigger suggestions.
+  - For the store lookup: try the common Apollo conventions used by other
+    grocery sites (Kroger, Walmart, etc.) and H-E-B-specific naming.
+  - Apollo's persisted-query system means the frontend code contains the
+    exact query strings. We download the homepage HTML, find the JS bundle
+    URLs, save them for inspection.
 """
 
 import json
-import sys
+import re
 import time
 from pathlib import Path
 
@@ -31,10 +35,7 @@ import httpx
 
 ENDPOINT = "https://www.heb.com/graphql"
 HOMEPAGE = "https://www.heb.com/"
-WALDRON_ADDR = "1145 Waldron Rd, Corpus Christi, TX 78418"
-ZIP = "78418"
 
-# Pretend to be a real Chrome on Mac
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
@@ -52,7 +53,7 @@ OUTDIR = Path(__file__).parent.parent / "probe_output"
 OUTDIR.mkdir(exist_ok=True)
 
 
-def save(name: str, data) -> Path:
+def save(name, data):
     p = OUTDIR / name
     if isinstance(data, (dict, list)):
         p.write_text(json.dumps(data, indent=2))
@@ -61,142 +62,107 @@ def save(name: str, data) -> Path:
     return p
 
 
-def section(title: str):
+def section(title):
     print(f"\n{'=' * 70}\n  {title}\n{'=' * 70}")
+
+
+def post_query(client, query, variables=None, op_name=None):
+    payload = {"query": query}
+    if variables:
+        payload["variables"] = variables
+    if op_name:
+        payload["operationName"] = op_name
+    return client.post(ENDPOINT, json=payload)
 
 
 def main():
     with httpx.Client(headers=HEADERS, follow_redirects=True, timeout=30.0) as c:
-        # --- Step 1: seed cookies from homepage ---
-        section("Step 1: GET homepage to seed cookies")
+        # ----- Setup: seed cookies + save HTML -----
+        section("Setup: seed cookies from homepage and save HTML")
         r = c.get(HOMEPAGE)
-        print(f"  status: {r.status_code}")
-        print(f"  cookies received: {list(c.cookies.keys())}")
-        save("homepage_headers.json", dict(r.headers))
+        print(f"  homepage status: {r.status_code}, cookies: {list(c.cookies.keys())}")
+        homepage_html = r.text
+        save("homepage.html", homepage_html)
+        print(f"  homepage HTML size: {len(homepage_html)} bytes")
 
-        # --- Step 2: try a minimal introspection query ---
-        section("Step 2: introspection probe (likely disabled)")
-        introspection = {
-            "query": "{ __schema { queryType { name } } }"
-        }
-        r = c.post(ENDPOINT, json=introspection)
-        print(f"  status: {r.status_code}")
-        print(f"  body (first 400 chars): {r.text[:400]}")
-        save("introspection_response.json", r.text)
-
-        # --- Step 3: probe likely store-lookup operations ---
-        # The frontend has a store finder. Operation name conventions vary;
-        # we'll try several common shapes. The endpoint will tell us which
-        # exists by either returning data or a "no such query" error.
-        section("Step 3: probe store-lookup operations")
-
-        store_candidates = [
-            # name, query
-            (
-                "stores_by_address",
-                """query StoresByAddress($address: String!) {
-                  stores(address: $address) {
-                    id
-                    name
-                    address1
-                    city
-                    state
-                    zip
-                  }
-                }""",
-            ),
-            (
-                "storeSearch",
-                """query StoreSearch($address: String!) {
-                  storeSearch(address: $address) {
-                    storeId
-                    name
-                    address1
-                    city
-                  }
-                }""",
-            ),
-            (
-                "searchStores",
-                """query SearchStores($zipCode: String!) {
-                  searchStores(zipCode: $zipCode) {
-                    storeId
-                    storeName
-                    address
-                  }
-                }""",
-            ),
-            (
-                "stores_simple",
-                """{ stores { id name } }""",
-            ),
+        # ----- A) productDetail argument name -----
+        section("A) productDetail: discover correct argument name")
+        arg_candidates = [
+            "id", "productId", "productID", "sku", "upc", "ean",
+            "code", "productCode", "slug", "key", "uid", "pid",
         ]
-
-        for name, q in store_candidates:
-            print(f"\n  --- trying: {name}")
-            payload = {"query": q, "variables": {"address": WALDRON_ADDR, "zipCode": ZIP}}
+        for arg in arg_candidates:
+            q = f'query Q($v: String!) {{ productDetail({arg}: $v) {{ __typename }} }}'
+            r = post_query(c, q, {"v": "1510154"})
             try:
-                r = c.post(ENDPOINT, json=payload)
-                print(f"    status: {r.status_code}")
-                body = r.text[:500]
-                print(f"    body: {body}")
-                save(f"store_probe_{name}.json", r.text)
-            except Exception as e:
-                print(f"    ERROR: {e}")
-            time.sleep(1.0)
+                err = r.json()["errors"][0]["message"]
+            except Exception:
+                err = r.text[:200]
+            print(f"  arg={arg:15s} status={r.status_code} err={err[:180]}")
+            save(f"arg_{arg}.json", r.text)
+            time.sleep(0.5)
 
-        # --- Step 4: try a known product ID to see what product queries look like ---
-        # Central Market Organics Instant Coffee = 1510154 (from earlier search results)
-        section("Step 4: probe product-detail operations")
-        product_candidates = [
-            (
-                "productDetail",
-                """query ProductDetail($productId: String!) {
-                  productDetail(productId: $productId) {
-                    id
-                    name
-                    brand
-                    price
-                  }
-                }""",
-            ),
-            (
-                "product",
-                """query Product($id: ID!) {
-                  product(id: $id) {
-                    id
-                    name
-                    brand
-                  }
-                }""",
-            ),
-            (
-                "productById",
-                """query ProductById($productId: String!) {
-                  productById(productId: $productId) {
-                    productId
-                    displayName
-                  }
-                }""",
-            ),
+        # ----- B) ProductDetailResult fields -----
+        section("B) ProductDetailResult: probe field names (using arg=id)")
+        field_candidates = [
+            "id", "productId", "sku", "upc", "ean",
+            "name", "displayName", "title", "productName",
+            "brand", "brandName", "manufacturer",
+            "price", "regularPrice", "salePrice", "currentPrice", "listPrice", "unitPrice",
+            "image", "imageUrl", "images", "thumbnail",
+            "description", "longDescription", "shortDescription",
+            "available", "availability", "inStock", "isAvailable", "stockStatus",
+            "category", "categories", "taxonomy", "department",
+            "size", "weight", "unit", "uom",
+            "url", "slug", "path",
+            "ingredients", "nutrition", "nutritionFacts",
         ]
-        for name, q in product_candidates:
-            print(f"\n  --- trying: {name}")
-            payload = {
-                "query": q,
-                "variables": {"productId": "1510154", "id": "1510154"},
-            }
+        for field in field_candidates:
+            q = f'query Q {{ productDetail(id: "1510154") {{ {field} }} }}'
+            r = post_query(c, q)
             try:
-                r = c.post(ENDPOINT, json=payload)
-                print(f"    status: {r.status_code}")
-                body = r.text[:500]
-                print(f"    body: {body}")
-                save(f"product_probe_{name}.json", r.text)
-            except Exception as e:
-                print(f"    ERROR: {e}")
-            time.sleep(1.0)
+                err = r.json()["errors"][0]["message"]
+            except Exception:
+                err = r.text[:200]
+            status_marker = "SUCCESS" if r.status_code == 200 and "errors" not in r.text else "ERR"
+            print(f"  field={field:25s} {status_marker:8s} err={err[:160]}")
+            save(f"field_{field}.json", r.text)
+            time.sleep(0.3)
 
-    print("\nAll probe responses saved to:", OUTDIR)
+        # ----- C) store lookup operation name -----
+        section("C) Store lookup: probe operation names")
+        store_op_candidates = [
+            "store", "stores", "storeLookup", "storeFinder", "storesByZip",
+            "storesNearMe", "findStores", "nearestStores", "locator",
+            "storeLocator", "getStore", "getStores", "fetchStores",
+            "storesByAddress", "storesByCoords", "storesByLatLng",
+        ]
+        for op in store_op_candidates:
+            q = f'query Q {{ {op} {{ __typename }} }}'
+            r = post_query(c, q)
+            try:
+                err = r.json()["errors"][0]["message"]
+            except Exception:
+                err = r.text[:200]
+            print(f"  op={op:22s} status={r.status_code} err={err[:160]}")
+            save(f"store_op_{op}.json", r.text)
+            time.sleep(0.3)
+
+        # ----- D) JS bundle URLs from homepage -----
+        section("D) Extract JS bundle URLs from homepage")
+        js_urls = re.findall(r'<script[^>]+src="([^"]+\.js[^"]*)"', homepage_html)
+        next_data = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', homepage_html, re.DOTALL)
+        print(f"  found {len(js_urls)} <script src> tags")
+        for u in js_urls[:30]:
+            print(f"    {u}")
+        save("js_bundle_urls.json", js_urls)
+        if next_data:
+            print("  __NEXT_DATA__ blob found! (Next.js app)")
+            save("next_data.json", next_data.group(1))
+        else:
+            print("  no __NEXT_DATA__ blob")
+
+    print(f"\nAll probe responses saved to: {OUTDIR}")
 
 
 if __name__ == "__main__":
