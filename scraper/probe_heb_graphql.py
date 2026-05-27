@@ -1,27 +1,21 @@
 """
-H-E-B GraphQL Probe — Phase 8
+H-E-B GraphQL Probe — Phase 9
 -----------------------------
-Phase 7b confirmed:
-  - Store #57 = Flour Bluff H-E-B plus! (Waldron Rd) ✓
-  - productSearch(storeId: Int, shoppingContext, query: String) -> ProductCollection
-  - browseCategory(categoryId: "490086") -> BrowseProductCollection
-  - But: productDetail at store 57 with our SKU returned ZERO valid fields
-    on type "Product". Something is off about Product specifically.
+Phase 8 confirmed:
+  - productSearch(storeId: Int!, shoppingContext, query: String!, limit, offset, filter, sortBy) -> ProductCollection
+  - browseCategory(storeId, shoppingContext, categoryId: String!) -> BrowseProductCollection
+  - Both collections have: records: [Product]!, total: Int, filters: ProductSearchFilters
+  - BrowseProductCollection also has: breadcrumbs: [CategoryBreadCrumb]!
+  - Product type has at least `brand: Brand` field (works via records[] path)
+  - filter takes a String, sortBy is an enum "SearchSortBy"
 
-Phase 8 goals:
-  A) Investigate Product type directly — maybe productDetail returns a
-     union/interface and Product is just an interface stub. Try inline
-     fragments to see what concrete types exist.
-  B) Probe ProductCollection (from productSearch) — find fields like
-     items, products, results, totalCount, pageInfo.
-  C) Probe BrowseProductCollection similarly.
-  D) Once we find items/products on the collection, probe THAT item type
-     for the actual fields (name, brand, price, image).
-  E) productSearch with more args (limit, page, filters, brand).
-  F) browseCategory with subfield probe — to find what categoryIds we
-     can enumerate.
-  G) Try Product fields with __SCHEMA__-style fragment introspection
-     (some Apollo versions have partial introspection on types).
+Phase 9 goals:
+  A) Probe Product fields via the records[] path (it works there).
+  B) Probe subfields of Brand, ProductSearchFilters, CategoryBreadCrumb.
+  C) Discover filter string syntax (brand filtering).
+  D) Discover SearchSortBy enum values.
+  E) Pull a real ProductCollection.records[] dump with all fields populated.
+  F) Try same approach on productDetail — maybe it works after warm-up.
 """
 
 import json
@@ -51,7 +45,6 @@ OUTDIR = Path(__file__).parent.parent / "probe_output"
 OUTDIR.mkdir(exist_ok=True)
 CTX = "CURBSIDE_PICKUP"
 STORE = 57
-STORE_STR = "57"
 SKU = "1510154"
 
 
@@ -76,19 +69,24 @@ def post(c, q, v=None):
     return c.post(ENDPOINT, json=payload)
 
 
-def probe_field_on(c, parent_query, parent_path, candidate_fields, label):
-    """Generic helper: probe candidate field names on a particular path in a query.
-    parent_query is a query template with __FIELD__ placeholder where the candidate
-    name should be inserted. Returns dict of valid_scalar, complex, unknown.
-    """
+def err_msg(r):
+    try:
+        return r.json()["errors"][0]["message"]
+    except Exception:
+        return r.text[:200]
+
+
+def probe_field_at_path(client, template, path, candidates, label):
+    """Probe each candidate by substituting __FIELD__ in template, then walking
+    the JSON path to extract the value if no error."""
     valid_scalar = {}
     valid_complex = []
     unknown = []
     other = []
-    for f in candidate_fields:
-        q = parent_query.replace("__FIELD__", f)
+    for f in candidates:
+        q = template.replace("__FIELD__", f)
         try:
-            r = post(c, q)
+            r = post(client, q)
             body = r.json() if r.text.startswith("{") else None
         except Exception:
             continue
@@ -105,23 +103,21 @@ def probe_field_on(c, parent_query, parent_path, candidate_fields, label):
                 print(f"  ⊞ {f:25s} NEEDS_SUBFIELDS type={inner}")
             else:
                 other.append((f, em[:200]))
-                # Print these — they often say "X must be a Y" or "argument required"
                 print(f"  ? {f:25s} {em[:200]}")
         else:
-            # Walk to extract value at the path
             cur = body.get("data") or {}
-            for key in parent_path:
+            for key in path:
+                if isinstance(cur, list) and cur:
+                    cur = cur[0]
                 if isinstance(cur, dict):
                     cur = cur.get(key)
-                else:
-                    cur = None
-                    break
+            # cur should now be at the record level
             if isinstance(cur, dict) and f in cur:
                 v = cur[f]
                 valid_scalar[f] = v
                 print(f"  ✓ {f:25s} -> {json.dumps(v)[:140] if v is not None else 'null'}")
             else:
-                other.append((f, f"no_field_in_path: cur={cur}"))
+                other.append((f, f"no_field_in_path: cur_type={type(cur).__name__}"))
         time.sleep(0.12)
     print(f"\n  [{label}] scalar={len(valid_scalar)} complex={len(valid_complex)} unknown={len(unknown)} other={len(other)}")
     return {"scalar": valid_scalar, "complex": valid_complex, "unknown": unknown, "other": other}
@@ -133,247 +129,275 @@ def main():
         c.get(HOMEPAGE)
 
         # =========================================================
-        # A) productDetail: is it actually a union/interface?
+        # A) Probe Product fields via records[] path
         # =========================================================
-        section("A) productDetail: probe for union/interface members")
-        # If `Product` is an interface, we can use inline fragments naming
-        # candidate concrete subtypes. Try plausible names — we'll see which
-        # the server accepts.
-        member_candidates = [
-            "Product", "ProductDetails", "ProductDetail",
-            "GroceryProduct", "RetailProduct", "ShoppableProduct",
-            "PrivateLabelProduct", "GenericProduct",
-            "ProductData", "ProductV2", "RawProduct",
+        section("A) Product fields via productSearch.records[0]")
+        # Use limit:1 to keep responses small
+        product_field_template = '''query Q {
+          productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", limit: 1) {
+            records { __FIELD__ }
+          }
+        }'''
+        product_candidates = [
+            # IDs
+            "id", "productId", "sku", "upc", "ean", "productNumber",
+            "primaryProductId", "productGroupId", "code",
+            # Names
+            "name", "displayName", "title", "productName", "label",
+            # Brand (we already know this exists as complex)
+            "brand", "brandName", "manufacturer",
+            # Pricing
+            "price", "pricing", "prices", "regularPrice", "salePrice",
+            "currentPrice", "listPrice", "unitPrice", "perUnitPrice",
+            "displayPrice", "displayedUnitPrice",
+            # Images
+            "image", "images", "imageUrl", "imageUrls", "primaryImage",
+            "thumbnail", "media",
+            # Description
+            "description", "longDescription", "shortDescription", "details",
+            # Availability
+            "available", "availability", "inStock", "isAvailable",
+            "inventory", "inventoryState", "stockStatus",
+            "isInStock", "outOfStock", "inAssortment",
+            "isDiscontinued", "isActive",
+            # Categories
+            "category", "categories", "department", "taxonomy",
+            "taxonomyPath", "breadcrumbs", "categoryId",
+            # Size
+            "size", "weight", "uom", "unitOfMeasure", "packaging",
+            "packageSize", "containerSize",
+            # URL
+            "url", "slug", "productUrl", "path",
+            # Other
+            "ingredients", "nutrition",
+            "averageRating", "reviewCount",
+            "tags", "labels", "attributes",
+            "isPrivateLabel", "ownedBrand", "isHebBrand",
+            "aisle", "aisleLocation",
+            "snap", "snapEligible", "isSnapEligible",
+            "couponInfo", "coupons", "promotions", "savings",
+            "fulfillmentChannels",
         ]
-        for t in member_candidates:
-            q = f'''query Q($s: ID!, $id: ID!, $ctx: ShoppingContext!) {{
-              productDetail(storeId: $s, id: $id, shoppingContext: $ctx) {{
-                __typename
-                ... on {t} {{ __typename }}
+        result_A = probe_field_at_path(
+            c, product_field_template,
+            ["productSearch", "records"],
+            product_candidates, "Product"
+        )
+        save("A_Product_fields.json", result_A)
+
+        # =========================================================
+        # B) Subfields of complex types (Brand, ProductSearchFilters, CategoryBreadCrumb)
+        # =========================================================
+        section("B) Subfields of complex types")
+
+        # Brand
+        print("\n  --- Brand subfields ---")
+        brand_subfields = [
+            "id", "name", "displayName", "slug",
+            "isHeb", "isHebBrand", "isOwnedBrand", "isPrivateLabel",
+            "logo", "logoUrl", "image", "imageUrl",
+            "description", "url", "categoryId",
+        ]
+        brand_template = '''query Q {
+          productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", limit: 1) {
+            records { brand { __FIELD__ } }
+          }
+        }'''
+        result_B_brand = probe_field_at_path(
+            c, brand_template,
+            ["productSearch", "records", "brand"],
+            brand_subfields, "Brand"
+        )
+        save("B_Brand.json", result_B_brand)
+
+        # ProductSearchFilters — for brand filter syntax discovery!
+        print("\n  --- ProductSearchFilters subfields ---")
+        psf_subfields = [
+            "brands", "brand", "categories", "category",
+            "prices", "price", "priceRange",
+            "departments", "department",
+            "dietary", "dietaryAttributes",
+            "options", "values", "items",
+            "facets", "filters",
+            "available", "isAvailable",
+            "type", "kind",
+            "name", "id", "label", "displayName",
+            "count", "total",
+        ]
+        psf_template = '''query Q {
+          productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", limit: 1) {
+            filters { __FIELD__ }
+          }
+        }'''
+        result_B_psf = probe_field_at_path(
+            c, psf_template,
+            ["productSearch", "filters"],
+            psf_subfields, "ProductSearchFilters"
+        )
+        save("B_ProductSearchFilters.json", result_B_psf)
+
+        # CategoryBreadCrumb — to navigate the category tree
+        print("\n  --- CategoryBreadCrumb subfields ---")
+        cbc_subfields = [
+            "id", "categoryId", "name", "displayName", "label",
+            "slug", "url", "path", "depth", "level",
+            "parentId", "parentCategoryId",
+        ]
+        cbc_template = '''query Q {
+          browseCategory(storeId: 57, shoppingContext: CURBSIDE_PICKUP, categoryId: "490086") {
+            breadcrumbs { __FIELD__ }
+          }
+        }'''
+        result_B_cbc = probe_field_at_path(
+            c, cbc_template,
+            ["browseCategory", "breadcrumbs"],
+            cbc_subfields, "CategoryBreadCrumb"
+        )
+        save("B_CategoryBreadCrumb.json", result_B_cbc)
+
+        # =========================================================
+        # C) filter string syntax discovery
+        # =========================================================
+        section("C) filter argument: discover brand-filter syntax")
+        # The filter arg takes a String. We need to find what format encodes
+        # a brand filter. Common conventions:
+        filter_attempts = [
+            "brand:CAFE Olé by H-E-B",
+            "brand=CAFE Olé by H-E-B",
+            'brand:"CAFE Olé by H-E-B"',
+            "brandName:CAFE Olé by H-E-B",
+            "brand:central-market",
+            "brand:H-E-B",
+            "isOwnedBrand:true",
+            "isHebBrand:true",
+            "ownedBrand",
+            "private_label",
+        ]
+        for fv in filter_attempts:
+            q = f'''query Q {{
+              productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", filter: {json.dumps(fv)}, limit: 1) {{
+                total
+                records {{ brand {{ name }} }}
               }}
             }}'''
-            r = post(c, q, {"s": STORE_STR, "id": SKU, "ctx": CTX})
+            r = post(c, q)
             try:
                 body = r.json()
                 if "errors" in body:
                     em = body["errors"][0]["message"]
-                    if f'type "{t}"' in em and "is not a member" in em:
-                        # Apollo error: "Fragment cannot be spread here as objects of
-                        # type 'Product' can never be of type 'X'."
-                        # — meaning X exists but Product isn't related.
-                        pass
-                    elif "Unknown type" in em or f'"{t}"' in em:
-                        # Unknown type: definitely doesn't exist
-                        pass
-                    else:
-                        print(f"  {t:25s} ERR: {em[:200]}")
+                    print(f"  {fv:45s} ERR: {em[:200]}")
                 else:
-                    print(f"  {t:25s} OK: {r.text[:200]}")
+                    total = (body.get("data") or {}).get("productSearch", {}).get("total")
+                    records = (body.get("data") or {}).get("productSearch", {}).get("records") or []
+                    sample_brand = ""
+                    if records:
+                        sample_brand = (records[0].get("brand") or {}).get("name", "?")
+                    print(f"  {fv:45s} total={total} sample_brand={sample_brand}")
+                    save(f"C_filter_{safe(fv)}.json", body)
             except Exception:
                 pass
-            time.sleep(0.2)
+            time.sleep(0.3)
 
         # =========================================================
-        # A2) Maybe productDetail.Product has snake_case fields
+        # D) SearchSortBy enum values
         # =========================================================
-        section("A2) productDetail.Product: try snake_case fields")
-        snake_candidates = [
-            "id", "product_id", "display_name", "product_name",
-            "brand", "brand_name", "primary_image", "image_url",
-            "price", "regular_price", "current_price",
-            "in_stock", "is_available",
-            "category", "categories",
-            "size", "package_size", "unit_of_measure",
-            "url", "product_url",
-            "description", "long_description",
+        section("D) SearchSortBy enum values")
+        # First, throw a garbage value to learn what's accepted
+        q = 'query Q { productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", sortBy: __INVALID__, limit: 1) { total } }'
+        r = post(c, q)
+        print(f"  garbage probe: {r.text[:600]}")
+        save("D_sortby_garbage.json", r.text)
+
+        sort_candidates = [
+            "RELEVANCE", "BEST_MATCH", "PRICE_ASC", "PRICE_DESC",
+            "PRICE_LOW_TO_HIGH", "PRICE_HIGH_TO_LOW",
+            "NAME_ASC", "NAME_DESC", "ALPHABETICAL",
+            "RATING", "POPULARITY", "TRENDING",
+            "NEWEST", "OLDEST",
         ]
-        template = f'''query Q($s: ID!, $id: ID!, $ctx: ShoppingContext!) {{
-          productDetail(storeId: $s, id: $id, shoppingContext: $ctx) {{ __FIELD__ }}
-        }}'''
-        # We need vars — but probe_field_on doesn't accept vars. Inline values:
-        template_inline = template.replace("$s", f'"{STORE_STR}"').replace("$id", f'"{SKU}"').replace("$ctx", CTX)
-        template_inline = template_inline.replace(", $ctx: ShoppingContext!", "")
-        template_inline = template_inline.replace("$s: ID!, $id: ID!,", "")
-        # Actually easier: just hardcode the query without variables.
-        inline_q = '''query {
-          productDetail(storeId: "57", id: "1510154", shoppingContext: CURBSIDE_PICKUP) { __FIELD__ }
-        }'''
-        snake_result = probe_field_on(c, inline_q, ["productDetail"], snake_candidates, "snake_case")
-        save("A2_snake.json", snake_result)
-
-        # =========================================================
-        # A3) Maybe Product fields require fragment on a parent type
-        # =========================================================
-        section("A3) productDetail.Product: try Apollo-style fragment fields")
-        # From the JS we saw mentions of STORE_DETAILS_FRAGMENT etc. The Product
-        # type might require spread fragments. Try fields with PRODUCT_ prefix.
-        # Also try fields from the recipeDetail snippet we saw earlier — recipes
-        # had similar context, and maybe Product has fields named like
-        # "primaryProductId" "productGroupId" etc.
-        more_candidates = [
-            "primaryProductId", "productGroupId", "productGroup",
-            "displayedName", "displayedBrand", "displayedSize",
-            "branding", "imagery", "imageObject",
-            "salePriceInfo", "priceInfo", "priceDetails",
-            "stockInfo", "stockState", "isOutOfStock",
-            "primaryImage", "primaryImageUrl",
-            "productName", "productBrand", "productPrice",
-            "longDescriptionHtml", "shortDescriptionHtml",
-            "promotionalText", "isDiscontinued", "isActive",
-            "departmentName", "categoryName", "subcategoryName",
-            "departmentId", "categoryId",
-            "fulfillmentChannels", "fulfillment",
-            "unitPriceText", "displayedUnitPrice",
-        ]
-        more_result = probe_field_on(c, inline_q, ["productDetail"], more_candidates, "more_candidates")
-        save("A3_more.json", more_result)
-
-        # =========================================================
-        # B) ProductCollection (from productSearch) field discovery
-        # =========================================================
-        section("B) ProductCollection: probe fields")
-        ps_template = f'''query Q {{
-          productSearch(storeId: {STORE}, shoppingContext: {CTX}, query: "coffee") {{ __FIELD__ }}
-        }}'''
-        pc_candidates = [
-            "__typename", "items", "products", "results", "records",
-            "data", "nodes", "edges",
-            "totalCount", "total", "count", "totalResults",
-            "page", "pageInfo", "hasNextPage", "hasMore",
-            "facets", "filters", "aggregations",
-            "query", "term", "phrase",
-            "categories", "brands",
-            "navigation", "breadcrumbs",
-        ]
-        pc_result = probe_field_on(c, ps_template, ["productSearch"], pc_candidates, "ProductCollection")
-        save("B_ProductCollection.json", pc_result)
-
-        # =========================================================
-        # C) BrowseProductCollection field discovery
-        # =========================================================
-        section("C) BrowseProductCollection: probe fields")
-        bc_template = f'''query Q {{
-          browseCategory(storeId: {STORE}, shoppingContext: {CTX}, categoryId: "490086") {{ __FIELD__ }}
-        }}'''
-        bpc_result = probe_field_on(c, bc_template, ["browseCategory"], pc_candidates, "BrowseProductCollection")
-        save("C_BrowseProductCollection.json", bpc_result)
-
-        # =========================================================
-        # D) If "items" or "products" exists, probe THAT type's fields
-        # =========================================================
-        section("D) Probe items/products subtype")
-        # If productSearch.items returns a list, we need to know the element type.
-        # We probe items{__typename} first.
-        items_field_name = None
-        for f in ["items", "products", "results", "records", "nodes"]:
-            q = f'''query Q {{
-              productSearch(storeId: {STORE}, shoppingContext: {CTX}, query: "coffee") {{
-                {f} {{ __typename }}
-              }}
-            }}'''
+        valid_sorts = []
+        for s in sort_candidates:
+            q = f'query Q {{ productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", sortBy: {s}, limit: 1) {{ total }} }}'
             r = post(c, q)
             try:
                 body = r.json()
                 if "errors" not in body:
-                    items_field_name = f
-                    val = (body.get("data") or {}).get("productSearch", {}).get(f)
-                    print(f"  ProductCollection.{f} works: {json.dumps(val)[:600]}")
-                    save(f"D_items_via_{f}.json", body)
-                    break
+                    valid_sorts.append(s)
+                    print(f"  ✓ {s}")
+                else:
+                    em = body["errors"][0]["message"]
+                    if "does not exist in" in em:
+                        pass  # invalid enum value
+                    else:
+                        print(f"  ? {s:25s} {em[:180]}")
             except Exception:
                 pass
             time.sleep(0.2)
-
-        if items_field_name:
-            # Get the typename of one item
-            q = f'''query Q {{
-              productSearch(storeId: {STORE}, shoppingContext: {CTX}, query: "coffee") {{
-                {items_field_name} {{ __typename }}
-              }}
-            }}'''
-            r = post(c, q)
-            print(f"\n  items[__typename]: {r.text[:600]}")
-
-            # Now probe candidate fields on each item
-            item_candidates = [
-                "id", "productId", "sku", "upc",
-                "name", "displayName", "title", "productName",
-                "brand", "brandName",
-                "price", "displayPrice", "regularPrice",
-                "image", "imageUrl", "primaryImage", "thumbnail",
-                "url", "slug", "productUrl",
-                "available", "inStock", "isAvailable",
-                "size", "packageSize",
-                "category", "categoryName",
-                "description", "shortDescription",
-                "inventoryState",
-            ]
-            item_template = f'''query Q {{
-              productSearch(storeId: {STORE}, shoppingContext: {CTX}, query: "coffee") {{
-                {items_field_name} {{ __FIELD__ }}
-              }}
-            }}'''
-            item_result = probe_field_on(c, item_template, ["productSearch", items_field_name], item_candidates, "Item")
-            save("D_item_fields.json", item_result)
-
-            # Big query
-            if item_result["scalar"]:
-                section("D2) Big productSearch + items query")
-                keys = list(item_result["scalar"].keys())
-                qbig = f'''query Q {{
-                  productSearch(storeId: {STORE}, shoppingContext: {CTX}, query: "coffee") {{
-                    {items_field_name} {{
-                      __typename
-                      {chr(10).join("    " + k for k in keys)}
-                    }}
-                  }}
-                }}'''
-                r = post(c, qbig)
-                print(f"  status: {r.status_code}")
-                print(f"  body (first 4000):\n{r.text[:4000]}")
-                save("D2_PRODUCT_SEARCH_FULL.json", r.text)
+        print(f"\n  Valid sort values: {valid_sorts}")
+        save("D_valid_sorts.json", valid_sorts)
 
         # =========================================================
-        # E) productSearch with additional args
+        # E) Full ProductCollection dump with all valid scalar fields
         # =========================================================
-        section("E) productSearch: additional arg discovery")
-        extra_arg_attempts = [
-            ("limit", 'query Q { productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", limit: 3) { __typename } }'),
-            ("first", 'query Q { productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", first: 3) { __typename } }'),
-            ("pageSize", 'query Q { productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", pageSize: 3) { __typename } }'),
-            ("page", 'query Q { productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", page: 1) { __typename } }'),
-            ("offset", 'query Q { productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", offset: 0) { __typename } }'),
-            ("filter", 'query Q { productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", filter: "brand") { __typename } }'),
-            ("brand", 'query Q { productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", brand: "Central Market") { __typename } }'),
-            ("sort", 'query Q { productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", sort: "PRICE_ASC") { __typename } }'),
-            ("sortBy", 'query Q { productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", sortBy: "PRICE_ASC") { __typename } }'),
-            ("filters", 'query Q { productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", filters: []) { __typename } }'),
-        ]
-        for tag, q in extra_arg_attempts:
-            r = post(c, q)
-            try:
-                em = r.json()["errors"][0]["message"] if "errors" in r.json() else "<ok>"
-            except Exception:
-                em = r.text[:200]
-            ok = r.status_code == 200 and "errors" not in r.text
-            print(f"  {tag:12s} ok={ok} status={r.status_code} err={em[:200]}")
-            save(f"E_{tag}.json", r.text)
-            time.sleep(0.3)
+        section("E) Full productSearch with all valid Product scalars + brand subfields")
+        scalar_keys = list(result_A["scalar"].keys())
+        brand_keys = list(result_B_brand["scalar"].keys())
+        scalar_part = "\n            ".join(scalar_keys)
+        brand_part = "\n              ".join(brand_keys)
+        complex_to_include = []
+        # Expand select complex fields by guessing subfields
+        # For "image"/"primaryImage" -> {url}
+        for c_field in result_A["complex"]:
+            f = c_field["field"]
+            t = c_field["type"]
+            if "Image" in t or "image" in f.lower():
+                complex_to_include.append(f"{f} {{ url }}")
+            elif "Price" in t or "price" in f.lower():
+                complex_to_include.append(f"{f} {{ amount currency }}")
+            elif "Category" in t or "category" in f.lower():
+                complex_to_include.append(f"{f} {{ name }}")
 
-        # =========================================================
-        # F) browseCategory: enumerate categories
-        # =========================================================
-        section("F) browseCategory subfield + category enumeration")
-        # Same fields as ProductCollection probably; print sample data
-        q = f'''query Q {{
-          browseCategory(storeId: {STORE}, shoppingContext: {CTX}, categoryId: "490086") {{
-            __typename
-            {chr(10).join("    " + k for k in pc_result["scalar"]) if pc_result.get("scalar") else "    __typename"}
+        complex_part = "\n            ".join(complex_to_include)
+        qbig = f'''query Q {{
+          productSearch(storeId: 57, shoppingContext: CURBSIDE_PICKUP, query: "coffee", limit: 5) {{
+            total
+            records {{
+              __typename
+              {scalar_part}
+              {('brand { ' + brand_part + ' }') if brand_keys else 'brand { __typename }'}
+              {complex_part}
+            }}
           }}
         }}'''
-        r = post(c, q)
-        print(f"  body (first 1500): {r.text[:1500]}")
-        save("F_browseCategory_full.json", r.text)
+        r = post(c, qbig)
+        print(f"  status: {r.status_code}")
+        # Pretty-print the response
+        try:
+            body = r.json()
+            print(f"  body:\n{json.dumps(body, indent=2)[:5000]}")
+        except Exception:
+            print(f"  raw body (first 4000): {r.text[:4000]}")
+        save("E_FULL_DUMP.json", r.text)
+
+        # =========================================================
+        # F) Now retry productDetail with the SAME fields we learned work on records[]
+        # =========================================================
+        section("F) Retry productDetail with known-good Product fields")
+        if scalar_keys:
+            qpd = f'''query Q($s: ID!, $id: ID!, $ctx: ShoppingContext!) {{
+              productDetail(storeId: $s, id: $id, shoppingContext: $ctx) {{
+                __typename
+                {scalar_part}
+              }}
+            }}'''
+            r = post(c, qpd, {"s": "57", "id": SKU, "ctx": CTX})
+            print(f"  status: {r.status_code}")
+            try:
+                body = r.json()
+                print(f"  body:\n{json.dumps(body, indent=2)[:3000]}")
+            except Exception:
+                print(f"  raw: {r.text[:2000]}")
+            save("F_productDetail_retry.json", r.text)
 
     print(f"\nDone. Output in {OUTDIR}")
 
