@@ -1,25 +1,25 @@
 """
-H-E-B GraphQL Probe — Phase 5
+H-E-B GraphQL Probe — Phase 6
 -----------------------------
-Phase 4 discoveries:
-  - ShoppingContext is an ENUM (not an input object). Pass a string value.
-  - store(storeNumber: Int) works. Store 92 = Victoria H-E-B plus! (wrong store)
-  - Store fields: storeNumber, name, phoneNumber, latitude, longitude, address (PostalAddress!)
-  - storeById(storeNumber: $storeId) is the canonical operation name
-  - 38 real operations harvested from JS, including:
-      NearbyStores, StoreSearch, SearchStoresByNearbyStore, StorePickerSearch
-      StoreDetailsPage, StoreAddress, SearchStoresByProductId
+Phase 5 confirmed:
+  - ShoppingContext value: CURBSIDE_PICKUP (returns data!)
+  - PostalAddress fields: streetAddress, locality, region, postalCode, country
+  - productSearch exists (requires shoppingContext: ShoppingContext!)
+  - browseCategory exists (requires categoryId: String!)
+  - Store 92 = Victoria H-E-B plus! (still need Waldron's number)
 
-Phase 5 goals:
-  A) Brute-force the ShoppingContext enum values.
-  B) Probe NearbyStores to find Waldron Rd store from zip 78418.
-  C) Probe PostalAddress subfields (we need address1, city, state, zip).
-  D) Once we have ShoppingContext + real storeNumber, hit productDetail
-     for a known SKU (1510154) and get a FULL real product response.
-  E) Probe for category-browsing operations (productSearch, browseCategory,
-     productsByBrand, searchProducts, etc.) — the discovery scraper needs
-     to ENUMERATE products, not just look up by ID.
-  F) Extract more JS chunks looking for productSearch/browseCategory queries.
+Phase 6 goals:
+  A) Get the actual product data for SKU 1510154 with CURBSIDE_PICKUP context
+     (Phase 5 final-fetch had a bug — rebuilding it properly).
+  B) Discover full productDetail field set, including which fields need
+     subfields. Use one-field-at-a-time probing and capture VALID + the
+     "needs subfields" hint to learn nested types.
+  C) Find Waldron Rd store. Strategy: brute-force adjacent store numbers
+     starting from 92 (try 1-700, fast — just request name + postalCode).
+     Corpus Christi stores will turn up.
+  D) Probe productSearch full argument shape.
+  E) Probe browseCategory full argument shape — and try common H-E-B
+     category IDs to enumerate.
 """
 
 import json
@@ -47,6 +47,8 @@ HEADERS = {
 
 OUTDIR = Path(__file__).parent.parent / "probe_output"
 OUTDIR.mkdir(exist_ok=True)
+CTX = "CURBSIDE_PICKUP"
+KNOWN_GOOD_SKU = "1510154"  # Central Market Organics Instant Coffee
 
 
 def save(name, data):
@@ -62,12 +64,10 @@ def section(title):
     print(f"\n{'=' * 70}\n  {title}\n{'=' * 70}")
 
 
-def post_query(client, query, variables=None, op_name=None):
+def post_query(client, query, variables=None):
     payload = {"query": query}
     if variables is not None:
         payload["variables"] = variables
-    if op_name:
-        payload["operationName"] = op_name
     return client.post(ENDPOINT, json=payload)
 
 
@@ -78,315 +78,242 @@ def err_msg(r):
         return r.text[:200]
 
 
-def all_err_msgs(r):
-    try:
-        return [e.get("message", "") for e in r.json().get("errors", [])]
-    except Exception:
-        return [r.text[:300]]
-
-
 def main():
     with httpx.Client(headers=HEADERS, follow_redirects=True, timeout=30.0) as c:
-        # ---- Setup ----
         section("Setup")
-        r = c.get(HOMEPAGE)
-        homepage_html = r.text
-        print(f"  homepage status: {r.status_code}")
+        c.get(HOMEPAGE)
+        print(f"  cookies: {list(c.cookies.keys())}")
 
         # =========================================================
-        # A) ShoppingContext enum value discovery
+        # A) Get a real productDetail response
         # =========================================================
-        section("A) ShoppingContext enum: brute-force values")
-        # Pass a definitely-invalid value to leak the allowed list. Some Apollo
-        # servers respond "Value 'X' does not exist in 'ShoppingContext' enum. Did you mean Y?"
+        section(f"A) productDetail with ctx={CTX} and __typename")
         q = '''query Q($s: ID!, $id: ID!, $ctx: ShoppingContext!) {
           productDetail(storeId: $s, id: $id, shoppingContext: $ctx) { __typename }
         }'''
+        r = post_query(c, q, {"s": "92", "id": KNOWN_GOOD_SKU, "ctx": CTX})
+        print(f"  status: {r.status_code}")
+        print(f"  body: {r.text}")
+        save("A_productDetail_typename.json", r.text)
 
-        # Step 1: try a garbage value to see if the server lists valid values.
-        r = post_query(c, q, {"s": "92", "id": "1510154", "ctx": "__INVALID_VALUE__"})
-        msgs = all_err_msgs(r)
-        print("  garbage-value response errors:")
-        for m in msgs[:5]:
-            print(f"    {m[:300]}")
-        save("ctx_garbage.json", r.text)
+        # Try with productDetails (plural) as inline fragment selection — the
+        # response type might be a union. The error from Phase 5 said
+        # "ProductDetailResult" so it might be a union/interface.
+        section("A2) productDetail probe with union selection")
+        q2 = '''query Q($s: ID!, $id: ID!, $ctx: ShoppingContext!) {
+          productDetail(storeId: $s, id: $id, shoppingContext: $ctx) {
+            __typename
+            ... on Product {
+              __typename
+            }
+          }
+        }'''
+        r = post_query(c, q2, {"s": "92", "id": KNOWN_GOOD_SKU, "ctx": CTX})
+        print(f"  status: {r.status_code}")
+        print(f"  body: {r.text[:600]}")
+        save("A2_productDetail_union.json", r.text)
+        # The error if "Product" doesn't exist will tell us actual concrete types.
 
-        # Step 2: try every plausible enum value.
-        # Common Apollo conventions: SCREAMING_SNAKE_CASE.
-        ctx_candidates = [
-            "PICKUP", "CURBSIDE", "DELIVERY", "SHIPPING", "IN_STORE", "INSTORE",
-            "INSTORE_SHOPPING", "STORE_PICKUP", "CURBSIDE_PICKUP",
-            "HOME_DELIVERY", "STANDARD_DELIVERY", "MAIL", "SHIP",
-            "DEFAULT", "NONE", "UNKNOWN",
+        # =========================================================
+        # B) Discover ALL productDetail field names (one at a time)
+        # =========================================================
+        section("B) productDetail: probe field names one-at-a-time, full capture")
+        candidates = [
+            # IDs
+            "id", "productId", "sku", "upc", "ean", "productNumber",
+            "uid", "code", "primaryProductId",
+            # Names
+            "name", "displayName", "title", "productName", "label",
+            # Brand
+            "brand", "brandName", "manufacturer", "vendor",
+            # Pricing
+            "price", "pricing", "prices", "regularPrice", "salePrice",
+            "currentPrice", "listPrice", "unitPrice", "perUnitPrice",
+            "displayPrice", "amount",
+            # Images
+            "image", "images", "imageUrl", "imageUrls", "primaryImage",
+            "thumbnail", "media", "imageGallery",
+            # Description
+            "description", "longDescription", "shortDescription", "details",
+            "productDescription",
+            # Availability/inventory
+            "available", "availability", "inStock", "isAvailable",
+            "inventory", "inventoryState", "stockStatus", "stock",
+            "isInStock", "outOfStock",
+            # Categories
+            "category", "categories", "department", "taxonomy",
+            "taxonomyPath", "breadcrumbs", "navigationPath",
+            # Size / packaging
+            "size", "weight", "uom", "unitOfMeasure", "packaging",
+            "packageSize", "containerSize",
+            # URL / slug
+            "url", "slug", "productUrl", "path", "permalink",
+            # Other useful stuff
+            "ingredients", "nutrition", "nutritionFacts", "specifications",
+            "ratings", "reviews", "averageRating", "reviewCount",
+            "tags", "labels", "attributes",
+            "private", "isPrivateLabel", "ownedBrand", "isHebBrand",
         ]
-        print("\n  trying enum values:")
-        working_ctx = None
-        for v in ctx_candidates:
-            r = post_query(c, q, {"s": "92", "id": "1510154", "ctx": v})
-            em = err_msg(r)
-            # If "does not exist in ShoppingContext" we know it's invalid.
-            # If "Cannot query field __typename" — actually wait, __typename always works.
-            # If we get data — jackpot.
-            if r.status_code == 200:
+        valid_scalar = {}     # field -> sample value
+        valid_complex = []    # field -> needs subfields
+        for f in candidates:
+            q = f'''query Q($s: ID!, $id: ID!, $ctx: ShoppingContext!) {{
+              productDetail(storeId: $s, id: $id, shoppingContext: $ctx) {{ {f} }}
+            }}'''
+            r = post_query(c, q, {"s": "92", "id": KNOWN_GOOD_SKU, "ctx": CTX})
+            try:
                 body = r.json()
-                if body.get("data") is not None:
-                    print(f"  ctx={v:25s} ✓ DATA RETURNED")
-                    working_ctx = v
-                    save(f"ctx_working_{v}.json", body)
-                    break
+                if "errors" not in body:
+                    pd = body.get("data", {}).get("productDetail")
+                    if isinstance(pd, dict):
+                        v = pd.get(f)
+                        valid_scalar[f] = v
+                        preview = json.dumps(v)[:140] if v is not None else "null"
+                        print(f"  ✓ {f:25s} -> {preview}")
                 else:
-                    print(f"  ctx={v:25s} status=200 but no data: {em[:120]}")
-            else:
-                # Show the specific enum error
-                print(f"  ctx={v:25s} {em[:160]}")
-            time.sleep(0.3)
-
-        if not working_ctx:
-            # Fallback: use whichever the server didn't reject as an enum violation
-            print("\n  No ctx value returned data; checking which were accepted as valid enum:")
-            for v in ctx_candidates:
-                r = post_query(c, q, {"s": "92", "id": "1510154", "ctx": v})
-                em = err_msg(r)
-                if "does not exist in" not in em and "Enum" not in em:
-                    print(f"    {v}: not an enum rejection -> {em[:180]}")
-                time.sleep(0.2)
-
-        # =========================================================
-        # B) Find Waldron Rd store via NearbyStores
-        # =========================================================
-        section("B) Find Waldron Rd store (zip 78418) via NearbyStores")
-        # We saw "NearbyStores" as an operation name. Try plausible shapes.
-        # The op probably takes a zip or lat/lng.
-        nearby_attempts = [
-            ('query Q($zip: String!) { nearbyStores(zip: $zip) { __typename } }', {"zip": "78418"}),
-            ('query Q($zip: String!) { nearbyStores(postalCode: $zip) { __typename } }', {"zip": "78418"}),
-            ('query Q($zip: String!) { nearbyStores(zipCode: $zip) { __typename } }', {"zip": "78418"}),
-            ('query Q($a: String!) { nearbyStores(address: $a) { __typename } }', {"a": "78418"}),
-            ('query Q($lat: Float!, $lng: Float!) { nearbyStores(latitude: $lat, longitude: $lng) { __typename } }',
-             {"lat": 27.6234, "lng": -97.2606}),
-            ('query Q { nearbyStores { __typename } }', None),
-        ]
-        for q, vars_ in nearby_attempts:
-            r = post_query(c, q, vars_)
-            try:
-                body = r.json()
-                ok = "errors" not in body
-                em = "" if ok else body["errors"][0]["message"]
-                shape = re.search(r"nearbyStores\([^)]*\)", q)
-                shape_str = shape.group(0) if shape else "no-args"
-                print(f"  {shape_str:55s} status={r.status_code} ok={ok} err={em[:140]}")
-                if ok:
-                    save(f"nearbyStores_{shape_str.replace(' ', '_')[:40]}.json", body)
-            except Exception as e:
-                print(f"  parse error: {e}")
-            time.sleep(0.3)
-
-        # Now try StoreSearch (also in the operations list)
-        print("\n  trying StoreSearch:")
-        search_attempts = [
-            ('query Q($q: String!) { storeSearch(query: $q) { __typename } }', {"q": "78418"}),
-            ('query Q($q: String!) { storeSearch(address: $q) { __typename } }', {"q": "78418"}),
-            ('query Q($q: String!) { storeSearch(zip: $q) { __typename } }', {"q": "78418"}),
-            ('query Q($q: String!) { storeSearch(searchTerm: $q) { __typename } }', {"q": "78418"}),
-            ('{ storeSearch { __typename } }', None),
-        ]
-        for q, vars_ in search_attempts:
-            r = post_query(c, q, vars_)
-            em = err_msg(r)
-            shape = re.search(r"storeSearch\([^)]*\)|storeSearch", q)
-            print(f"  {(shape.group(0) if shape else '?'):40s} status={r.status_code} err={em[:160]}")
-            time.sleep(0.3)
-
-        # Also try storeById (which we saw in JS)
-        print("\n  trying storeById:")
-        r = post_query(c, 'query Q($n: Int!) { storeById(storeNumber: $n) { __typename storeNumber name } }', {"n": 92})
-        print(f"  storeById(92) status={r.status_code} body={r.text[:300]}")
-
-        # =========================================================
-        # C) PostalAddress subfield discovery
-        # =========================================================
-        section("C) PostalAddress: probe subfields on store(92).address")
-        addr_field_candidates = [
-            "line1", "line2", "addressLine1", "addressLine2",
-            "street", "streetAddress", "address1", "address2",
-            "city", "locality", "state", "stateCode", "region",
-            "zip", "zipCode", "postalCode", "postal",
-            "country", "countryCode",
-        ]
-        found_addr_fields = {}
-        for f in addr_field_candidates:
-            q = f'query Q($n: Int!) {{ store(storeNumber: $n) {{ address {{ {f} }} }} }}'
-            r = post_query(c, q, {"n": 92})
-            try:
-                body = r.json()
-                if body.get("data") and body["data"].get("store"):
-                    val = body["data"]["store"]["address"].get(f)
-                    found_addr_fields[f] = val
-                    print(f"  addr.{f:18s} VALID -> {val}")
+                    em = body["errors"][0]["message"]
+                    if "must have a selection of subfields" in em or "of type" in em and "must have" in em:
+                        valid_complex.append({"field": f, "msg": em[:300]})
+                        # Extract the inner type from "Field 'foo' of type 'TypeName!' must have a selection of subfields"
+                        m = re.search(r"of type [\"']([\w!\[\]]+)[\"']", em)
+                        inner_type = m.group(1) if m else "?"
+                        print(f"  ⊞ {f:25s} NEEDS SUBFIELDS, type={inner_type}")
             except Exception:
                 pass
-            time.sleep(0.2)
-        save("postal_address_fields.json", found_addr_fields)
+            time.sleep(0.18)
+        save("B_valid_scalar_fields.json", valid_scalar)
+        save("B_complex_fields.json", valid_complex)
 
-        # =========================================================
-        # D) Once context known, get a full productDetail response
-        # =========================================================
-        if working_ctx:
-            section(f"D) FULL productDetail with ctx={working_ctx}")
-            # Try a broad selection set first, find what's available
-            big_field_set = [
-                "id", "productId", "displayName", "name", "title",
-                "description", "shortDescription", "longDescription",
-                "brand", "brandName", "vendor",
-                "image", "images", "imageUrl", "primaryImage",
-                "price", "pricing", "regularPrice", "salePrice",
-                "url", "slug", "productUrl",
-                "category", "categories", "taxonomyPath",
-                "size", "weight", "unitOfMeasure", "packaging",
-                "available", "availability", "inventoryState", "inventory",
-                "upc", "sku", "productNumber",
-            ]
-            # Try them one at a time so each one's validity is clear
-            valid_fields = {}
-            for f in big_field_set:
-                qd = f'''query Q($s: ID!, $id: ID!, $ctx: ShoppingContext!) {{
-                  productDetail(storeId: $s, id: $id, shoppingContext: $ctx) {{ {f} }}
-                }}'''
-                r = post_query(c, qd, {"s": "92", "id": "1510154", "ctx": working_ctx})
-                try:
-                    body = r.json()
-                    if "errors" not in body:
-                        val = body.get("data", {}).get("productDetail", {})
-                        if isinstance(val, dict):
-                            v = val.get(f)
-                            valid_fields[f] = v
-                            preview = str(v)[:100] if v is not None else "null"
-                            print(f"  field={f:25s} VALID -> {preview}")
-                    else:
-                        em = body["errors"][0]["message"]
-                        if "Cannot query field" not in em and "of type" in em:
-                            # Field exists but needs subfields
-                            print(f"  field={f:25s} NEEDS_SUBFIELDS -> {em[:160]}")
-                            valid_fields[f] = "<needs subfields>"
-                except Exception:
-                    pass
-                time.sleep(0.25)
-            save("productDetail_valid_fields.json", valid_fields)
-
-            # Now do one big query with all valid scalar fields
-            scalar_fields = [f for f, v in valid_fields.items() if v != "<needs subfields>"]
-            print(f"\n  Final fetch with {len(scalar_fields)} scalar fields...")
-            qfinal = f'''query Q($s: ID!, $id: ID!, $ctx: ShoppingContext!) {{
+        # One big query with all valid scalar fields
+        if valid_scalar:
+            section("B2) Full productDetail query with all valid scalar fields")
+            scalar_keys = list(valid_scalar.keys())
+            qfull = f'''query Q($s: ID!, $id: ID!, $ctx: ShoppingContext!) {{
               productDetail(storeId: $s, id: $id, shoppingContext: $ctx) {{
-                {' '.join(scalar_fields)}
+                __typename
+                {chr(10).join('    ' + k for k in scalar_keys)}
               }}
             }}'''
-            r = post_query(c, qfinal, {"s": "92", "id": "1510154", "ctx": working_ctx})
-            print(f"  final status: {r.status_code}")
-            print(f"  final body (first 1500): {r.text[:1500]}")
-            save("PRODUCT_DETAIL_FULL.json", r.text)
-        else:
-            print("\nD) SKIPPED - no working ShoppingContext value found yet")
+            r = post_query(c, qfull, {"s": "92", "id": KNOWN_GOOD_SKU, "ctx": CTX})
+            print(f"  status: {r.status_code}")
+            print(f"  body (first 2500):\n{r.text[:2500]}")
+            save("B2_PRODUCT_DETAIL_FULL.json", r.text)
 
         # =========================================================
-        # E) Probe browse/search operations
+        # C) Brute-force store numbers to find Waldron (78418)
         # =========================================================
-        section("E) Probe product browse/search operations")
-        # Operations we KNOW exist from harvested list — none was clearly a product
-        # browse op. So we probe common Apollo conventions.
-        browse_candidates = [
-            "productSearch", "searchProducts", "products", "productList",
-            "productListing", "browseProducts", "categoryProducts",
-            "productsByCategory", "productsByBrand", "productsByDepartment",
-            "browseCategory", "browseDepartment", "category", "categoryDetail",
-            "department", "departmentDetail", "search", "shop",
-            "shopByCategory", "shopByBrand",
-        ]
-        for op in browse_candidates:
-            q = f'{{ {op} {{ __typename }} }}'
+        section("C) Brute-force store numbers to find Corpus Christi stores")
+        # H-E-B store numbers go up to ~700+. We'll query in chunks.
+        # Strategy: check stores in batches; for each store get name + postalCode
+        # to identify Corpus stores (78xxx).
+        corpus_stores = []
+        # Check 1..500 (covers most active stores). We do these in serial
+        # but only 1 request each, and bail early if we find Waldron.
+        # Use a compound query to make this faster — 10 stores per request as aliases.
+        BATCH_SIZE = 20
+        TOTAL_RANGE = 700
+        for start in range(1, TOTAL_RANGE + 1, BATCH_SIZE):
+            batch = list(range(start, min(start + BATCH_SIZE, TOTAL_RANGE + 1)))
+            # Build aliased query: s001: store(storeNumber: 1) { ... }
+            aliases = []
+            for n in batch:
+                aliases.append(f'''s{n}: store(storeNumber: {n}) {{
+                    storeNumber name
+                    address {{ streetAddress locality region postalCode }}
+                }}''')
+            q = "query Q {\n" + "\n".join(aliases) + "\n}"
             r = post_query(c, q)
-            em = err_msg(r)
-            # Filter out "Cannot query field X" — that means non-existent
-            if f'Cannot query field "{op}"' in em:
-                continue
-            print(f"  {op:25s} status={r.status_code} err={em[:200]}")
-            time.sleep(0.2)
-
-        # =========================================================
-        # F) Grep more JS chunks for productSearch / browse / category queries
-        # =========================================================
-        section("F) Grep ALL JS chunks for product-listing queries")
-        js_urls = re.findall(r'<script[^>]+src="([^"]+\.js[^"]*)"', homepage_html)
-        cx_urls = [u for u in js_urls if "cx.static.heb.com" in u]
-        print(f"  fetching all {len(cx_urls)} cx chunks...")
-
-        all_operations = set()
-        productSearch_snippets = []
-        browse_snippets = []
-        category_snippets = []
-        brand_snippets = []
-        gql_query_strings = []
-
-        for i, url in enumerate(cx_urls):
             try:
-                r = c.get(url, timeout=20.0)
-                if r.status_code != 200:
-                    continue
-                js = r.text
-                short = url.split("/")[-1]
-
-                # Operation names
-                ops = set()
-                for pat in [
-                    r'(?:query|mutation)\s+([A-Z]\w+)',
-                    r'operationName\s*[:=]\s*["\']([A-Za-z]\w+)["\']',
-                ]:
-                    ops.update(re.findall(pat, js))
-                all_operations.update(ops)
-
-                # Capture full Apollo gql template literal strings.
-                # Pattern: ["query Foo(...) { ... }"] or similar Apollo build output
-                for m in re.finditer(r'\[["\`]((?:query|mutation)\s+\w+[^"`]{50,3500})["\`]', js):
-                    gql_query_strings.append({
-                        "chunk": short,
-                        "body": m.group(1)[:3000],
-                    })
-
-                # Snippets around key terms
-                for needle, bucket in [
-                    ("productSearch", productSearch_snippets),
-                    ("browseCategory", browse_snippets),
-                    ("category(", category_snippets),
-                    ("brand(", brand_snippets),
-                ]:
-                    for m in re.finditer(re.escape(needle) + r"[^`]{20,500}", js):
-                        bucket.append({"chunk": short, "snippet": m.group(0)[:500]})
+                body = r.json()
+                data = body.get("data") or {}
+                for n in batch:
+                    s = data.get(f"s{n}")
+                    if s and isinstance(s, dict):
+                        pc = (s.get("address") or {}).get("postalCode", "")
+                        loc = (s.get("address") or {}).get("locality", "")
+                        if pc.startswith("78") or "CORPUS" in (loc or "").upper():
+                            entry = {
+                                "storeNumber": s.get("storeNumber"),
+                                "name": s.get("name"),
+                                "address": s.get("address"),
+                            }
+                            corpus_stores.append(entry)
+                            print(f"  ✓ #{n}: {s.get('name')} — {(s.get('address') or {}).get('streetAddress')}, {loc} {pc}")
             except Exception as e:
-                print(f"    {url} -> ERROR {e}")
+                print(f"  batch {start}-{start+BATCH_SIZE} parse error: {e}")
+            # Brief pause between batches to be polite
+            time.sleep(0.4)
+        save("C_corpus_stores.json", corpus_stores)
+        print(f"\n  Found {len(corpus_stores)} stores with zip 78xxx or locality CORPUS")
 
-        print(f"\n  total operations discovered: {len(all_operations)}")
-        for op in sorted(all_operations):
-            print(f"    {op}")
-        save("operations_found_all.json", sorted(all_operations))
+        # Identify Waldron specifically
+        waldron = None
+        for s in corpus_stores:
+            sa = (s.get("address") or {}).get("streetAddress", "")
+            if "WALDRON" in sa.upper():
+                waldron = s
+                print(f"  ⭐ WALDRON FOUND: #{s['storeNumber']} {s['name']} — {sa}")
+                save("WALDRON_STORE.json", s)
+                break
 
-        print(f"\n  snippet bucket sizes:")
-        print(f"    productSearch: {len(productSearch_snippets)}")
-        print(f"    browseCategory: {len(browse_snippets)}")
-        print(f"    category(: {len(category_snippets)}")
-        print(f"    brand(: {len(brand_snippets)}")
-        print(f"    full gql query strings: {len(gql_query_strings)}")
-        save("snippets_productSearch.json", productSearch_snippets[:30])
-        save("snippets_browseCategory.json", browse_snippets[:30])
-        save("snippets_category.json", category_snippets[:30])
-        save("snippets_brand.json", brand_snippets[:30])
-        save("gql_query_strings.json", gql_query_strings[:200])
+        # =========================================================
+        # D) Probe productSearch full arg shape
+        # =========================================================
+        section("D) productSearch: probe argument shape")
+        # We know it needs shoppingContext. Try common search argument names.
+        ps_attempts = [
+            ('query Q($s: ID!, $ctx: ShoppingContext!, $q: String!) { productSearch(storeId: $s, shoppingContext: $ctx, query: $q) { __typename } }',
+             {"s": "92", "ctx": CTX, "q": "coffee"}),
+            ('query Q($s: ID!, $ctx: ShoppingContext!, $q: String!) { productSearch(storeId: $s, shoppingContext: $ctx, searchTerm: $q) { __typename } }',
+             {"s": "92", "ctx": CTX, "q": "coffee"}),
+            ('query Q($s: ID!, $ctx: ShoppingContext!, $q: String!) { productSearch(storeId: $s, shoppingContext: $ctx, term: $q) { __typename } }',
+             {"s": "92", "ctx": CTX, "q": "coffee"}),
+            ('query Q($s: ID!, $ctx: ShoppingContext!, $q: String!) { productSearch(storeId: $s, shoppingContext: $ctx, keyword: $q) { __typename } }',
+             {"s": "92", "ctx": CTX, "q": "coffee"}),
+            ('query Q($s: ID!, $ctx: ShoppingContext!) { productSearch(storeId: $s, shoppingContext: $ctx) { __typename } }',
+             {"s": "92", "ctx": CTX}),
+        ]
+        for q, vars_ in ps_attempts:
+            r = post_query(c, q, vars_)
+            shape = re.search(r"productSearch\([^)]*\)", q)
+            shape_str = shape.group(0) if shape else "?"
+            em = err_msg(r)
+            ok = r.status_code == 200 and "errors" not in r.text
+            print(f"  {shape_str[:80]:80s} ok={ok} err={em[:140]}")
+            if ok:
+                print(f"    body: {r.text[:400]}")
+            save(f"D_ps_{shape_str[:40].replace(' ','_')}.json", r.text)
+            time.sleep(0.4)
 
-        if gql_query_strings:
-            print(f"\n  --- sample full gql strings (first 8) ---")
-            for s in gql_query_strings[:8]:
-                print(f"  [{s['chunk']}]")
-                print(f"    {s['body'][:600]}")
-                print()
+        # =========================================================
+        # E) Probe browseCategory arg shape, find category IDs
+        # =========================================================
+        section("E) browseCategory: probe arg shape")
+        # We KNOW categoryId: String! is required. Try plausible category IDs.
+        # Some Apollo apps use slugs ("coffee"), some use UUIDs, some integers.
+        # We'll probe with several to see which work.
+        bc_attempts = [
+            ('query Q($s: ID!, $ctx: ShoppingContext!, $cid: String!) { browseCategory(storeId: $s, shoppingContext: $ctx, categoryId: $cid) { __typename } }',
+             {"s": "92", "ctx": CTX, "cid": "coffee"}),
+            ('query Q($s: ID!, $ctx: ShoppingContext!, $cid: String!) { browseCategory(storeId: $s, shoppingContext: $ctx, categoryId: $cid) { __typename } }',
+             {"s": "92", "ctx": CTX, "cid": "490086"}),  # try a numeric SKU as cat
+            ('query Q($s: ID!, $ctx: ShoppingContext!, $cid: String!) { browseCategory(storeId: $s, shoppingContext: $ctx, categoryId: $cid) { __typename } }',
+             {"s": "92", "ctx": CTX, "cid": "grocery"}),
+            ('query Q($s: ID!, $ctx: ShoppingContext!, $cid: String!) { browseCategory(storeId: $s, shoppingContext: $ctx, categoryId: $cid) { __typename } }',
+             {"s": "92", "ctx": CTX, "cid": "central-market"}),
+            # bare with required args only:
+            ('query Q($cid: String!) { browseCategory(categoryId: $cid) { __typename } }',
+             {"cid": "coffee"}),
+        ]
+        for q, vars_ in bc_attempts:
+            r = post_query(c, q, vars_)
+            em = err_msg(r)
+            ok = r.status_code == 200 and "errors" not in r.text
+            print(f"  cid={vars_.get('cid')!r:25s} ok={ok} status={r.status_code} err={em[:140]}")
+            if ok:
+                print(f"    body: {r.text[:400]}")
+            save(f"E_bc_{vars_.get('cid','none')}.json", r.text)
+            time.sleep(0.4)
 
     print(f"\nDone. Output in {OUTDIR}")
 
