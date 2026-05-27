@@ -1,0 +1,1 @@
+{"errors":[{"message":"Cannot query field \"name\" on type \"CategoryBreadCrumb\".","locations":[{"line":8,"column":29}],"extensions":{"code":"GRAPHQL_VALIDATION_FAILED"}}]}

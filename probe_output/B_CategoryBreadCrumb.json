@@ -1,0 +1,23 @@
+{
+  "scalar": {},
+  "complex": [],
+  "unknown": [
+    "id",
+    "name",
+    "displayName",
+    "label",
+    "slug",
+    "url",
+    "path",
+    "depth",
+    "level",
+    "parentId",
+    "parentCategoryId"
+  ],
+  "other": [
+    [
+      "categoryId",
+      "no_field_in_path: cur_type=list"
+    ]
+  ]
+}

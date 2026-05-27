@@ -1,0 +1,40 @@
+{
+  "scalar": {},
+  "complex": [
+    {
+      "field": "categories",
+      "type": "[ProductSearchFilterCategory]!"
+    },
+    {
+      "field": "filters",
+      "type": "[ProductSearchFiltersFilter]!"
+    }
+  ],
+  "unknown": [
+    "brands",
+    "brand",
+    "category",
+    "prices",
+    "price",
+    "priceRange",
+    "departments",
+    "department",
+    "dietary",
+    "dietaryAttributes",
+    "options",
+    "values",
+    "items",
+    "facets",
+    "available",
+    "isAvailable",
+    "type",
+    "kind",
+    "name",
+    "id",
+    "label",
+    "displayName",
+    "count",
+    "total"
+  ],
+  "other": []
+}

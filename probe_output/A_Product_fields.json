@@ -1,0 +1,122 @@
+{
+  "scalar": {},
+  "complex": [
+    {
+      "field": "brand",
+      "type": "Brand"
+    },
+    {
+      "field": "availability",
+      "type": "Availability!"
+    },
+    {
+      "field": "inventory",
+      "type": "Inventory"
+    },
+    {
+      "field": "breadcrumbs",
+      "type": "[CategoryBreadCrumb!]"
+    },
+    {
+      "field": "coupons",
+      "type": "[CouponV2!]"
+    }
+  ],
+  "unknown": [
+    "productId",
+    "sku",
+    "upc",
+    "ean",
+    "productNumber",
+    "primaryProductId",
+    "productGroupId",
+    "code",
+    "name",
+    "title",
+    "productName",
+    "label",
+    "brandName",
+    "manufacturer",
+    "price",
+    "pricing",
+    "prices",
+    "regularPrice",
+    "salePrice",
+    "currentPrice",
+    "listPrice",
+    "unitPrice",
+    "perUnitPrice",
+    "displayPrice",
+    "displayedUnitPrice",
+    "image",
+    "images",
+    "imageUrl",
+    "imageUrls",
+    "primaryImage",
+    "thumbnail",
+    "media",
+    "description",
+    "longDescription",
+    "shortDescription",
+    "details",
+    "available",
+    "inStock",
+    "isAvailable",
+    "inventoryState",
+    "stockStatus",
+    "isInStock",
+    "outOfStock",
+    "isDiscontinued",
+    "isActive",
+    "category",
+    "categories",
+    "department",
+    "taxonomy",
+    "taxonomyPath",
+    "categoryId",
+    "size",
+    "weight",
+    "uom",
+    "unitOfMeasure",
+    "packaging",
+    "packageSize",
+    "containerSize",
+    "url",
+    "slug",
+    "productUrl",
+    "path",
+    "ingredients",
+    "nutrition",
+    "averageRating",
+    "reviewCount",
+    "tags",
+    "labels",
+    "attributes",
+    "isPrivateLabel",
+    "ownedBrand",
+    "isHebBrand",
+    "aisle",
+    "aisleLocation",
+    "snap",
+    "snapEligible",
+    "isSnapEligible",
+    "couponInfo",
+    "promotions",
+    "savings",
+    "fulfillmentChannels"
+  ],
+  "other": [
+    [
+      "id",
+      "no_field_in_path: cur_type=list"
+    ],
+    [
+      "displayName",
+      "no_field_in_path: cur_type=list"
+    ],
+    [
+      "inAssortment",
+      "no_field_in_path: cur_type=list"
+    ]
+  ]
+}

@@ -1,1 +1,0 @@
-{"errors":[{"message":"Enum \"SearchSortBy\" cannot represent non-enum value: \"PRICE_ASC\".","locations":[{"line":1,"column":97}],"extensions":{"code":"GRAPHQL_VALIDATION_FAILED"}}]}

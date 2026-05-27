@@ -1,0 +1,14 @@
+{
+  "data": {
+    "productSearch": {
+      "total": 35,
+      "records": [
+        {
+          "brand": {
+            "name": "H-E-B"
+          }
+        }
+      ]
+    }
+  }
+}
