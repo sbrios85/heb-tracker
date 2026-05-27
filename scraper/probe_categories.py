@@ -1,10 +1,14 @@
 """
-Quick probe: find the actual queryable top-level categoryIds.
+Quick probe: find queryable categoryIds for H-E-B's top-level departments.
 
-Strategy:
-1. Test ShopNavigation operation if it exists.
-2. Otherwise scrape the homepage HTML for /category/shop/{slug}/{id1}/{id2} links.
-3. Test each candidate via browseCategory to see which return data.
+Strategy (revised):
+1. Hardcode a candidate range based on what we've observed:
+   - 490015 (Beverages, works)
+   - 490024 (Pantry, from screenshot URL)
+   - 490118, 490125 (Pantry children, from screenshot URLs)
+   Try IDs in the 490000-490200 range as a brute force.
+2. Also fetch a known department page and parse __NEXT_DATA__ to discover
+   subcategory IDs the way we did for products.
 """
 
 import json
@@ -13,93 +17,101 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from lib_heb import make_client, gql, browse_category, save_json, polite_sleep, WALDRON_STORE_NUMBER, SHOPPING_CONTEXT, HOMEPAGE
+from lib_heb import make_client, browse_category, save_json, polite_sleep, HOMEPAGE
 
 
 def main():
     c = make_client()
 
     # ============================================================
-    # 1) Try ShopNavigation
+    # Step 1: Fetch the Pantry category page and parse __NEXT_DATA__
     # ============================================================
     print("=" * 70)
-    print("  Try ShopNavigation operation")
+    print("  Step 1: Fetch a known department page (Pantry) and parse __NEXT_DATA__")
     print("=" * 70)
-    attempts = [
-        ('{ shopNavigation { __typename } }', None),
-        ('query Q($s: Int!) { shopNavigation(storeId: $s) { __typename } }', {"s": 57}),
-        ('{ navigation { __typename } }', None),
-        ('{ categoryList { __typename } }', None),
-    ]
-    for q, v in attempts:
-        body = gql(c, q, v)
-        if "errors" not in body:
-            print(f"  ✓ {q[:60]} -> {json.dumps(body)[:400]}")
-        else:
-            em = body["errors"][0]["message"]
-            print(f"  ✗ {q[:60]} -> {em[:160]}")
-        polite_sleep(0.3)
+    pantry_url = "https://www.heb.com/category/shop/pantry/2863/490024"
+    r = c.get(pantry_url)
+    print(f"  status: {r.status_code}, size: {len(r.text)}")
+    discovered_ids = set()
+    if r.status_code == 200:
+        m = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', r.text, re.DOTALL)
+        if m:
+            try:
+                nd = json.loads(m.group(1))
+                # Walk for any 'categoryId' key with a 49xxxx value
+                def walk(obj):
+                    if isinstance(obj, dict):
+                        for k, v in obj.items():
+                            if k == "categoryId" and isinstance(v, (str, int)):
+                                discovered_ids.add(str(v))
+                            walk(v)
+                    elif isinstance(obj, list):
+                        for v in obj:
+                            walk(v)
+                walk(nd)
+                # Also extract from URL strings in HTML (link hrefs)
+                for m2 in re.finditer(r'/category/[a-z0-9/-]+/(\d+)/(\d+)', r.text):
+                    discovered_ids.add(m2.group(1))
+                    discovered_ids.add(m2.group(2))
+                print(f"  IDs discovered in pantry page: {len(discovered_ids)}")
+                print(f"    sample: {sorted(discovered_ids)[:30]}")
+            except json.JSONDecodeError as e:
+                print(f"  __NEXT_DATA__ parse error: {e}")
 
     # ============================================================
-    # 2) Scrape homepage for /category/shop/<slug>/<parent>/<id> patterns
+    # Step 2: Brute-force test category IDs in known range
     # ============================================================
     print("\n" + "=" * 70)
-    print("  Scrape homepage HTML for category URLs")
+    print("  Step 2: Brute-force test 490000-490200 + IDs found in step 1")
     print("=" * 70)
-    r = c.get(HOMEPAGE)
-    html = r.text
-    # The breadcrumb format we saw: /category/shop/beverages/2864/490015
-    # Also generic: /category/<path-segments>/<numericId>
-    cat_urls = set(re.findall(r'/category/[a-z0-9/-]+/(\d+)/(\d+)["?]', html))
-    cat_urls_with_slug = re.findall(r'/category/(shop/[a-z0-9-]+)/(\d+)/(\d+)', html)
-    print(f"  Found {len(cat_urls)} unique (parentId, categoryId) pairs in homepage")
-    for slug, parent, cid in cat_urls_with_slug[:40]:
-        print(f"    {slug:50s} parent={parent} category={cid}")
+    test_ids = set(str(i) for i in range(490000, 490200))
+    test_ids |= discovered_ids
+    # Filter to only numeric strings, drop tiny IDs like '0', '1', etc.
+    test_ids = sorted(int(i) for i in test_ids if i.isdigit() and int(i) >= 1000)
+    print(f"  Testing {len(test_ids)} candidate IDs...")
 
-    # Dedupe by categoryId
-    unique_cids = {}
-    for slug, parent, cid in cat_urls_with_slug:
-        if cid not in unique_cids:
-            unique_cids[cid] = {"slug": slug, "parent": parent}
-    print(f"\n  Unique categoryIds: {len(unique_cids)}")
-
-    # ============================================================
-    # 3) Test each candidate via browseCategory
-    # ============================================================
-    print("\n" + "=" * 70)
-    print("  Test which categories work via browseCategory")
-    print("=" * 70)
     working = []
-    not_working = []
-    for cid, meta in list(unique_cids.items())[:60]:  # cap to 60
-        result = browse_category(c, cid, limit=1)
+    not_working_count = 0
+    for cid in test_ids:
+        result = browse_category(c, str(cid), limit=1)
         if "_errors" in result:
-            em = result["_errors"][0].get("message", "")
-            not_working.append((cid, meta, em))
+            not_working_count += 1
         else:
             total = result.get("total", 0)
             records = result.get("records") or []
-            working.append((cid, meta, total))
-            sample_name = records[0].get("displayName", "")[:40] if records else ""
-            print(f"  ✓ cid={cid:8s} parent={meta['parent']:8s} total={total:6d}  ({meta['slug']:30s}) sample={sample_name}")
-        polite_sleep(0.3)
+            sample = records[0].get("displayName", "")[:40] if records else ""
+            # Try to get name via breadcrumbs
+            bcs = result.get("breadcrumbs") or []
+            cat_name = ""
+            for b in reversed(bcs):
+                if b.get("title") and b.get("title") not in ("H-E-B", "Shop"):
+                    cat_name = b["title"]
+                    break
+            working.append({
+                "categoryId": str(cid),
+                "name": cat_name,
+                "total": total,
+                "sample_product": sample,
+                "breadcrumbs": [b.get("title") for b in bcs],
+            })
+            print(f"  ✓ {cid} total={total:6d}  name={cat_name:40s} sample={sample}")
+        polite_sleep(0.25)
 
-    print(f"\n  Working categories: {len(working)}")
-    print(f"  Not-working categories: {len(not_working)}")
+    print(f"\n  Working: {len(working)} / {len(test_ids)} tested")
 
-    # Save the working ones
-    output = {
-        "working_categories": [
-            {"categoryId": cid, "slug": meta["slug"], "parentId": meta["parent"], "total": total}
-            for cid, meta, total in working
-        ],
-        "not_working_categories": [
-            {"categoryId": cid, "slug": meta["slug"], "parentId": meta["parent"], "error": em[:200]}
-            for cid, meta, em in not_working
-        ],
-    }
-    save_json(Path(__file__).parent.parent / "data" / "categories.json", output)
+    # Save
+    save_json(Path(__file__).parent.parent / "data" / "categories.json", {
+        "working_categories": working,
+        "tested_count": len(test_ids),
+        "not_working_count": not_working_count,
+    })
     print(f"\nSaved to data/categories.json")
+
+    # Print top categories by total
+    if working:
+        print("\n=== Top 20 categories by product count ===")
+        for w in sorted(working, key=lambda x: -x["total"])[:20]:
+            print(f"  {w['total']:6d}  cid={w['categoryId']:8s}  {w['name']}")
 
 
 if __name__ == "__main__":
