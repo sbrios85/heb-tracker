@@ -1,17 +1,19 @@
 """
-H-E-B GraphQL Probe — Phase 3
+H-E-B GraphQL Probe — Phase 4
 -----------------------------
-Phase 2 discoveries:
-  - productDetail REQUIRES storeId: ID! (plus one more arg, name unknown)
-  - Query.store(...) exists (returned 200 "No Store Found")
-  - Frontend is Next.js with __NEXT_DATA__ blob (initial state in HTML)
-  - 50 JS chunks at cx.static.heb.com/_next/static/chunks/
+Phase 3 discoveries:
+  - storeId=92 confirmed in __NEXT_DATA__ (homepage default, not Waldron yet)
+  - productDetail requires: id: ID!, storeId: ID!, shoppingContext: ShoppingContext!
+  - store(storeNumber: Int) — argument confirmed, just need an Int
+  - JS chunks downloaded but wrong ones; only got minor operations
 
-Phase 3 goals:
-  A) Extract a default storeId from __NEXT_DATA__ (Corpus Christi if possible).
-  B) With storeId in hand, find productDetail's second argument name.
-  C) Find Query.store's required argument(s).
-  D) Download key JS chunks and grep for GraphQL query strings + operation names.
+Phase 4 goals:
+  A) Discover ShoppingContext input-type shape (probe field names on the input).
+  B) Verify store(storeNumber: 92) works and see Store fields.
+  C) Find a stores-by-zip / nearby-stores operation to locate Waldron (zip 78418).
+  D) Download many more JS chunks (especially the big ones) and grep harder
+     for queries containing "productDetail", "ShoppingContext", "productSearch",
+     "category", "browse", "store".
 """
 
 import json
@@ -39,6 +41,7 @@ HEADERS = {
 
 OUTDIR = Path(__file__).parent.parent / "probe_output"
 OUTDIR.mkdir(exist_ok=True)
+STORE_ID = "92"  # from __NEXT_DATA__
 
 
 def save(name, data):
@@ -56,193 +59,281 @@ def section(title):
 
 def post_query(client, query, variables=None, op_name=None):
     payload = {"query": query}
-    if variables:
+    if variables is not None:
         payload["variables"] = variables
     if op_name:
         payload["operationName"] = op_name
     return client.post(ENDPOINT, json=payload)
 
 
+def err_msg(r):
+    try:
+        return r.json()["errors"][0]["message"]
+    except Exception:
+        return r.text[:200]
+
+
 def main():
     with httpx.Client(headers=HEADERS, follow_redirects=True, timeout=30.0) as c:
-        # ----- Setup -----
-        section("Setup: homepage + __NEXT_DATA__")
+        # ---- Setup ----
+        section("Setup")
         r = c.get(HOMEPAGE)
         homepage_html = r.text
         save("homepage.html", homepage_html)
         print(f"  homepage status: {r.status_code}, size {len(homepage_html)}")
 
-        next_match = re.search(
-            r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>',
-            homepage_html, re.DOTALL,
-        )
-        store_id = None
-        if next_match:
-            blob = next_match.group(1)
-            try:
-                nd = json.loads(blob)
-                save("next_data.json", nd)
-                # Walk the structure looking for store-related keys.
-                # Print top-level shape first.
-                print("  __NEXT_DATA__ top-level keys:", list(nd.keys()))
-                if "props" in nd:
-                    print("  props keys:", list(nd["props"].keys()) if isinstance(nd["props"], dict) else type(nd["props"]))
-                # Try to find storeId by deep search
-                def deep_find(obj, key_pattern, path=""):
-                    found = []
-                    if isinstance(obj, dict):
-                        for k, v in obj.items():
-                            if re.search(key_pattern, k, re.I):
-                                found.append((f"{path}.{k}", v))
-                            found.extend(deep_find(v, key_pattern, f"{path}.{k}"))
-                    elif isinstance(obj, list):
-                        for i, v in enumerate(obj):
-                            found.extend(deep_find(v, key_pattern, f"{path}[{i}]"))
-                    return found
-
-                store_hits = deep_find(nd, r"^store(Id|Number|Num|Code)?$")
-                print(f"  store-related hits in __NEXT_DATA__: {len(store_hits)}")
-                for path, val in store_hits[:25]:
-                    val_repr = json.dumps(val)[:120] if not isinstance(val, (dict, list)) else f"<{type(val).__name__} len={len(val) if hasattr(val,'__len__') else '?'}>"
-                    print(f"    {path} = {val_repr}")
-                save("store_hits.json", [(p, v if isinstance(v, (str, int, float, bool, type(None))) else str(type(v))) for p, v in store_hits])
-
-                # Try to find first scalar storeId-ish value
-                for path, val in store_hits:
-                    if isinstance(val, (str, int)) and str(val).strip() and not isinstance(val, bool):
-                        store_id = str(val)
-                        print(f"  ===> using store_id = {store_id} (from {path})")
-                        break
-            except json.JSONDecodeError as e:
-                print(f"  __NEXT_DATA__ JSON parse failed: {e}")
-                save("next_data_raw.txt", blob[:5000])
-        else:
-            print("  no __NEXT_DATA__ found")
-
-        if not store_id:
-            # Fallback: try a few common defaults. H-E-B store numbers are 3-4 digits.
-            # The Waldron Rd store number is typically in the 500-600 range for Corpus.
-            store_id = "1"
-            print(f"  no store_id discovered; will probe with fallback '{store_id}'")
-
-        # ----- A) productDetail: find the second required arg -----
-        section(f"A) productDetail: probe second-arg names with storeId={store_id}")
-        # We KNOW storeId is required. Now find the product identifier arg.
-        prod_arg_candidates = [
-            "id", "productId", "productID", "sku", "upc", "ean",
-            "code", "productCode", "slug", "key", "uid", "pid",
-            "itemId", "itemNumber", "productNumber",
-        ]
-        for arg in prod_arg_candidates:
-            q = f'''query Q($s: ID!, $v: String!) {{
-                productDetail(storeId: $s, {arg}: $v) {{ __typename }}
-            }}'''
-            r = post_query(c, q, {"s": store_id, "v": "1510154"})
-            try:
-                err = r.json()["errors"][0]["message"]
-            except Exception:
-                err = r.text[:200]
-            success = r.status_code == 200 and "errors" not in r.text
-            marker = "SUCCESS" if success else "ERR"
-            print(f"  arg={arg:20s} status={r.status_code} {marker:8s} err={err[:170]}")
-            save(f"pd_arg_{arg}.json", r.text)
-            time.sleep(0.4)
-
-        # ----- B) productDetail: maybe storeId alone is enough -----
-        section("B) productDetail: try storeId-only")
-        q = f'query Q($s: ID!) {{ productDetail(storeId: $s) {{ __typename }} }}'
-        r = post_query(c, q, {"s": store_id})
-        print(f"  status={r.status_code} body={r.text[:400]}")
-        save("pd_storeid_only.json", r.text)
+        # ============================================================
+        # A) ShoppingContext input shape
+        # ============================================================
+        section("A) ShoppingContext: probe input field names")
+        # If we pass an empty object, the server says which required fields are missing.
+        # Then we try adding common fields one at a time. Each unknown field is leaked.
+        # Start with empty object:
+        q = '''query Q($s: ID!, $id: ID!, $ctx: ShoppingContext!) {
+          productDetail(storeId: $s, id: $id, shoppingContext: $ctx) { __typename }
+        }'''
+        r = post_query(c, q, {"s": STORE_ID, "id": "1510154", "ctx": {}})
+        print(f"  ctx={{}} status={r.status_code}")
+        try:
+            errs = r.json().get("errors", [])
+            for e in errs[:10]:
+                print(f"    err: {e.get('message', '')[:240]}")
+        except Exception:
+            print(f"    body: {r.text[:400]}")
+        save("ctx_empty.json", r.text)
         time.sleep(0.4)
 
-        # ----- C) Query.store argument names -----
-        section("C) Query.store: probe argument names")
-        store_arg_candidates = [
-            "id", "storeId", "storeNumber", "number",
-            "zipCode", "zip", "postalCode", "address",
-            "lat", "latitude", "code",
+        # Probe candidate fields one at a time. Unknown ones leak via
+        # "Field 'foo' is not defined by type 'ShoppingContext'".
+        ctx_field_candidates = [
+            "storeId", "fulfillmentType", "fulfillmentChannel", "channel",
+            "deliveryType", "shoppingMode", "type", "mode",
+            "zipCode", "zip", "postalCode",
+            "lat", "lng", "latitude", "longitude",
+            "customerId", "userId", "sessionId",
+            "preferredStore", "selectedStore", "store",
+            "isCurbside", "isDelivery", "isInStore",
+            "shopType", "shopperType", "orderType", "orderingMethod",
+            "pickup", "delivery", "shipping",
         ]
-        for arg in store_arg_candidates:
-            # Use sensible value per arg
-            val = store_id if arg in ("id", "storeId", "storeNumber", "number", "code") else "78418"
-            q = f'query Q($v: String!) {{ store({arg}: $v) {{ __typename }} }}'
-            r = post_query(c, q, {"v": val})
+        # Use one shot with all the fields = wrong, then take the errors.
+        all_fields_obj = {f: "x" for f in ctx_field_candidates}
+        r = post_query(c, q, {"s": STORE_ID, "id": "1510154", "ctx": all_fields_obj})
+        save("ctx_all_fields.json", r.text)
+        print(f"\n  posted all candidates; errors received:")
+        try:
+            errs = r.json().get("errors", [])
+            unknown_fields = set()
+            known_fields = set(ctx_field_candidates)
+            for e in errs:
+                msg = e.get("message", "")
+                m = re.search(r"Field [\"']?(\w+)[\"']? is not defined by type [\"']?ShoppingContext", msg)
+                if m:
+                    unknown_fields.add(m.group(1))
+                    continue
+                m = re.search(r"of type [\"']?ShoppingContext[\"']?, field [\"']?(\w+)[\"']?", msg)
+                if m:
+                    unknown_fields.add(m.group(1))
+                    continue
+                print(f"    other err: {msg[:240]}")
+            valid_fields = known_fields - unknown_fields
+            print(f"\n  unknown fields (leaked): {sorted(unknown_fields)}")
+            print(f"  presumably valid fields:  {sorted(valid_fields)}")
+            save("ctx_field_analysis.json", {
+                "unknown": sorted(unknown_fields),
+                "valid_candidates": sorted(valid_fields),
+            })
+        except Exception as e:
+            print(f"  parse error: {e}")
+
+        # Now try a likely-minimal context: { storeId, fulfillmentChannel }
+        section("A2) ShoppingContext: try guessed minimal shape")
+        guesses = [
+            {"storeId": STORE_ID, "fulfillmentChannel": "PICKUP"},
+            {"storeId": STORE_ID, "fulfillmentType": "PICKUP"},
+            {"storeId": STORE_ID, "channel": "PICKUP"},
+            {"storeId": STORE_ID, "shoppingMode": "PICKUP"},
+            {"storeId": STORE_ID, "fulfillmentChannel": "CURBSIDE"},
+            {"storeId": STORE_ID, "fulfillmentChannel": "IN_STORE"},
+            {"storeId": STORE_ID},
+        ]
+        for g in guesses:
+            r = post_query(c, q, {"s": STORE_ID, "id": "1510154", "ctx": g})
+            print(f"  ctx={g}")
+            print(f"    status={r.status_code} err={err_msg(r)[:260]}")
+            # If we get data, save it specially
             try:
-                err = r.json()["errors"][0]["message"]
+                body = r.json()
+                if body.get("data") is not None:
+                    save("PRODUCT_DETAIL_SUCCESS.json", body)
+                    print(f"    *** got data field! saved to PRODUCT_DETAIL_SUCCESS.json")
             except Exception:
-                err = r.text[:200]
-            success = r.status_code == 200 and "errors" not in r.text
-            marker = "SUCCESS" if success else "ERR"
-            print(f"  arg={arg:18s} val={val:8s} status={r.status_code} {marker:8s} err={err[:160]}")
-            save(f"store_arg_{arg}.json", r.text)
+                pass
             time.sleep(0.4)
 
-        # Also try with no args at all and with __typename
-        section("C2) Query.store with no args")
-        q = '{ store { __typename } }'
-        r = post_query(c, q)
-        print(f"  status={r.status_code} body={r.text[:400]}")
-        save("store_noarg.json", r.text)
+        # ============================================================
+        # B) store(storeNumber: 92) and Store fields
+        # ============================================================
+        section("B) store(storeNumber: 92): verify works + probe Store fields")
+        q = 'query Q($n: Int!) { store(storeNumber: $n) { __typename } }'
+        r = post_query(c, q, {"n": int(STORE_ID)})
+        print(f"  store(92) with __typename: status={r.status_code}")
+        print(f"    body: {r.text[:400]}")
+        save("store_92_typename.json", r.text)
+        time.sleep(0.4)
 
-        # ----- D) Download a few JS chunks and grep for GraphQL strings -----
-        section("D) Download Next.js JS chunks and grep for GraphQL operations")
-        # We pull a sample of the larger chunks. The main chunks contain
-        # query strings and operation names.
+        # If that succeeded, probe Store fields
+        store_field_candidates = [
+            "id", "storeNumber", "number", "name", "displayName",
+            "address1", "address2", "address", "addressLine1",
+            "city", "state", "zip", "zipCode", "postalCode",
+            "phone", "phoneNumber", "hours", "operatingHours",
+            "latitude", "longitude", "lat", "lng",
+            "services", "departments", "amenities",
+            "isOpen", "open", "status",
+        ]
+        for f in store_field_candidates:
+            q = f'query Q($n: Int!) {{ store(storeNumber: $n) {{ {f} }} }}'
+            r = post_query(c, q, {"n": int(STORE_ID)})
+            try:
+                body = r.json()
+                if body.get("data") and body["data"].get("store"):
+                    val = body["data"]["store"].get(f)
+                    print(f"  field={f:18s} VALID -> {str(val)[:80]}")
+                    save(f"store_field_{f}.json", body)
+                else:
+                    em = err_msg(r)
+                    print(f"  field={f:18s} ERR -> {em[:140]}")
+            except Exception as e:
+                print(f"  field={f:18s} parse error: {e}")
+            time.sleep(0.3)
+
+        # ============================================================
+        # C) Find stores-by-zip operation
+        # ============================================================
+        section("C) Find store-by-location operation")
+        store_loc_ops = [
+            "storesByZip", "storesByPostalCode", "storesByCity",
+            "nearbyStores", "storesNearMe", "findStore",
+            "storeSearch", "searchStores", "storeQuery",
+            "storesByAddress", "storesByLocation",
+            "deliveryStores", "pickupStores", "curbsideStores",
+        ]
+        for op in store_loc_ops:
+            for var_shape in [
+                ("zip", '$v: String!', '"78418"'),
+                ("query", '$v: String!', '"78418"'),
+            ]:
+                arg_name, var_decl, val_lit = var_shape
+                q = f'query Q({var_decl}) {{ {op}({arg_name}: $v) {{ __typename }} }}'
+                r = post_query(c, q, {"v": "78418"})
+                em = err_msg(r)
+                # If we get "Cannot query field X on type Query" — op doesn't exist.
+                # If we get anything else — op MIGHT exist.
+                if "Cannot query field" in em and op in em:
+                    # confirmed nonexistent
+                    pass
+                else:
+                    print(f"  {op}({arg_name}:) -> status={r.status_code} err={em[:200]}")
+                time.sleep(0.2)
+
+        # ============================================================
+        # D) Download MORE JS chunks (bigger ones) and grep harder
+        # ============================================================
+        section("D) Download more JS chunks + harder grep")
         js_urls = re.findall(r'<script[^>]+src="([^"]+\.js[^"]*)"', homepage_html)
-        chunks_to_fetch = [u for u in js_urls if "cx.static.heb.com" in u][:15]
+        cx_urls = [u for u in js_urls if "cx.static.heb.com" in u]
+        print(f"  total cx chunks available: {len(cx_urls)}")
+
+        # First, check sizes via HEAD to find the biggest chunks
+        # (skip HEAD to save time; just download all in batches)
+        chunks_to_fetch = cx_urls[:40]  # was 15
         print(f"  fetching {len(chunks_to_fetch)} chunks...")
 
         all_operations = set()
-        all_query_starts = []
+        productDetail_snippets = []
+        ShoppingContext_snippets = []
+        store_snippets = []
+        productSearch_snippets = []
+        browseCategory_snippets = []
+        gql_query_strings = []
 
-        for url in chunks_to_fetch:
+        for i, url in enumerate(chunks_to_fetch):
             try:
                 r = c.get(url, timeout=20.0)
                 if r.status_code != 200:
-                    print(f"    {url} -> {r.status_code}")
                     continue
                 js = r.text
-                # Pattern 1: GraphQL query strings often start with "query Foo("
-                # or "mutation Foo(". They're embedded as JS string literals.
-                queries = re.findall(
-                    r'(?:query|mutation)\s+([A-Z]\w+)\s*[(\{]',
-                    js,
-                )
-                # Pattern 2: Apollo `gql\`query ...\``
-                gql_blocks = re.findall(
-                    r'(?:query|mutation)\s+([A-Z]\w+)[^"\']{0,500}',
-                    js,
-                )
-                # Pattern 3: operationName references in mapping objects
-                op_refs = re.findall(
-                    r'operationName\s*[:=]\s*["\']([A-Za-z][\w]+)["\']',
-                    js,
-                )
-                ops_here = set(queries + gql_blocks + op_refs)
-                if ops_here:
-                    all_operations.update(ops_here)
-                    short = url.split("/")[-1]
-                    print(f"    {short:60s} -> {len(ops_here)} ops")
+                short = url.split("/")[-1]
 
-                # Capture query-shape snippets for productDetail and store
-                for snippet_pattern in ["productDetail", "Query.store", "store(", "productSearch", "category", "browse"]:
-                    for m in re.finditer(re.escape(snippet_pattern) + r"[^`'\"]{0,400}", js):
-                        all_query_starts.append((url.split("/")[-1], snippet_pattern, m.group(0)[:400]))
+                # Operation names embedded as strings
+                ops = set()
+                for pat in [
+                    r'(?:query|mutation)\s+([A-Z]\w+)',
+                    r'operationName\s*[:=]\s*["\']([A-Za-z]\w+)["\']',
+                    r'["\']operationName["\']\s*:\s*["\']([A-Za-z]\w+)["\']',
+                ]:
+                    ops.update(re.findall(pat, js))
+                if ops:
+                    all_operations.update(ops)
+                    if len(ops) > 2:
+                        print(f"    [{i:2d}] {short[:55]:55s} {len(ops):3d} ops")
+
+                # Capture context around key terms
+                for needle, bucket in [
+                    ("productDetail", productDetail_snippets),
+                    ("ShoppingContext", ShoppingContext_snippets),
+                    ("store(", store_snippets),
+                    ("productSearch", productSearch_snippets),
+                    ("browseCategory", browseCategory_snippets),
+                ]:
+                    for m in re.finditer(re.escape(needle) + r"[^`]{0,600}", js):
+                        snippet = m.group(0)
+                        if len(snippet) > 50:
+                            bucket.append({"chunk": short, "snippet": snippet[:600]})
+
+                # Find gql template literal content: `query Foo(...) { ... }`
+                # Apollo strings start with `query` or `mutation` and have balanced braces.
+                # We look for any string-literal containing "query Xxx" plus "{".
+                for m in re.finditer(r'["\`]((?:query|mutation)\s+\w+[^"`]{20,4000})["\`]', js):
+                    gql_query_strings.append({"chunk": short, "body": m.group(1)[:2000]})
+
             except Exception as e:
-                print(f"    {url} -> ERROR {e}")
+                print(f"    ERROR {url}: {e}")
 
-        print(f"\n  Total unique operations found: {len(all_operations)}")
-        for op in sorted(all_operations)[:60]:
+        print(f"\n  Total unique operations: {len(all_operations)}")
+        for op in sorted(all_operations):
             print(f"    {op}")
         save("operations_found.json", sorted(all_operations))
 
-        # Save snippets containing key terms
-        snippets_grouped = {}
-        for chunk_name, pattern, snippet in all_query_starts:
-            snippets_grouped.setdefault(pattern, []).append({"chunk": chunk_name, "snippet": snippet})
-        save("query_snippets.json", snippets_grouped)
-        print(f"\n  Snippet groups: " + ", ".join(f"{k}={len(v)}" for k, v in snippets_grouped.items()))
+        save("snippets_productDetail.json", productDetail_snippets[:50])
+        save("snippets_ShoppingContext.json", ShoppingContext_snippets[:50])
+        save("snippets_store.json", store_snippets[:50])
+        save("snippets_productSearch.json", productSearch_snippets[:50])
+        save("snippets_browseCategory.json", browseCategory_snippets[:50])
+        save("gql_query_strings.json", gql_query_strings[:100])
+
+        print(f"\n  snippet counts:")
+        print(f"    productDetail: {len(productDetail_snippets)}")
+        print(f"    ShoppingContext: {len(ShoppingContext_snippets)}")
+        print(f"    store(: {len(store_snippets)}")
+        print(f"    productSearch: {len(productSearch_snippets)}")
+        print(f"    browseCategory: {len(browseCategory_snippets)}")
+        print(f"    full gql template strings: {len(gql_query_strings)}")
+
+        # Print a sampling of the most useful snippets directly
+        if ShoppingContext_snippets:
+            print(f"\n  --- first ShoppingContext snippets ---")
+            for s in ShoppingContext_snippets[:5]:
+                print(f"    [{s['chunk']}] {s['snippet'][:300]}")
+        if productDetail_snippets:
+            print(f"\n  --- first productDetail snippets ---")
+            for s in productDetail_snippets[:5]:
+                print(f"    [{s['chunk']}] {s['snippet'][:300]}")
+        if gql_query_strings:
+            print(f"\n  --- first full gql strings ---")
+            for s in gql_query_strings[:5]:
+                print(f"    [{s['chunk']}] {s['body'][:400]}")
 
     print(f"\nDone. Output in {OUTDIR}")
 
