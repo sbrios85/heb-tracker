@@ -1,1 +1,0 @@
-{"errors":[{"message":"Variable \"$ctx\" got invalid value \"__INVALID_VALUE__\"; Value \"__INVALID_VALUE__\" does not exist in \"ShoppingContext\" enum.","locations":[{"line":1,"column":28}],"extensions":{"code":"BAD_USER_INPUT"}}]}

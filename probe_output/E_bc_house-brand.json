@@ -1,0 +1,1 @@
+{"errors":[{"message":"An unexpected error has occurred. Please retry your last action. If the error persists try again later or contact H-E-B customer service.","locations":[{"line":2,"column":15}],"path":["browseCategory"],"extensions":{"code":"INTERNAL_SERVER_ERROR"}}],"data":null}
