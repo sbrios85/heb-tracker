@@ -1,0 +1,1 @@
+{"errors":[{"message":"Variable \"$ctx\" got invalid value {}; Enum \"ShoppingContext\" cannot represent non-string value: {}.","locations":[{"line":1,"column":28}],"extensions":{"code":"BAD_USER_INPUT"}}]}
