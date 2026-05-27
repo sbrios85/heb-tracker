@@ -2,6 +2,5 @@ __pycache__/
 *.pyc
 .venv/
 venv/
-probe_output/
 .DS_Store
 .env
