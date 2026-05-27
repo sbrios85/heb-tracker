@@ -1,0 +1,356 @@
+{
+  "discovered_at": "2026-05-27T18:27:12.903480Z",
+  "store_number": 57,
+  "stats": {
+    "brands_enumerated": 69,
+    "products_found": 0,
+    "per_brand": [
+      {
+        "brand": "H-E-B",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Hill Country Fare",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "our goods",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Meal Simple by H-E-B",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Central Market",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Destination Holiday",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "H-E-B Organics",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Haven + Key",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Kitchen & Table by H-E-B",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "CAFE Olé by H-E-B",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "H-E-B Mi Tienda",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Heritage Ranch by H-E-B",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Cocinaware",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Texas Proud",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Field & Future by H-E-B",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Hill Country Essentials",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "H-E-B Sushiya",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "H-E-B Flavor Favorites",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Diosa",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Woof & Whiskers",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "BLOOMS by H-E-B",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Higher Harvest by H-E-B",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Prasek's",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Ottavio",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Versana",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Bayou Boil House by H-E-B",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "H-E-B Brand Shop",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "GTC",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Tejas Cafe",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Aloevine",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Midtown by H-E-B",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "CAFE Olé Organics by H-E-B",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Elegant Living by H-E-B",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "True Texas BBQ",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Mark's Good Stuff",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Shake & Share",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Everyday",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "KODI by H-E-B",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Cookwell & Company",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Rustico di Casa Asaro",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "EconoMax",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Max & Miles",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Better Than Good",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Big Time Crunch!",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Racconto",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Ultra",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "H-E-Buddy",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Bakery",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Tamales Aguilar",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Adventure Play!",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Grown Wild by H-E-B",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Durhams",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Specialty Bakers",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "FORMUFIT by H-E-B",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Great Catch",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Jeri's",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Santa Catarina",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Coco Goods",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Nichols",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Azteca",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Aphrodite",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Heavy Duty",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Tru Grit",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Lump",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "H-E-B Fish Market",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Wild",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Famiglia Romana",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Terra Olive",
+        "products_found": 0,
+        "api_total_reported": 0
+      },
+      {
+        "brand": "Casi",
+        "products_found": 0,
+        "api_total_reported": 0
+      }
+    ]
+  },
+  "products": []
+}
