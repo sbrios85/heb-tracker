@@ -1,18 +1,11 @@
 """
 H-E-B Brand Discovery
 =====================
-Walks H-E-B's 12 top-level departments and collects all unique brand names.
-Flags brands with isOwnBrand=true (H-E-B house brands).
+Walks H-E-B's selected top-level departments and collects all unique brand
+names. Flags brands with isOwnBrand=true (H-E-B house brands).
 
-Departments discovered via probe_categories.py — categoryIds 490014-490025:
-  Bakery & bread, Beverages, Dairy & eggs, Deli & prepared food,
-  Everyday essentials, Frozen food, Fruit & vegetables, Health & beauty,
-  Home & outdoor, Meat & seafood, Pantry, Pets
-
-H-E-B's browseCategory caps results at 10,000 per category, but we don't
-need a complete product enumeration here — we just need every brand to
-appear at least once. The first 10,000 products in any large category
-will surface essentially all brand names sold there.
+Frozen food and Dairy & eggs are excluded (perishable/refrigerated, not
+practical to ship via eBay from a home setup).
 
 Output: data/brands.json
 """
@@ -28,14 +21,12 @@ from lib_heb import (
 )
 
 
-# The 12 top-level H-E-B departments
+# 10 top-level departments (Frozen + Dairy & eggs removed)
 DEPARTMENTS = [
     ("490014", "Bakery & bread"),
     ("490015", "Beverages"),
-    ("490016", "Dairy & eggs"),
     ("490017", "Deli & prepared food"),
     ("490018", "Everyday essentials"),
-    ("490019", "Frozen food"),
     ("490020", "Fruit & vegetables"),
     ("490021", "Health & beauty"),
     ("490022", "Home & outdoor"),
@@ -45,9 +36,16 @@ DEPARTMENTS = [
 ]
 
 PAGE_SIZE = 60
-# Max pages per department. 167 pages × 60 = 10,020 (the API's hard cap).
-# We set this slightly higher and trust the empty-result check to stop us.
-MAX_PAGES_PER_DEPT = 170
+MAX_PAGES_PER_DEPT = 170   # API caps at ~10,000 (167 pages × 60)
+
+
+def normalize_brand_name(name: str) -> str:
+    """Return the canonical form of a brand name for dedupe.
+    We compare casefold + hyphen-stripped versions to detect HEB == H-E-B,
+    OUR GOODS == our goods, etc. The FIRST capitalization we see wins as
+    the canonical display form (alphabetical first form, generally).
+    """
+    return name.casefold().replace("-", "").replace(" ", "")
 
 
 def main():
@@ -56,8 +54,12 @@ def main():
 
     client = make_client()
 
-    # brand_name -> { isOwnBrand, count, departments_seen_in, first_product }
-    brands: dict[str, dict] = {}
+    # canonical_key -> brand dict (the first display name we encountered wins,
+    # but if a 'better' variant shows up we don't care — they all map to one entry)
+    brands_by_canonical: dict[str, dict] = {}
+    # alternate_display_names: track variants we collapsed
+    alt_names: dict[str, set] = {}
+
     total_records_seen = 0
     total_pages_pulled = 0
 
@@ -77,7 +79,6 @@ def main():
                 print(f"  page {page+1} ERRORS: {result['_errors']}")
                 break
             if not records:
-                # Reached end (real or capped)
                 break
 
             for rec in records:
@@ -87,26 +88,36 @@ def main():
                 name = b.get("name")
                 if not name:
                     continue
-                if name not in brands:
-                    brands[name] = {
-                        "name": name,
+
+                canonical = normalize_brand_name(name)
+                if canonical not in brands_by_canonical:
+                    # First time seeing this brand (under any capitalization)
+                    brands_by_canonical[canonical] = {
+                        "name": name,                  # display form
                         "isOwnBrand": bool(b.get("isOwnBrand")),
                         "count_in_sample": 0,
                         "departments_seen_in": [],
                         "first_seen_product_id": rec.get("id"),
                         "first_seen_product_name": rec.get("displayName"),
                     }
+                    alt_names[canonical] = set()
                     dept_new_brands += 1
-                brands[name]["count_in_sample"] += 1
-                if dept_name not in brands[name]["departments_seen_in"]:
-                    brands[name]["departments_seen_in"].append(dept_name)
+                else:
+                    # Track that we saw a variant capitalization
+                    existing_display = brands_by_canonical[canonical]["name"]
+                    if name != existing_display:
+                        alt_names[canonical].add(name)
+
+                brands_by_canonical[canonical]["count_in_sample"] += 1
+                if dept_name not in brands_by_canonical[canonical]["departments_seen_in"]:
+                    brands_by_canonical[canonical]["departments_seen_in"].append(dept_name)
 
             dept_pages += 1
             total_pages_pulled += 1
 
             if page % 10 == 0 or page < 3:
                 print(f"  page {page+1:3d} offset={offset:5d} got {len(records):3d} "
-                      f"| brands total: {len(brands)} (+{dept_new_brands} new in dept) "
+                      f"| brands total: {len(brands_by_canonical)} (+{dept_new_brands} new in dept) "
                       f"| dept total: {total}")
 
             offset += PAGE_SIZE
@@ -117,30 +128,33 @@ def main():
         print(f"  {dept_name} done: {dept_pages} pages, {dept_records} records, "
               f"{dept_new_brands} new brands")
 
+    # Attach alt_names to each entry
+    for canonical, brand in brands_by_canonical.items():
+        if alt_names[canonical]:
+            brand["alternate_capitalizations"] = sorted(alt_names[canonical])
+
     print(f"\n--- Sampling complete ---")
     print(f"  pages pulled: {total_pages_pulled}")
     print(f"  product records seen: {total_records_seen}")
-    print(f"  unique brands found: {len(brands)}")
-    own_brands = [b for b in brands.values() if b["isOwnBrand"]]
+    print(f"  unique brands (after dedupe): {len(brands_by_canonical)}")
+    own_brands = [b for b in brands_by_canonical.values() if b["isOwnBrand"]]
     print(f"  isOwnBrand=true count: {len(own_brands)}")
 
-    # Sort brands by count desc within isOwnBrand groups
+    # Sort: own brands first, then by count desc
     sorted_brands = sorted(
-        brands.values(),
+        brands_by_canonical.values(),
         key=lambda b: (not b["isOwnBrand"], -b["count_in_sample"]),
     )
 
     output = {
         "discovered_at": datetime.datetime.utcnow().isoformat() + "Z",
         "store_number": WALDRON_STORE_NUMBER,
+        "departments_walked": [d[1] for d in DEPARTMENTS],
         "_sampling_stats": {
-            "departments_walked": len(DEPARTMENTS),
             "pages_pulled": total_pages_pulled,
             "product_records_seen": total_records_seen,
-            "unique_brands_found": len(brands),
+            "unique_brands_found": len(brands_by_canonical),
             "own_brands_found": len(own_brands),
-            "max_pages_per_dept": MAX_PAGES_PER_DEPT,
-            "page_size": PAGE_SIZE,
         },
         "own_brands": [b for b in sorted_brands if b["isOwnBrand"]],
         "national_brands": [b for b in sorted_brands if not b["isOwnBrand"]],
@@ -148,13 +162,15 @@ def main():
     save_json(BRANDS_FILE, output)
     print(f"\nSaved to {BRANDS_FILE}")
 
-    # Print H-E-B house brands prominently
     print(f"\n=== H-E-B house brands discovered ({len(own_brands)}) ===")
     for b in sorted(own_brands, key=lambda x: -x["count_in_sample"]):
         depts = ", ".join(b["departments_seen_in"][:4])
         if len(b["departments_seen_in"]) > 4:
             depts += f" +{len(b['departments_seen_in']) - 4}"
-        print(f"  {b['count_in_sample']:5d}  {b['name']:45s}  [{depts}]")
+        merge_note = ""
+        if b.get("alternate_capitalizations"):
+            merge_note = f"   [merged: {', '.join(b['alternate_capitalizations'])}]"
+        print(f"  {b['count_in_sample']:5d}  {b['name']:45s}  [{depts}]{merge_note}")
 
 
 if __name__ == "__main__":
