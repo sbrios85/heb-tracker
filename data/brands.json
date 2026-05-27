@@ -1,0 +1,12 @@
+{
+  "discovered_at": "2026-05-27T15:24:09.877401Z",
+  "store_number": 57,
+  "_sampling_stats": {
+    "pages_pulled": 0,
+    "product_records_seen": 0,
+    "max_pages_per_category": 250,
+    "page_size": 60
+  },
+  "own_brands": [],
+  "national_brands": []
+}
