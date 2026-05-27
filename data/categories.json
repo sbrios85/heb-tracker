@@ -1,4 +1,2279 @@
 {
-  "working_categories": [],
-  "not_working_categories": []
+  "working_categories": [
+    {
+      "categoryId": "490014",
+      "name": "Bakery & bread",
+      "total": 846,
+      "sample_product": "H-E-B Bakery Scratch Sourdough Bread",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Bakery & bread"
+      ]
+    },
+    {
+      "categoryId": "490015",
+      "name": "Beverages",
+      "total": 7488,
+      "sample_product": "H-E-B 100% Apple Juice 2 pk Bottles - Va",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Beverages"
+      ]
+    },
+    {
+      "categoryId": "490016",
+      "name": "Dairy & eggs",
+      "total": 1618,
+      "sample_product": "Horizon Organic Whole Milk",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Dairy & eggs"
+      ]
+    },
+    {
+      "categoryId": "490017",
+      "name": "Deli & prepared food",
+      "total": 1743,
+      "sample_product": "H-E-B Natural Rotisserie Chicken - Seaso",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Deli & prepared food"
+      ]
+    },
+    {
+      "categoryId": "490018",
+      "name": "Everyday essentials",
+      "total": 3327,
+      "sample_product": "H-E-B Our Finest Ultra Soft Toilet Paper",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Everyday essentials"
+      ]
+    },
+    {
+      "categoryId": "490019",
+      "name": "Frozen food",
+      "total": 2574,
+      "sample_product": "H-E-B Fully Cooked Frozen Kolaches - Sau",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Frozen food"
+      ]
+    },
+    {
+      "categoryId": "490020",
+      "name": "Fruit & vegetables",
+      "total": 639,
+      "sample_product": "H-E-B Premium Fresh Seedless White Grape",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Fruit & vegetables"
+      ]
+    },
+    {
+      "categoryId": "490021",
+      "name": "Health & beauty",
+      "total": 10000,
+      "sample_product": "Native Body Wash, Coconut & Vanilla Scen",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Health & beauty"
+      ]
+    },
+    {
+      "categoryId": "490022",
+      "name": "Home & outdoor",
+      "total": 6776,
+      "sample_product": "Kitchen & Table by H-E-B Digital Air Fry",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Home & outdoor"
+      ]
+    },
+    {
+      "categoryId": "490023",
+      "name": "Meat & seafood",
+      "total": 1071,
+      "sample_product": "H-E-B Natural Boneless Chicken Breasts",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Meat & seafood"
+      ]
+    },
+    {
+      "categoryId": "490024",
+      "name": "Pantry",
+      "total": 10000,
+      "sample_product": "H-E-B All-Stars Variety Pack Chips 1 oz ",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pantry"
+      ]
+    },
+    {
+      "categoryId": "490025",
+      "name": "Pets",
+      "total": 2561,
+      "sample_product": "Heritage Ranch by H-E-B Adult Dry Dog Fo",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pets"
+      ]
+    },
+    {
+      "categoryId": "490027",
+      "name": "Bread",
+      "total": 394,
+      "sample_product": "H-E-B Bakery Scratch-Made Country White ",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Bakery & bread",
+        "Bread"
+      ]
+    },
+    {
+      "categoryId": "490028",
+      "name": "Breading & crumbs",
+      "total": 56,
+      "sample_product": "Progresso Italian Style Bread Crumbs",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Bakery & bread",
+        "Breading & crumbs"
+      ]
+    },
+    {
+      "categoryId": "490029",
+      "name": "Cakes",
+      "total": 79,
+      "sample_product": "H-E-B Bakery Strawberry Betterceme White",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Bakery & bread",
+        "Cakes"
+      ]
+    },
+    {
+      "categoryId": "490030",
+      "name": "Cookies",
+      "total": 31,
+      "sample_product": "H-E-B Bakery Chocolate Chunk Cookies",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Bakery & bread",
+        "Cookies"
+      ]
+    },
+    {
+      "categoryId": "490031",
+      "name": "Desserts & pastries",
+      "total": 157,
+      "sample_product": "H-E-B Bakery Cream Cheese Strawberry Str",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Bakery & bread",
+        "Desserts & pastries"
+      ]
+    },
+    {
+      "categoryId": "490032",
+      "name": "Tortillas",
+      "total": 137,
+      "sample_product": "H-E-B Bakery Flour Tortillas",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Bakery & bread",
+        "Tortillas"
+      ]
+    },
+    {
+      "categoryId": "490033",
+      "name": "Beer & wine",
+      "total": 2953,
+      "sample_product": "Welcome to Italy Prosecco Sparkling Wine",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Beverages",
+        "Beer & wine"
+      ]
+    },
+    {
+      "categoryId": "490034",
+      "name": "Cocoa",
+      "total": 41,
+      "sample_product": "H-E-B Milk Chocolate Cocoa Single Serve ",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Beverages",
+        "Cocoa"
+      ]
+    },
+    {
+      "categoryId": "490035",
+      "name": "Coconut water",
+      "total": 47,
+      "sample_product": "Central Market 100% Pure Coconut Water 1",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Beverages",
+        "Coconut water"
+      ]
+    },
+    {
+      "categoryId": "490036",
+      "name": "Coffee",
+      "total": 930,
+      "sample_product": "CAFE Olé by H-E-B Texas Pecan Medium Roa",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Beverages",
+        "Coffee"
+      ]
+    },
+    {
+      "categoryId": "490037",
+      "name": "Coffee creamer",
+      "total": 160,
+      "sample_product": "Nestle Coffee Mate Liquid Coffee Creamer",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Beverages",
+        "Coffee creamer"
+      ]
+    },
+    {
+      "categoryId": "490038",
+      "name": "Coffee filters",
+      "total": 21,
+      "sample_product": "H-E-B Basket Coffee Filters White",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Beverages",
+        "Coffee filters"
+      ]
+    },
+    {
+      "categoryId": "490039",
+      "name": "Ice",
+      "total": 1,
+      "sample_product": "Reddy Ice Premium Packaged Ice",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Beverages",
+        "Ice"
+      ]
+    },
+    {
+      "categoryId": "490040",
+      "name": "Juice",
+      "total": 647,
+      "sample_product": "H-E-B 100% Apple Juice 2 pk Bottles - Va",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Beverages",
+        "Juice"
+      ]
+    },
+    {
+      "categoryId": "490041",
+      "name": "Mixes & flavor enhancers",
+      "total": 299,
+      "sample_product": "Kool-Aid Unsweetened Drink Mix Packet - ",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Beverages",
+        "Mixes & flavor enhancers"
+      ]
+    },
+    {
+      "categoryId": "490042",
+      "name": "Shakes & smoothies",
+      "total": 75,
+      "sample_product": "Chobani 30G&nbsp;Protein Zero Sugar Adde",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Beverages",
+        "Shakes & smoothies"
+      ]
+    },
+    {
+      "categoryId": "490043",
+      "name": "Soda",
+      "total": 643,
+      "sample_product": "H-E-B Original Cola Soda 24 pk Cans",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Beverages",
+        "Soda"
+      ]
+    },
+    {
+      "categoryId": "490044",
+      "name": "Sports & energy drinks",
+      "total": 618,
+      "sample_product": "Hill Country Fare Sports Drink Variety P",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Beverages",
+        "Sports & energy drinks"
+      ]
+    },
+    {
+      "categoryId": "490045",
+      "name": "Tea",
+      "total": 657,
+      "sample_product": "H-E-B TX Brewed Sweet Iced Tea",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Beverages",
+        "Tea"
+      ]
+    },
+    {
+      "categoryId": "490046",
+      "name": "Water",
+      "total": 434,
+      "sample_product": "Hill Country Fare Purified Drinking Wate",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Beverages",
+        "Water"
+      ]
+    },
+    {
+      "categoryId": "490047",
+      "name": "Biscuit & cookie dough",
+      "total": 73,
+      "sample_product": "Pillsbury Grands! Butter Tastin' Flaky L",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Dairy & eggs",
+        "Biscuit & cookie dough"
+      ]
+    },
+    {
+      "categoryId": "490048",
+      "name": "Butter & margarine",
+      "total": 115,
+      "sample_product": "H-E-B Sweet Cream Salted Butter Sticks",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Dairy & eggs",
+        "Butter & margarine"
+      ]
+    },
+    {
+      "categoryId": "490049",
+      "name": "Cheese",
+      "total": 455,
+      "sample_product": "H-E-B Mexican Style Shredded Cheese Blen",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Dairy & eggs",
+        "Cheese"
+      ]
+    },
+    {
+      "categoryId": "490050",
+      "name": "Cottage cheese",
+      "total": 33,
+      "sample_product": "H-E-B Small Curd Cottage Cheese",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Dairy & eggs",
+        "Cottage cheese"
+      ]
+    },
+    {
+      "categoryId": "490051",
+      "name": "Cream",
+      "total": 24,
+      "sample_product": "H-E-B Heavy Whipping Cream",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Dairy & eggs",
+        "Cream"
+      ]
+    },
+    {
+      "categoryId": "490052",
+      "name": "Eggs & egg substitutes",
+      "total": 37,
+      "sample_product": "Central Market Organic Pasture Raised La",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Dairy & eggs",
+        "Eggs & egg substitutes"
+      ]
+    },
+    {
+      "categoryId": "490053",
+      "name": "Milk",
+      "total": 257,
+      "sample_product": "H-E-B Whole Milk",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Dairy & eggs",
+        "Milk"
+      ]
+    },
+    {
+      "categoryId": "490054",
+      "name": "Pudding & gelatin",
+      "total": 69,
+      "sample_product": "Jell-O Zero Sugar Strawberry Gelatin Sna",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Dairy & eggs",
+        "Pudding & gelatin"
+      ]
+    },
+    {
+      "categoryId": "490055",
+      "name": "Sour cream",
+      "total": 23,
+      "sample_product": "H-E-B Regular Sour Cream",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Dairy & eggs",
+        "Sour cream"
+      ]
+    },
+    {
+      "categoryId": "490056",
+      "name": "Yogurt",
+      "total": 532,
+      "sample_product": "H-E-B 14g Protein Nonfat Greek Yogurt - ",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Dairy & eggs",
+        "Yogurt"
+      ]
+    },
+    {
+      "categoryId": "490057",
+      "name": "Cheese",
+      "total": 404,
+      "sample_product": "Sartori Classic Parmesan Cheese Wedge",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Deli & prepared food",
+        "Cheese"
+      ]
+    },
+    {
+      "categoryId": "490058",
+      "name": "Dip",
+      "total": 136,
+      "sample_product": "H-E-B Chef Prepared Spinach Dip",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Deli & prepared food",
+        "Dip"
+      ]
+    },
+    {
+      "categoryId": "490059",
+      "name": "Meat",
+      "total": 358,
+      "sample_product": "H-E-B Deli Oven Roasted Turkey Breast, S",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Deli & prepared food",
+        "Meat"
+      ]
+    },
+    {
+      "categoryId": "490060",
+      "name": "Party trays",
+      "total": 63,
+      "sample_product": "H-E-B Deli Large Party Tray - Rotisserie",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Deli & prepared food",
+        "Party trays"
+      ]
+    },
+    {
+      "categoryId": "490061",
+      "name": "Ready meals & snacks",
+      "total": 810,
+      "sample_product": "Meal Simple by H-E-B Chicken Fettuccine ",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Deli & prepared food",
+        "Ready meals & snacks"
+      ]
+    },
+    {
+      "categoryId": "490062",
+      "name": "Air fresheners & candles",
+      "total": 950,
+      "sample_product": "Febreze Air Heavy Duty Odor-Fighting&nbs",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Everyday essentials",
+        "Air fresheners & candles"
+      ]
+    },
+    {
+      "categoryId": "490063",
+      "name": "Batteries",
+      "total": 126,
+      "sample_product": "H-E-B Alkaline AAA Batteries",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Everyday essentials",
+        "Batteries"
+      ]
+    },
+    {
+      "categoryId": "490064",
+      "name": "Cleaners",
+      "total": 531,
+      "sample_product": "H-E-B Ultra Liquid Dish Soap, Texas Size",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Everyday essentials",
+        "Cleaners"
+      ]
+    },
+    {
+      "categoryId": "490065",
+      "name": "Cleaning tools",
+      "total": 317,
+      "sample_product": "H-E-B No Scratch Scrub Sponges",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Everyday essentials",
+        "Cleaning tools"
+      ]
+    },
+    {
+      "categoryId": "490066",
+      "name": "Disposable kitchenware",
+      "total": 323,
+      "sample_product": "H-E-B 9 oz Clear Plastic Cups",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Everyday essentials",
+        "Disposable kitchenware"
+      ]
+    },
+    {
+      "categoryId": "490067",
+      "name": "Facial tissue",
+      "total": 27,
+      "sample_product": "Hill Country Fare Facial Tissues 4 pk",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Everyday essentials",
+        "Facial tissue"
+      ]
+    },
+    {
+      "categoryId": "490068",
+      "name": "Food storage & wraps",
+      "total": 211,
+      "sample_product": "H-E-B Texas Tough Heavy Duty 18\" Aluminu",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Everyday essentials",
+        "Food storage & wraps"
+      ]
+    },
+    {
+      "categoryId": "490069",
+      "name": "Laundry",
+      "total": 638,
+      "sample_product": "Tide PODS Laundry Detergent Pacs - Origi",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Everyday essentials",
+        "Laundry"
+      ]
+    },
+    {
+      "categoryId": "490070",
+      "name": "Paper towels",
+      "total": 35,
+      "sample_product": "H-E-B Our Finest Invent-A-Size Paper Tow",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Everyday essentials",
+        "Paper towels"
+      ]
+    },
+    {
+      "categoryId": "490071",
+      "name": "Toilet paper",
+      "total": 90,
+      "sample_product": "H-E-B Our Finest Ultra Soft Toilet Paper",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Everyday essentials",
+        "Toilet paper"
+      ]
+    },
+    {
+      "categoryId": "490072",
+      "name": "Trash bags",
+      "total": 79,
+      "sample_product": "H-E-B Texas Tough Tall Kitchen Drawstrin",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Everyday essentials",
+        "Trash bags"
+      ]
+    },
+    {
+      "categoryId": "490073",
+      "name": "Bread & baked goods",
+      "total": 134,
+      "sample_product": "H-E-B Frozen Texas Toast - Garlic",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Frozen food",
+        "Bread & baked goods"
+      ]
+    },
+    {
+      "categoryId": "490074",
+      "name": "Fruit",
+      "total": 53,
+      "sample_product": "H-E-B Frozen Whole Strawberries - Texas-",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Frozen food",
+        "Fruit"
+      ]
+    },
+    {
+      "categoryId": "490075",
+      "name": "Ice cream & treats",
+      "total": 835,
+      "sample_product": "H-E-B Creamy Creations 1905 Vanilla Ice ",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Frozen food",
+        "Ice cream & treats"
+      ]
+    },
+    {
+      "categoryId": "490076",
+      "name": "Juice & smoothies",
+      "total": 33,
+      "sample_product": "H-E-B Blendables Tropi-Colada Smoothie",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Frozen food",
+        "Juice & smoothies"
+      ]
+    },
+    {
+      "categoryId": "490077",
+      "name": "Meals & sides",
+      "total": 991,
+      "sample_product": "H-E-B Frozen Homestyle Meat Lasagna - La",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Frozen food",
+        "Meals & sides"
+      ]
+    },
+    {
+      "categoryId": "490078",
+      "name": "Meat",
+      "total": 221,
+      "sample_product": "H-E-B Natural Frozen Ground Turkey, 85% ",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Frozen food",
+        "Meat"
+      ]
+    },
+    {
+      "categoryId": "490079",
+      "name": "Meat alternatives",
+      "total": 56,
+      "sample_product": "Gardein Plant-Based Vegan Ground Be'f",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Frozen food",
+        "Meat alternatives"
+      ]
+    },
+    {
+      "categoryId": "490080",
+      "name": "Seafood",
+      "total": 92,
+      "sample_product": "Great Catch Frozen Peeled Deveined Tail-",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Frozen food",
+        "Seafood"
+      ]
+    },
+    {
+      "categoryId": "490081",
+      "name": "Vegetables",
+      "total": 166,
+      "sample_product": "H-E-B Frozen Mixed Vegetables",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Frozen food",
+        "Vegetables"
+      ]
+    },
+    {
+      "categoryId": "490082",
+      "name": "Fruit",
+      "total": 210,
+      "sample_product": "H-E-B Fresh Cut Seedless Watermelon - La",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Fruit & vegetables",
+        "Fruit"
+      ]
+    },
+    {
+      "categoryId": "490083",
+      "name": "Vegetables",
+      "total": 416,
+      "sample_product": "H-E-B Organics Fresh Mini Seedless Cucum",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Fruit & vegetables",
+        "Vegetables"
+      ]
+    },
+    {
+      "categoryId": "490084",
+      "name": "Bath & skin care",
+      "total": 3477,
+      "sample_product": "PanOxyl Face & Body Maximum Strength Acn",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Health & beauty",
+        "Bath & skin care"
+      ]
+    },
+    {
+      "categoryId": "490085",
+      "name": "Cotton balls & swabs",
+      "total": 16,
+      "sample_product": "H-E-B Quilted Cotton Rounds",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Health & beauty",
+        "Cotton balls & swabs"
+      ]
+    },
+    {
+      "categoryId": "490086",
+      "name": "Diet & fitness",
+      "total": 1358,
+      "sample_product": "Central Market Collagen Peptides - Unfla",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Health & beauty",
+        "Diet & fitness"
+      ]
+    },
+    {
+      "categoryId": "490087",
+      "name": "Eye & ear care",
+      "total": 301,
+      "sample_product": "Optic Shop Tight-Top Contact Lens Cases",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Health & beauty",
+        "Eye & ear care"
+      ]
+    },
+    {
+      "categoryId": "490088",
+      "name": "Feminine care",
+      "total": 399,
+      "sample_product": "H-E-B Ultra Thin with Flexi-Wings Pads -",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Health & beauty",
+        "Feminine care"
+      ]
+    },
+    {
+      "categoryId": "490089",
+      "name": "Foot care",
+      "total": 82,
+      "sample_product": "H-E-B Angled Pumice Stone",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Health & beauty",
+        "Foot care"
+      ]
+    },
+    {
+      "categoryId": "490090",
+      "name": "Hair care",
+      "total": 2754,
+      "sample_product": "Head & Shoulders 2 in 1 Dandruff Shampoo",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Health & beauty",
+        "Hair care"
+      ]
+    },
+    {
+      "categoryId": "490091",
+      "name": "Home health care",
+      "total": 68,
+      "sample_product": "Contour Next One Monitor",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Health & beauty",
+        "Home health care"
+      ]
+    },
+    {
+      "categoryId": "490092",
+      "name": "Incontinence",
+      "total": 90,
+      "sample_product": "H-E-B Reliance Personal Washcloths",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Health & beauty",
+        "Incontinence"
+      ]
+    },
+    {
+      "categoryId": "490093",
+      "name": "Makeup",
+      "total": 4265,
+      "sample_product": "Maybelline Sky High Lash Sensational Mas",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Health & beauty",
+        "Makeup"
+      ]
+    },
+    {
+      "categoryId": "490094",
+      "name": "Medicines & treatments",
+      "total": 1996,
+      "sample_product": "H-E-B Allergy 24 Hour&nbsp;Relief Lorata",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Health & beauty",
+        "Medicines & treatments"
+      ]
+    },
+    {
+      "categoryId": "490095",
+      "name": "Nails",
+      "total": 679,
+      "sample_product": "OPI Top Coat",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Health & beauty",
+        "Nails"
+      ]
+    },
+    {
+      "categoryId": "490096",
+      "name": "Oral hygiene",
+      "total": 685,
+      "sample_product": "Crest 3DWhite Advanced Glamorous White T",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Health & beauty",
+        "Oral hygiene"
+      ]
+    },
+    {
+      "categoryId": "490097",
+      "name": "Sexual wellness",
+      "total": 113,
+      "sample_product": "First Response Early Result Pregnancy Te",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Health & beauty",
+        "Sexual wellness"
+      ]
+    },
+    {
+      "categoryId": "490098",
+      "name": "Vitamins & supplements",
+      "total": 1141,
+      "sample_product": "OLLY Kids Multivitamin & Probiotic Diges",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Health & beauty",
+        "Vitamins & supplements"
+      ]
+    },
+    {
+      "categoryId": "490099",
+      "name": "Bedding & bath",
+      "total": 250,
+      "sample_product": "our goods PEVA Shower Liner - Clear",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Home & outdoor",
+        "Bedding & bath"
+      ]
+    },
+    {
+      "categoryId": "490100",
+      "name": "Clothes & shoes",
+      "total": 60,
+      "sample_product": "Griffin Shine Kit",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Home & outdoor",
+        "Clothes & shoes"
+      ]
+    },
+    {
+      "categoryId": "490101",
+      "name": "Seasonal decor",
+      "total": 582,
+      "sample_product": "Destination Holiday Floral Scalloped&nbs",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Home & outdoor",
+        "Seasonal decor"
+      ]
+    },
+    {
+      "categoryId": "490102",
+      "name": "Electronics",
+      "total": 237,
+      "sample_product": "Weiman E-Tronic Wipes",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Home & outdoor",
+        "Electronics"
+      ]
+    },
+    {
+      "categoryId": "490103",
+      "name": "Flowers & gift baskets",
+      "total": 68,
+      "sample_product": "BLOOMS by H-E-B Dozen Rainbow Roses",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Home & outdoor",
+        "Flowers & gift baskets"
+      ]
+    },
+    {
+      "categoryId": "490104",
+      "name": "Home improvement",
+      "total": 669,
+      "sample_product": "Arm & Hammer Enhanced 12000 Allergen Air",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Home & outdoor",
+        "Home improvement"
+      ]
+    },
+    {
+      "categoryId": "490105",
+      "name": "Kitchen & dining",
+      "total": 2366,
+      "sample_product": "our goods Bag Clip Set",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Home & outdoor",
+        "Kitchen & dining"
+      ]
+    },
+    {
+      "categoryId": "490106",
+      "name": "Patio & outdoor",
+      "total": 1655,
+      "sample_product": "H-E-B Texas Mesquite Charcoal Briquets",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Home & outdoor",
+        "Patio & outdoor"
+      ]
+    },
+    {
+      "categoryId": "490107",
+      "name": "Pest control",
+      "total": 200,
+      "sample_product": "Hot Shot Ant Roach & Spider Killer - Fre",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Home & outdoor",
+        "Pest control"
+      ]
+    },
+    {
+      "categoryId": "490108",
+      "name": "School & office supplies",
+      "total": 994,
+      "sample_product": "PrintWorks Multipurpose Copy Paper - Whi",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Home & outdoor",
+        "School & office supplies"
+      ]
+    },
+    {
+      "categoryId": "490109",
+      "name": "Storage & organization",
+      "total": 96,
+      "sample_product": "our goods Notched Plastic Hangers - Whit",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Home & outdoor",
+        "Storage & organization"
+      ]
+    },
+    {
+      "categoryId": "490110",
+      "name": "Meat",
+      "total": 878,
+      "sample_product": "H-E-B Natural Boneless Chicken Breasts",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Meat & seafood",
+        "Meat"
+      ]
+    },
+    {
+      "categoryId": "490111",
+      "name": "Seafood",
+      "total": 132,
+      "sample_product": "H-E-B Fish Market Fresh Atlantic Salmon ",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Meat & seafood",
+        "Seafood"
+      ]
+    },
+    {
+      "categoryId": "490112",
+      "name": "Tofu & meat alternatives",
+      "total": 61,
+      "sample_product": "H-E-B Organics Extra Firm Tofu",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Meat & seafood",
+        "Tofu & meat alternatives"
+      ]
+    },
+    {
+      "categoryId": "490113",
+      "name": "Baking ingredients",
+      "total": 922,
+      "sample_product": "H-E-B Texas Sheet Cake & Frosting Chocol",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pantry",
+        "Baking ingredients"
+      ]
+    },
+    {
+      "categoryId": "490114",
+      "name": "Broth & bouillon",
+      "total": 187,
+      "sample_product": "H-E-B Rosemary Lemon Chicken Bone Broth",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pantry",
+        "Broth & bouillon"
+      ]
+    },
+    {
+      "categoryId": "490115",
+      "name": "Canned & dried food",
+      "total": 1642,
+      "sample_product": "H-E-B Cut Green Beans",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pantry",
+        "Canned & dried food"
+      ]
+    },
+    {
+      "categoryId": "490116",
+      "name": "Cereal & breakfast",
+      "total": 600,
+      "sample_product": "H-E-B Triple Chocolate Granola",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pantry",
+        "Cereal & breakfast"
+      ]
+    },
+    {
+      "categoryId": "490117",
+      "name": "Condiments",
+      "total": 429,
+      "sample_product": "H-E-B Yellow Mustard",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pantry",
+        "Condiments"
+      ]
+    },
+    {
+      "categoryId": "490118",
+      "name": "Dressing, oil & vinegar",
+      "total": 866,
+      "sample_product": "Central Market Organics Extra Virgin Oli",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pantry",
+        "Dressing, oil & vinegar"
+      ]
+    },
+    {
+      "categoryId": "490119",
+      "name": "Jelly & jam",
+      "total": 133,
+      "sample_product": "H-E-B Organics Concord Grape Jelly",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pantry",
+        "Jelly & jam"
+      ]
+    },
+    {
+      "categoryId": "490120",
+      "name": "Pantry meals",
+      "total": 347,
+      "sample_product": "H-E-B Original Mac & Cheese - Texas-Size",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pantry",
+        "Pantry meals"
+      ]
+    },
+    {
+      "categoryId": "490121",
+      "name": "Pasta & rice",
+      "total": 554,
+      "sample_product": "H-E-B Organics Spaghetti",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pantry",
+        "Pasta & rice"
+      ]
+    },
+    {
+      "categoryId": "490122",
+      "name": "Peanut butter",
+      "total": 148,
+      "sample_product": "Central Market Smooth Peanut Butter with",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pantry",
+        "Peanut butter"
+      ]
+    },
+    {
+      "categoryId": "490123",
+      "name": "Salsa & dip",
+      "total": 213,
+      "sample_product": "H-E-B Mi Tienda Salsa Verde con Aguacate",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pantry",
+        "Salsa & dip"
+      ]
+    },
+    {
+      "categoryId": "490124",
+      "name": "Sauces & marinades",
+      "total": 882,
+      "sample_product": "H-E-B Healthy Garden Combo Pasta Sauce",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pantry",
+        "Sauces & marinades"
+      ]
+    },
+    {
+      "categoryId": "490125",
+      "name": "Snacks & candy",
+      "total": 4341,
+      "sample_product": "H-E-B All-Stars Variety Pack Chips 1 oz ",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pantry",
+        "Snacks & candy"
+      ]
+    },
+    {
+      "categoryId": "490126",
+      "name": "Soups & chili",
+      "total": 572,
+      "sample_product": "H-E-B Texas-Inspired Chicken Noodle Cond",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pantry",
+        "Soups & chili"
+      ]
+    },
+    {
+      "categoryId": "490127",
+      "name": "Spices & seasonings",
+      "total": 1290,
+      "sample_product": "H-E-B Texas Originals Steak Seasoning Sp",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pantry",
+        "Spices & seasonings"
+      ]
+    },
+    {
+      "categoryId": "490128",
+      "name": "Sugar & sweeteners",
+      "total": 238,
+      "sample_product": "H-E-B Confectioners Powdered Sugar",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pantry",
+        "Sugar & sweeteners"
+      ]
+    },
+    {
+      "categoryId": "490129",
+      "name": "Birds",
+      "total": 57,
+      "sample_product": "Hill Country Fare Wild Bird Seed",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pets",
+        "Birds"
+      ]
+    },
+    {
+      "categoryId": "490130",
+      "name": "Cats",
+      "total": 709,
+      "sample_product": "Heritage Ranch by H-E-B Grain-Free Adult",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pets",
+        "Cats"
+      ]
+    },
+    {
+      "categoryId": "490131",
+      "name": "Dogs",
+      "total": 1765,
+      "sample_product": "Heritage Ranch by H-E-B Adult Dry Dog Fo",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pets",
+        "Dogs"
+      ]
+    },
+    {
+      "categoryId": "490132",
+      "name": "Fish",
+      "total": 12,
+      "sample_product": "Tetra River Shrimp Treats",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pets",
+        "Fish"
+      ]
+    },
+    {
+      "categoryId": "490133",
+      "name": "Reptiles",
+      "total": 2,
+      "sample_product": "Tetra ReptoMin Floating Food Sticks for ",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pets",
+        "Reptiles"
+      ]
+    },
+    {
+      "categoryId": "490134",
+      "name": "Small animals",
+      "total": 16,
+      "sample_product": "FM Brown's Timothy Hay Side Salads Fruit",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Pets",
+        "Small animals"
+      ]
+    },
+    {
+      "categoryId": "490135",
+      "name": "Door & drawer locks",
+      "total": 6,
+      "sample_product": "Safety 1st Multi-Purpose Appliance Locks",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Baby safety",
+        "Door & drawer locks"
+      ]
+    },
+    {
+      "categoryId": "490136",
+      "name": "Electrical protection",
+      "total": 4,
+      "sample_product": "Safety 1st Electrical Ultra Clear Plug P",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Baby safety",
+        "Electrical protection"
+      ]
+    },
+    {
+      "categoryId": "490137",
+      "name": "Furniture guards",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Baby safety",
+        "Furniture guards"
+      ]
+    },
+    {
+      "categoryId": "490138",
+      "name": "Gates",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Baby safety",
+        "Gates"
+      ]
+    },
+    {
+      "categoryId": "490139",
+      "name": "Bath accessories",
+      "total": 37,
+      "sample_product": "Mr. Bubble Magic Bath Crackles",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Bath tubs & accessories",
+        "Bath accessories"
+      ]
+    },
+    {
+      "categoryId": "490140",
+      "name": "Bath tubs",
+      "total": 1,
+      "sample_product": "Angelcare Infant Bath Support - Grey",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Bath tubs & accessories",
+        "Bath tubs"
+      ]
+    },
+    {
+      "categoryId": "490141",
+      "name": "Towels & robes",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Bath tubs & accessories",
+        "Towels & robes"
+      ]
+    },
+    {
+      "categoryId": "490142",
+      "name": "Bibs",
+      "total": 8,
+      "sample_product": "Neat Solutions Drooler Bibs",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Clothes",
+        "Bibs"
+      ]
+    },
+    {
+      "categoryId": "490143",
+      "name": "Bottoms",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Clothes",
+        "Bottoms"
+      ]
+    },
+    {
+      "categoryId": "490144",
+      "name": "Dresses",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Clothes",
+        "Dresses"
+      ]
+    },
+    {
+      "categoryId": "490145",
+      "name": "Hats & hair accessories",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Clothes",
+        "Hats & hair accessories"
+      ]
+    },
+    {
+      "categoryId": "490146",
+      "name": "Mittens",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Clothes",
+        "Mittens"
+      ]
+    },
+    {
+      "categoryId": "490147",
+      "name": "One pieces",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Clothes",
+        "One pieces"
+      ]
+    },
+    {
+      "categoryId": "490148",
+      "name": "Outfits",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Clothes",
+        "Outfits"
+      ]
+    },
+    {
+      "categoryId": "490149",
+      "name": "Shirts",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Clothes",
+        "Shirts"
+      ]
+    },
+    {
+      "categoryId": "490150",
+      "name": "Shoes",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Clothes",
+        "Shoes"
+      ]
+    },
+    {
+      "categoryId": "490151",
+      "name": "Sleepwear",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Clothes",
+        "Sleepwear"
+      ]
+    },
+    {
+      "categoryId": "490152",
+      "name": "Socks",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Clothes",
+        "Socks"
+      ]
+    },
+    {
+      "categoryId": "490153",
+      "name": "Swim suits",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Clothes",
+        "Swim suits"
+      ]
+    },
+    {
+      "categoryId": "490154",
+      "name": "Underwear",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Clothes",
+        "Underwear"
+      ]
+    },
+    {
+      "categoryId": "490155",
+      "name": "Baby wipes",
+      "total": 114,
+      "sample_product": "Kubbies Baby Wipes",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Diapers & potty",
+        "Baby wipes"
+      ]
+    },
+    {
+      "categoryId": "490156",
+      "name": "Changing pads",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Diapers & potty",
+        "Changing pads"
+      ]
+    },
+    {
+      "categoryId": "490157",
+      "name": "Diaper bags & storage",
+      "total": 1,
+      "sample_product": "Munchkin Diaper Bag Dispenser - Lavender",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Diapers & potty",
+        "Diaper bags & storage"
+      ]
+    },
+    {
+      "categoryId": "490158",
+      "name": "Diaper pails & refills",
+      "total": 8,
+      "sample_product": "Nuby Diaper Sacks Disposal Bags - Fresh ",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Diapers & potty",
+        "Diaper pails & refills"
+      ]
+    },
+    {
+      "categoryId": "490159",
+      "name": "Diapers",
+      "total": 257,
+      "sample_product": "H-E-B Baby Medium Pack Diapers - Size 6",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Diapers & potty",
+        "Diapers"
+      ]
+    },
+    {
+      "categoryId": "490160",
+      "name": "Potty seats & stools",
+      "total": 2,
+      "sample_product": "Playtex Transitions Step Stool",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Diapers & potty",
+        "Potty seats & stools"
+      ]
+    },
+    {
+      "categoryId": "490161",
+      "name": "Training pants",
+      "total": 82,
+      "sample_product": "H-E-B Training Pants for Girls, 4T - 5T ",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Diapers & potty",
+        "Training pants"
+      ]
+    },
+    {
+      "categoryId": "490162",
+      "name": "Bottle feeding",
+      "total": 93,
+      "sample_product": "Nuby Silicone Bottle & Nipple Brush",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Feeding",
+        "Bottle feeding"
+      ]
+    },
+    {
+      "categoryId": "490163",
+      "name": "Breast feeding",
+      "total": 37,
+      "sample_product": "Munchkin Milkmakers Lactation Drink Mix ",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Feeding",
+        "Breast feeding"
+      ]
+    },
+    {
+      "categoryId": "490164",
+      "name": "Cups",
+      "total": 33,
+      "sample_product": "Munchkin Miracle 360 Sippy Cup, Assorted",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Feeding",
+        "Cups"
+      ]
+    },
+    {
+      "categoryId": "490165",
+      "name": "Dishes & utensils",
+      "total": 22,
+      "sample_product": "Munchkin Snack Catcher - 12+ Months",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Feeding",
+        "Dishes & utensils"
+      ]
+    },
+    {
+      "categoryId": "490166",
+      "name": "Pacifiers",
+      "total": 35,
+      "sample_product": "Avent Soothie Pacifiers (0-3 Months)",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Feeding",
+        "Pacifiers"
+      ]
+    },
+    {
+      "categoryId": "490167",
+      "name": "Baby food",
+      "total": 420,
+      "sample_product": "Loco Bebe Organic Baby Food Pur&eacute;e",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Food & formula",
+        "Baby food"
+      ]
+    },
+    {
+      "categoryId": "490168",
+      "name": "Electrolytes & shakes",
+      "total": 53,
+      "sample_product": "H-E-B Electrolyte Solution - Strawberry",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Food & formula",
+        "Electrolytes & shakes"
+      ]
+    },
+    {
+      "categoryId": "490169",
+      "name": "Formula",
+      "total": 118,
+      "sample_product": "H-E-B Baby Gentle Infant Formula Milk-Ba",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Food & formula",
+        "Formula"
+      ]
+    },
+    {
+      "categoryId": "490170",
+      "name": "Juice & water",
+      "total": 17,
+      "sample_product": "H-E-B Baby Distilled Water 3 pk",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Food & formula",
+        "Juice & water"
+      ]
+    },
+    {
+      "categoryId": "490171",
+      "name": "Toddler food",
+      "total": 188,
+      "sample_product": "Gerber Snacks for Baby Yogurt Melts - St",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Food & formula",
+        "Toddler food"
+      ]
+    },
+    {
+      "categoryId": "490172",
+      "name": "Bath & hair care",
+      "total": 181,
+      "sample_product": "Aussie Kids Shampoo",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Health & skin care",
+        "Bath & hair care"
+      ]
+    },
+    {
+      "categoryId": "490173",
+      "name": "Bug repellent",
+      "total": 1,
+      "sample_product": "Babyganics Natural Insect Repellent",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Health & skin care",
+        "Bug repellent"
+      ]
+    },
+    {
+      "categoryId": "490174",
+      "name": "Humidifiers",
+      "total": 1,
+      "sample_product": "Crane Mini Drop Humidifier",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Health & skin care",
+        "Humidifiers"
+      ]
+    },
+    {
+      "categoryId": "490175",
+      "name": "Lotion & powder",
+      "total": 113,
+      "sample_product": "Johnson's Baby Cornstarch Baby Powder - ",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Health & skin care",
+        "Lotion & powder"
+      ]
+    },
+    {
+      "categoryId": "490176",
+      "name": "Medical devices & supplies",
+      "total": 78,
+      "sample_product": "Oilogic Baby Stuffy Nose & Cough Vapor C",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Health & skin care",
+        "Medical devices & supplies"
+      ]
+    },
+    {
+      "categoryId": "490177",
+      "name": "Nose wipes",
+      "total": 5,
+      "sample_product": "Boogie Wipes Gentle Saline Nose Wipes - ",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Health & skin care",
+        "Nose wipes"
+      ]
+    },
+    {
+      "categoryId": "490178",
+      "name": "Surface wipes",
+      "total": 2,
+      "sample_product": "The Honest Company &nbsp;Alcohol Wipes",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Health & skin care",
+        "Surface wipes"
+      ]
+    },
+    {
+      "categoryId": "490179",
+      "name": "Teething",
+      "total": 31,
+      "sample_product": "Nuby Silicone Teether with Pacifinder",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Health & skin care",
+        "Teething"
+      ]
+    },
+    {
+      "categoryId": "490180",
+      "name": "Baby monitors",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Nursery & kids' room",
+        "Baby monitors"
+      ]
+    },
+    {
+      "categoryId": "490181",
+      "name": "Beds & sleepers",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Nursery & kids' room",
+        "Beds & sleepers"
+      ]
+    },
+    {
+      "categoryId": "490182",
+      "name": "Blankets & pillows",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Nursery & kids' room",
+        "Blankets & pillows"
+      ]
+    },
+    {
+      "categoryId": "490183",
+      "name": "Bouncers & walkers",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Nursery & kids' room",
+        "Bouncers & walkers"
+      ]
+    },
+    {
+      "categoryId": "490184",
+      "name": "High chairs & booster seats",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Nursery & kids' room",
+        "High chairs & booster seats"
+      ]
+    },
+    {
+      "categoryId": "490185",
+      "name": "Sleep aids",
+      "total": 1,
+      "sample_product": "Safety 1st Auto Sensor Nightlight",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Nursery & kids' room",
+        "Sleep aids"
+      ]
+    },
+    {
+      "categoryId": "490186",
+      "name": "Tables & chairs",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Nursery & kids' room",
+        "Tables & chairs"
+      ]
+    },
+    {
+      "categoryId": "490187",
+      "name": "Action figures & dolls",
+      "total": 270,
+      "sample_product": "Adopt Me Mystery Pets",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Toys",
+        "Action figures & dolls"
+      ]
+    },
+    {
+      "categoryId": "490188",
+      "name": "Baby toys",
+      "total": 155,
+      "sample_product": "Fisher-Price Little People Disney Prince",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Toys",
+        "Baby toys"
+      ]
+    },
+    {
+      "categoryId": "490189",
+      "name": "Dress up & pretend play",
+      "total": 29,
+      "sample_product": "Fisher-Price Medical Kit",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Toys",
+        "Dress up & pretend play"
+      ]
+    },
+    {
+      "categoryId": "490190",
+      "name": "Games & books",
+      "total": 286,
+      "sample_product": "Bicycle Standard Playing Cards",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Toys",
+        "Games & books"
+      ]
+    },
+    {
+      "categoryId": "490191",
+      "name": "Lego & building blocks",
+      "total": 201,
+      "sample_product": "LEGO Creator 3-in-1 Exotic Parrot Set",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Toys",
+        "Lego & building blocks"
+      ]
+    },
+    {
+      "categoryId": "490192",
+      "name": "Outdoor toys",
+      "total": 137,
+      "sample_product": "Amloid Sand Toy Playset",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Toys",
+        "Outdoor toys"
+      ]
+    },
+    {
+      "categoryId": "490193",
+      "name": "Playsets",
+      "total": 90,
+      "sample_product": "Craze Sensations ASMR Caddy",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Toys",
+        "Playsets"
+      ]
+    },
+    {
+      "categoryId": "490194",
+      "name": "Plush toys",
+      "total": 44,
+      "sample_product": "Bulls i Toy Cutie Cuff Squad Capsule - S",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Toys",
+        "Plush toys"
+      ]
+    },
+    {
+      "categoryId": "490195",
+      "name": "Remote control toys",
+      "total": 3,
+      "sample_product": "Fisher-Price Imaginext&nbsp;Toy Story Wo",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Toys",
+        "Remote control toys"
+      ]
+    },
+    {
+      "categoryId": "490196",
+      "name": "Ride-on toys",
+      "total": 1,
+      "sample_product": "Jakks Bluey&nbsp;& Bingo&nbsp;Keepy&nbsp",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Toys",
+        "Ride-on toys"
+      ]
+    },
+    {
+      "categoryId": "490197",
+      "name": "Slime",
+      "total": 13,
+      "sample_product": "Compound Kings Mix & Mash Scented Slime",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Toys",
+        "Slime"
+      ]
+    },
+    {
+      "categoryId": "490198",
+      "name": "Toy vehicles",
+      "total": 47,
+      "sample_product": "Hot Wheels Die Cast Vehicle Pack - Assor",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Toys",
+        "Toy vehicles"
+      ]
+    },
+    {
+      "categoryId": "490199",
+      "name": "Car seats",
+      "total": 0,
+      "sample_product": "",
+      "breadcrumbs": [
+        "H-E-B",
+        "Shop",
+        "Baby & kids",
+        "Travel equipment",
+        "Car seats"
+      ]
+    }
+  ],
+  "tested_count": 202,
+  "not_working_count": 17
 }
