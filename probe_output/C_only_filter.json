@@ -1,1 +1,0 @@
-{"errors":[{"message":"searchText or category is required","locations":[{"line":1,"column":11}],"path":["productSearch"],"extensions":{"code":400}}],"data":null}

@@ -1,1 +1,0 @@
-{"errors":[{"message":"Unknown argument \"searchText\" on field \"Query.productSearch\".","locations":[{"line":1,"column":72}],"extensions":{"code":"GRAPHQL_VALIDATION_FAILED"}}]}
