@@ -1,0 +1,7 @@
+{
+  "data": {
+    "productDetail": {
+      "__typename": "Product"
+    }
+  }
+}

@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "snippet": "productSearchPageV2(\\n    $params: SearchPageParamsV2!\\n    $searchMode: SearchMode\\n    $searchContextToken: String\\n    $searchPageLayout: SearchPageLayout\\n    $storeId: Int!\\n    $shoppingContext: ShoppingContext!\\n    $userIsLoggedIn: Boolean = false\\n  ) {\\n    productSearchPageV2(\\n      params: $params\\n      searchMode: $searchMode\\n      searchContextToken: $searchContextToken\\n      searchPageLayout: $searchPageLayout\\n    ) {\\n      ... on SearchPage {\\n        layout {\\n          .."
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "snippet": "productSearchItems(\\n    $params: SearchPageParamsV2!\\n    $searchMode: SearchMode\\n    $searchContextToken: String\\n    $searchPageLayout: SearchPageLayout!\\n    $amount: Float = 0.00\\n    $includeUnitPriceDiff: Boolean! = false\\n    $storeId: Int!\\n    $shoppingContext: ShoppingContext!\\n    $userIsLoggedIn: Boolean = false\\n  ) {\\n    productSearchItems(\\n      params: $params\\n      searchMode: $searchMode\\n      searchContextToken: $searchContextToken\\n      searchPageLayout: $searchPageLay"
+  }
+]
