@@ -1,0 +1,941 @@
+[
+  {
+    "chunk": "3112-434902d87c08ae4a.js",
+    "operation": "CartFulfillment",
+    "body": "\n  query CartFulfillment {\n    cartV2 {\n      ... on Cart {\n        ...SessionContextFulfillmentFragment\n        ...CartFulfillmentFragment\n        ...CartFulfillmentItemsFragment\n      }\n      ... on CartError {\n        code\n        title\n        message\n      }\n    }\n    mySecurityStatus\n  }\n  "
+  },
+  {
+    "chunk": "3112-434902d87c08ae4a.js",
+    "operation": "listDeliveryTimeslotsV2",
+    "body": "\n  query listDeliveryTimeslotsV2(\n    $address: TimeslotsDeliveryAddressV2\n    $placeId: String\n    $since: DateTime\n    $until: DateTime\n    $limit: Int\n  ) {\n    listDeliveryTimeslotsV2(\n      address: $address\n      placeId: $placeId\n      since: $since\n      until: $until\n      limit: $limit\n    ) {\n      ... on DeliveryTimeslotsResultV2 {\n        deliveryAvailable\n        slotsByTier {\n          ...TimeslotsByTierFragment\n        }\n        slotsByDay {\n          ...TimeslotsByDayFragment\n        }\n        resolvedAddress {\n          addressLocality\n          addressRegion\n          placeId\n          postalCode\n          streetAddress\n        }\n        displayMessages {\n          messageType\n          titleShort\n          titleLong\n          summary\n          explanation\n          moreDetails\n        }\n        deliveryFees {\n          priceInfo {\n            listPrice {\n              formattedAmount\n            }\n          }\n        }\n        longDistanceDelivery\n        expandedDelivery\n      }\n      ... on DeliveryUnavailableResponse {\n        message\n      }\n      ... on DeliveryResponseError {\n        deliveryErrorCode: code\n        deliveryErrorMessage: message\n      }\n      ... on TimeslotsStandardErrorV2 {\n        code\n        message\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "3112-434902d87c08ae4a.js",
+    "operation": "listPickupTimeslotsV2",
+    "body": "\n  query listPickupTimeslotsV2($storeNumber: Int!, $since: DateTime, $until: DateTime, $limit: Int) {\n    listPickupTimeslotsV2(storeNumber: $storeNumber, since: $since, until: $until, limit: $limit) {\n      ... on PickupTimeslotsResultV2 {\n        slotsByTier {\n          ...TimeslotsByTierFragment\n        }\n        slotsByDay {\n          ...TimeslotsByDayFragment\n        }\n        displayMessages {\n          messageType\n          titleShort\n          titleLong\n          summary\n          explanation\n          moreDetails\n        }\n      }\n      ... on TimeslotsStandardErrorV2 {\n        message\n        code\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "3112-434902d87c08ae4a.js",
+    "operation": "ShippingAddresses",
+    "body": "\n  query ShippingAddresses {\n    myAddresses {\n      addressList {\n        id\n        address1\n        address2\n        city\n        state\n        postalCode\n        nickname\n      }\n    }\n  }\n"
+  },
+  {
+    "chunk": "3112-434902d87c08ae4a.js",
+    "operation": "ReserveTimeslot",
+    "body": "\n  mutation ReserveTimeslot(\n    $id: String!\n    $date: String!\n    $fulfillmentType: TimeslotFulfillmentType!\n    $pickupStoreId: String!\n    $deliveryAddress: FulfillmentAddressInput\n    $ignoreCartConflicts: Boolean!\n    $storeId: Int!\n    $userIsLoggedIn: Boolean!\n  ) {\n    reserveTimeslotV3(\n      fulfillmentType: $fulfillmentType\n      fulfillmentPickup: { pickupStoreId: $pickupStoreId }\n      fulfillmentDelivery: { deliveryAddress: $deliveryAddress }\n      timeslot: { id: $id, date: $date }\n      ignoreCartConflicts: $ignoreCartConflicts\n    ) {\n      ... on Cart {\n        ...ReserveTimeslotCartFragment\n      }\n      ... on ReserveTimeSlotConflictError {\n        ...ReserveTimeSlotConflictErrorFragment\n      }\n      ... on ReserveTimeslotErrorV3 {\n        message\n        title\n        code\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "3112-434902d87c08ae4a.js",
+    "operation": "SelectPickupFulfillment",
+    "body": "\n  mutation SelectPickupFulfillment(\n    $pickupStoreId: String!\n    $ignoreCartConflicts: Boolean!\n    $storeId: Int!\n    $userIsLoggedIn: Boolean!\n    $fulfillmentType: TimeslotFulfillmentType! = PICKUP\n  ) {\n    reserveTimeslotV3(\n      ignoreCartConflicts: $ignoreCartConflicts\n      fulfillmentPickup: { pickupStoreId: $pickupStoreId }\n      fulfillmentType: $fulfillmentType\n    ) {\n      ... on Cart {\n        ...ReserveTimeslotCartFragment\n      }\n      ... on ReserveTimeSlotConflictError {\n        ...ReserveTimeSlotConflictErrorFragment\n      }\n      ... on ReserveTimeslotErrorV3 {\n        message\n        title\n        code\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "3112-434902d87c08ae4a.js",
+    "operation": "SelectDeliveryFulfillment",
+    "body": "\n  mutation SelectDeliveryFulfillment(\n    $ignoreCartConflicts: Boolean!\n    $saveAddress: Boolean\n    $deliveryAddress: FulfillmentAddressInput\n    $storeId: Int!\n    $userIsLoggedIn: Boolean!\n    $fulfillmentType: TimeslotFulfillmentType! = DELIVERY\n  ) {\n    reserveTimeslotV3(\n      ignoreCartConflicts: $ignoreCartConflicts\n      fulfillmentDelivery: { saveAddress: $saveAddress, deliveryAddress: $deliveryAddress }\n      fulfillmentType: $fulfillmentType\n    ) {\n      ... on Cart {\n        ...ReserveTimeslotCartFragment\n      }\n      ... on ReserveTimeSlotConflictError {\n        ...ReserveTimeSlotConflictErrorFragment\n      }\n      ... on ReserveTimeslotErrorV3 {\n        message\n        title\n        code\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "3112-434902d87c08ae4a.js",
+    "operation": "CartFulfillment",
+    "body": "\n  query CartFulfillment {\n    cartV2 {\n      ... on Cart {\n        ...SessionContextFulfillmentFragment\n        ...CartFulfillmentFragment\n        ...CartFulfillmentItemsFragment\n      }\n      ... on CartError {\n        code\n        title\n        message\n      }\n    }\n    mySecurityStatus\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "3112-434902d87c08ae4a.js",
+    "operation": "listDeliveryTimeslotsV2",
+    "body": "\n  query listDeliveryTimeslotsV2(\n    $address: TimeslotsDeliveryAddressV2\n    $placeId: String\n    $since: DateTime\n    $until: DateTime\n    $limit: Int\n  ) {\n    listDeliveryTimeslotsV2(\n      address: $address\n      placeId: $placeId\n      since: $since\n      until: $until\n      limit: $limit\n    ) {\n      ... on DeliveryTimeslotsResultV2 {\n        deliveryAvailable\n        slotsByTier {\n          ...TimeslotsByTierFragment\n        }\n        slotsByDay {\n          ...TimeslotsByDayFragment\n        }\n        resolvedAddress {\n          addressLocality\n          addressRegion\n          placeId\n          postalCode\n          streetAddress\n        }\n        displayMessages {\n          messageType\n          titleShort\n          titleLong\n          summary\n          explanation\n          moreDetails\n        }\n        deliveryFees {\n          priceInfo {\n            listPrice {\n              formattedAmount\n            }\n          }\n        }\n        longDistanceDelivery\n        expandedDelivery\n      }\n      ... on DeliveryUnavailableResponse {\n        message\n      }\n      ... on DeliveryResponseError {\n        deliveryErrorCode: code\n        deliveryErrorMessage: message\n      }\n      ... on TimeslotsStandardErrorV2 {\n        code\n        message\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "3112-434902d87c08ae4a.js",
+    "operation": "listPickupTimeslotsV2",
+    "body": "\n  query listPickupTimeslotsV2($storeNumber: Int!, $since: DateTime, $until: DateTime, $limit: Int) {\n    listPickupTimeslotsV2(storeNumber: $storeNumber, since: $since, until: $until, limit: $limit) {\n      ... on PickupTimeslotsResultV2 {\n        slotsByTier {\n          ...TimeslotsByTierFragment\n        }\n        slotsByDay {\n          ...TimeslotsByDayFragment\n        }\n        displayMessages {\n          messageType\n          titleShort\n          titleLong\n          summary\n          explanation\n          moreDetails\n        }\n      }\n      ... on TimeslotsStandardErrorV2 {\n        message\n        code\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "3112-434902d87c08ae4a.js",
+    "operation": "ShippingAddresses",
+    "body": "\n  query ShippingAddresses {\n    myAddresses {\n      addressList {\n        id\n        address1\n        address2\n        city\n        state\n        postalCode\n        nickname\n      }\n    }\n  }\n",
+    "array_form": true
+  },
+  {
+    "chunk": "3112-434902d87c08ae4a.js",
+    "operation": "ReserveTimeslot",
+    "body": "\n  mutation ReserveTimeslot(\n    $id: String!\n    $date: String!\n    $fulfillmentType: TimeslotFulfillmentType!\n    $pickupStoreId: String!\n    $deliveryAddress: FulfillmentAddressInput\n    $ignoreCartConflicts: Boolean!\n    $storeId: Int!\n    $userIsLoggedIn: Boolean!\n  ) {\n    reserveTimeslotV3(\n      fulfillmentType: $fulfillmentType\n      fulfillmentPickup: { pickupStoreId: $pickupStoreId }\n      fulfillmentDelivery: { deliveryAddress: $deliveryAddress }\n      timeslot: { id: $id, date: $date }\n      ignoreCartConflicts: $ignoreCartConflicts\n    ) {\n      ... on Cart {\n        ...ReserveTimeslotCartFragment\n      }\n      ... on ReserveTimeSlotConflictError {\n        ...ReserveTimeSlotConflictErrorFragment\n      }\n      ... on ReserveTimeslotErrorV3 {\n        message\n        title\n        code\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "3112-434902d87c08ae4a.js",
+    "operation": "SelectPickupFulfillment",
+    "body": "\n  mutation SelectPickupFulfillment(\n    $pickupStoreId: String!\n    $ignoreCartConflicts: Boolean!\n    $storeId: Int!\n    $userIsLoggedIn: Boolean!\n    $fulfillmentType: TimeslotFulfillmentType! = PICKUP\n  ) {\n    reserveTimeslotV3(\n      ignoreCartConflicts: $ignoreCartConflicts\n      fulfillmentPickup: { pickupStoreId: $pickupStoreId }\n      fulfillmentType: $fulfillmentType\n    ) {\n      ... on Cart {\n        ...ReserveTimeslotCartFragment\n      }\n      ... on ReserveTimeSlotConflictError {\n        ...ReserveTimeSlotConflictErrorFragment\n      }\n      ... on ReserveTimeslotErrorV3 {\n        message\n        title\n        code\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "3112-434902d87c08ae4a.js",
+    "operation": "SelectDeliveryFulfillment",
+    "body": "\n  mutation SelectDeliveryFulfillment(\n    $ignoreCartConflicts: Boolean!\n    $saveAddress: Boolean\n    $deliveryAddress: FulfillmentAddressInput\n    $storeId: Int!\n    $userIsLoggedIn: Boolean!\n    $fulfillmentType: TimeslotFulfillmentType! = DELIVERY\n  ) {\n    reserveTimeslotV3(\n      ignoreCartConflicts: $ignoreCartConflicts\n      fulfillmentDelivery: { saveAddress: $saveAddress, deliveryAddress: $deliveryAddress }\n      fulfillmentType: $fulfillmentType\n    ) {\n      ... on Cart {\n        ...ReserveTimeslotCartFragment\n      }\n      ... on ReserveTimeSlotConflictError {\n        ...ReserveTimeSlotConflictErrorFragment\n      }\n      ... on ReserveTimeslotErrorV3 {\n        message\n        title\n        code\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "9110.eea0eea39823ec52.js",
+    "operation": "StoreSearch",
+    "body": "\n  query StoreSearch(\n    $address: String!\n    $radius: Int!\n    $fulfillmentChannels: [FulfillmentChannelName]\n    $includeEcommInactive: Boolean\n    $retailFormatCodes: [String]\n  ) {\n    searchStoresByAddress(\n      address: $address\n      radiusMiles: $radius\n      fulfillmentChannels: $fulfillmentChannels\n      includeEcommInactive: $includeEcommInactive\n      retailFormatCodes: $retailFormatCodes\n    ) {\n      ...StoreSearchFragment\n    }\n  }\n  "
+  },
+  {
+    "chunk": "9110.eea0eea39823ec52.js",
+    "operation": "StorePickerSearch",
+    "body": "\n  query StorePickerSearch(\n    $address: String!\n    $radius: Int!\n    $fulfillmentChannels: [FulfillmentChannelName]\n    $retailFormatCodes: [String]\n    $includeEcommInactive: Boolean\n    $includeNextAvailableTimeslot: Boolean = false\n  ) {\n    searchStoresByAddress(\n      address: $address\n      radiusMiles: $radius\n      fulfillmentChannels: $fulfillmentChannels\n      retailFormatCodes: $retailFormatCodes\n      includeEcommInactive: $includeEcommInactive\n    ) {\n      stores {\n        distanceMiles\n        nextAvailableTimeslot @include(if: $includeNextAvailableTimeslot) {\n          fetched\n          timeslot\n          allTimeslotsFull\n        }\n        store {\n          ...StoreAddressFragment\n          latitude\n          longitude\n        }\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "9110.eea0eea39823ec52.js",
+    "operation": "SearchStoresByNearbyStore",
+    "body": "\n  query SearchStoresByNearbyStore(\n    $radius: Int!\n    $retailFormatCodes: [String]\n    $fulfillmentChannels: [FulfillmentChannelName]\n    $includeEcommInactive: Boolean\n    $nearbyStoreId: Int!\n  ) {\n    searchStoresByNearbyStore(\n      radiusMiles: $radius\n      retailFormatCodes: $retailFormatCodes\n      fulfillmentChannels: $fulfillmentChannels\n      includeEcommInactive: $includeEcommInactive\n      nearbyStoreId: $nearbyStoreId\n    ) {\n      ...StoreSearchFragment\n    }\n  }\n  "
+  },
+  {
+    "chunk": "9110.eea0eea39823ec52.js",
+    "operation": "StoreName",
+    "body": "\n  query StoreName($storeNumber: Int!) {\n    store: storeById(storeNumber: $storeNumber) {\n      ... on Store {\n        storeNumber\n        name\n        storeFulfillments {\n          name\n        }\n      }\n      ... on ErrorMessage {\n        code\n      }\n    }\n  }\n"
+  },
+  {
+    "chunk": "9110.eea0eea39823ec52.js",
+    "operation": "StoreAddress",
+    "body": "\n  query StoreAddress($storeNumber: Int!) {\n    storeById(storeNumber: $storeNumber) {\n      ... on Store {\n        ...StoreAddressFragment\n      }\n      ... on ErrorMessage {\n        title\n        message\n        code\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "9110.eea0eea39823ec52.js",
+    "operation": "NearbyStores",
+    "body": "\n  query NearbyStores(\n    $latitude: Float!\n    $longitude: Float!\n    $radiusMiles: Int!\n    $size: Int\n    $offset: Int\n    $retailFormatCodes: [String]\n  ) {\n    searchStoresByCoordinates(\n      latitude: $latitude\n      longitude: $longitude\n      radiusMiles: $radiusMiles\n      size: $size\n      offset: $offset\n      retailFormatCodes: $retailFormatCodes\n    ) {\n      stores {\n        distanceMiles\n        store {\n          ...STORE_DETAILS_FRAGMENT\n        }\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "9110.eea0eea39823ec52.js",
+    "operation": "StoreDetailsSearch",
+    "body": "\n  query StoreDetailsSearch(\n    $address: String!\n    $radius: Int!\n    $size: Int\n    $retailFormatCodes: [String]\n  ) {\n    searchStoresByAddress(\n      address: $address\n      radiusMiles: $radius\n      size: $size\n      retailFormatCodes: $retailFormatCodes\n    ) {\n      stores {\n        distanceMiles\n        store {\n          longitude\n          latitude\n          ...STORE_DETAILS_FRAGMENT\n        }\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "9110.eea0eea39823ec52.js",
+    "operation": "SearchStoresByProductId",
+    "body": "\n  query SearchStoresByProductId(\n    $latitude: Float!\n    $longitude: Float!\n    $productId: ID!\n    $radiusMiles: Int\n    $size: Int\n  ) {\n    searchStoresByProductId(\n      latitude: $latitude\n      longitude: $longitude\n      radiusMiles: $radiusMiles\n      size: $size\n      productId: $productId\n    ) {\n      ... on SearchStoresByProductIdResult {\n        results {\n          productLocation\n          storeResult {\n            store {\n              ...StoreDetailsModalFragment\n              storeFulfillments {\n                fulfillmentChannelCode\n                name\n              }\n            }\n            distanceMiles\n          }\n        }\n      }\n      ... on ErrorMessage {\n        message\n        code\n      }\n      ... on StoreSearchInvalidRequest {\n        message\n        code\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "9110.eea0eea39823ec52.js",
+    "operation": "StoreDetailsPage",
+    "body": "\n  query StoreDetailsPage(\n    $storeId: Int!\n    $externalId: String!\n    $includeDraft: Boolean\n    $overrideCurrentTime: DateTime\n    $shoppingContext: ShoppingContext!\n    $userIsLoggedIn: Boolean = false\n  ) {\n    storeById(storeNumber: $storeId) {\n      ... on Store {\n        ...STORE_DETAILS_FRAGMENT\n        latitude\n        longitude\n        internalName\n        areas {\n          ...STORE_FEATURES_FRAGMENT\n        }\n        storeEvents {\n          eventId\n          description\n          pageUri\n        }\n      }\n      ... on ErrorMessage {\n        code\n      }\n    }\n    storeInformation(storeNumber: $storeId) {\n      id\n      storeNumber\n      storeImageUrl\n      storeLayoutUrl\n      title\n      description\n      redirectUrl\n    }\n    entryPoint(\n      externalId: $externalId\n      includeDraft: $includeDraft\n      overrideCurrentTime: $overrideCurrentTime\n      storeId: $storeId\n      shoppingContext: $shoppingContext\n    ) {\n      id\n      name\n      externalId\n      status\n      layout {\n        ...LayoutFragment\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "9110.eea0eea39823ec52.js",
+    "operation": "StoreDetailsModal",
+    "body": "\n  query StoreDetailsModal($storeId: Int!) {\n    storeById(storeNumber: $storeId) {\n      ... on Store {\n        ...StoreDetailsModalFragment\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "9110.eea0eea39823ec52.js",
+    "operation": "StoreSearch",
+    "body": "\n  query StoreSearch(\n    $address: String!\n    $radius: Int!\n    $fulfillmentChannels: [FulfillmentChannelName]\n    $includeEcommInactive: Boolean\n    $retailFormatCodes: [String]\n  ) {\n    searchStoresByAddress(\n      address: $address\n      radiusMiles: $radius\n      fulfillmentChannels: $fulfillmentChannels\n      includeEcommInactive: $includeEcommInactive\n      retailFormatCodes: $retailFormatCodes\n    ) {\n      ...StoreSearchFragment\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "9110.eea0eea39823ec52.js",
+    "operation": "StorePickerSearch",
+    "body": "\n  query StorePickerSearch(\n    $address: String!\n    $radius: Int!\n    $fulfillmentChannels: [FulfillmentChannelName]\n    $retailFormatCodes: [String]\n    $includeEcommInactive: Boolean\n    $includeNextAvailableTimeslot: Boolean = false\n  ) {\n    searchStoresByAddress(\n      address: $address\n      radiusMiles: $radius\n      fulfillmentChannels: $fulfillmentChannels\n      retailFormatCodes: $retailFormatCodes\n      includeEcommInactive: $includeEcommInactive\n    ) {\n      stores {\n        distanceMiles\n        nextAvailableTimeslot @include(if: $includeNextAvailableTimeslot) {\n          fetched\n          timeslot\n          allTimeslotsFull\n        }\n        store {\n          ...StoreAddressFragment\n          latitude\n          longitude\n        }\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "9110.eea0eea39823ec52.js",
+    "operation": "SearchStoresByNearbyStore",
+    "body": "\n  query SearchStoresByNearbyStore(\n    $radius: Int!\n    $retailFormatCodes: [String]\n    $fulfillmentChannels: [FulfillmentChannelName]\n    $includeEcommInactive: Boolean\n    $nearbyStoreId: Int!\n  ) {\n    searchStoresByNearbyStore(\n      radiusMiles: $radius\n      retailFormatCodes: $retailFormatCodes\n      fulfillmentChannels: $fulfillmentChannels\n      includeEcommInactive: $includeEcommInactive\n      nearbyStoreId: $nearbyStoreId\n    ) {\n      ...StoreSearchFragment\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "9110.eea0eea39823ec52.js",
+    "operation": "StoreName",
+    "body": "\n  query StoreName($storeNumber: Int!) {\n    store: storeById(storeNumber: $storeNumber) {\n      ... on Store {\n        storeNumber\n        name\n        storeFulfillments {\n          name\n        }\n      }\n      ... on ErrorMessage {\n        code\n      }\n    }\n  }\n",
+    "array_form": true
+  },
+  {
+    "chunk": "9110.eea0eea39823ec52.js",
+    "operation": "StoreAddress",
+    "body": "\n  query StoreAddress($storeNumber: Int!) {\n    storeById(storeNumber: $storeNumber) {\n      ... on Store {\n        ...StoreAddressFragment\n      }\n      ... on ErrorMessage {\n        title\n        message\n        code\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "9110.eea0eea39823ec52.js",
+    "operation": "NearbyStores",
+    "body": "\n  query NearbyStores(\n    $latitude: Float!\n    $longitude: Float!\n    $radiusMiles: Int!\n    $size: Int\n    $offset: Int\n    $retailFormatCodes: [String]\n  ) {\n    searchStoresByCoordinates(\n      latitude: $latitude\n      longitude: $longitude\n      radiusMiles: $radiusMiles\n      size: $size\n      offset: $offset\n      retailFormatCodes: $retailFormatCodes\n    ) {\n      stores {\n        distanceMiles\n        store {\n          ...STORE_DETAILS_FRAGMENT\n        }\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "9110.eea0eea39823ec52.js",
+    "operation": "StoreDetailsSearch",
+    "body": "\n  query StoreDetailsSearch(\n    $address: String!\n    $radius: Int!\n    $size: Int\n    $retailFormatCodes: [String]\n  ) {\n    searchStoresByAddress(\n      address: $address\n      radiusMiles: $radius\n      size: $size\n      retailFormatCodes: $retailFormatCodes\n    ) {\n      stores {\n        distanceMiles\n        store {\n          longitude\n          latitude\n          ...STORE_DETAILS_FRAGMENT\n        }\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "9110.eea0eea39823ec52.js",
+    "operation": "SearchStoresByProductId",
+    "body": "\n  query SearchStoresByProductId(\n    $latitude: Float!\n    $longitude: Float!\n    $productId: ID!\n    $radiusMiles: Int\n    $size: Int\n  ) {\n    searchStoresByProductId(\n      latitude: $latitude\n      longitude: $longitude\n      radiusMiles: $radiusMiles\n      size: $size\n      productId: $productId\n    ) {\n      ... on SearchStoresByProductIdResult {\n        results {\n          productLocation\n          storeResult {\n            store {\n              ...StoreDetailsModalFragment\n              storeFulfillments {\n                fulfillmentChannelCode\n                name\n              }\n            }\n            distanceMiles\n          }\n        }\n      }\n      ... on ErrorMessage {\n        message\n        code\n      }\n      ... on StoreSearchInvalidRequest {\n        message\n        code\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "9110.eea0eea39823ec52.js",
+    "operation": "StoreDetailsPage",
+    "body": "\n  query StoreDetailsPage(\n    $storeId: Int!\n    $externalId: String!\n    $includeDraft: Boolean\n    $overrideCurrentTime: DateTime\n    $shoppingContext: ShoppingContext!\n    $userIsLoggedIn: Boolean = false\n  ) {\n    storeById(storeNumber: $storeId) {\n      ... on Store {\n        ...STORE_DETAILS_FRAGMENT\n        latitude\n        longitude\n        internalName\n        areas {\n          ...STORE_FEATURES_FRAGMENT\n        }\n        storeEvents {\n          eventId\n          description\n          pageUri\n        }\n      }\n      ... on ErrorMessage {\n        code\n      }\n    }\n    storeInformation(storeNumber: $storeId) {\n      id\n      storeNumber\n      storeImageUrl\n      storeLayoutUrl\n      title\n      description\n      redirectUrl\n    }\n    entryPoint(\n      externalId: $externalId\n      includeDraft: $includeDraft\n      overrideCurrentTime: $overrideCurrentTime\n      storeId: $storeId\n      shoppingContext: $shoppingContext\n    ) {\n      id\n      name\n      externalId\n      status\n      layout {\n        ...LayoutFragment\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "9110.eea0eea39823ec52.js",
+    "operation": "StoreDetailsModal",
+    "body": "\n  query StoreDetailsModal($storeId: Int!) {\n    storeById(storeNumber: $storeId) {\n      ... on Store {\n        ...StoreDetailsModalFragment\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "4584-db71e2464394acba.js",
+    "operation": "UpdatePreferredStore",
+    "body": "\n  mutation UpdatePreferredStore($storeNumber: Int!) {\n    updatePreferredStore(storeNumber: $storeNumber) {\n      id\n      preferredStore {\n        storeNumber\n      }\n    }\n  }\n"
+  },
+  {
+    "chunk": "4584-db71e2464394acba.js",
+    "operation": "UpdatePreferredStore",
+    "body": "\n  mutation UpdatePreferredStore($storeNumber: Int!) {\n    updatePreferredStore(storeNumber: $storeNumber) {\n      id\n      preferredStore {\n        storeNumber\n      }\n    }\n  }\n",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "GetLoggedInUserInformation",
+    "body": "\n  query GetLoggedInUserInformation {\n    me {\n      ...BaseUserFragment\n    }\n  }\n  "
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "UserChatContactInfo",
+    "body": "\n  query UserChatContactInfo {\n    me {\n      email\n      daytimeTelephoneNumber\n    }\n  }\n"
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "myPreferredStore",
+    "body": "\n  query myPreferredStore {\n    me {\n      id\n      preferredStore {\n        storeNumber\n      }\n    }\n  }\n"
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "typeaheadContent",
+    "body": "\n  query typeaheadContent($term: String, $searchMode: SearchMode) {\n    typeaheadContent(term: $term, searchMode: $searchMode) {\n      verticalStack {\n        ... on TypeaheadTypingSuggestedSearches {\n          terms\n        }\n        ... on TypeaheadRecentSearches {\n          recentSearchTerms\n        }\n        ... on TypeaheadTrendingSearches {\n          trendingSearches\n        }\n        ... on TypeaheadTrendingCategories {\n          trendingCategories {\n            categoryName\n            categoryUrl\n          }\n        }\n        ... on TypeaheadShortcuts {\n          sectionTitle\n          typeaheadShortcuts {\n            name\n            id\n            shortcutImageUrl\n            shortcutText\n            shortcutCardDestinationUrl\n            shortcutImageAltText\n          }\n        }\n      }\n    }\n  }\n"
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "ProductGroupDetails",
+    "body": "\n  query ProductGroupDetails(\n    $paging: PagingArgs!\n    $id: String!\n    $storeId: Int!\n    $shoppingContext: ShoppingContext!\n    $filter: String\n    $sortBy: SearchSortBy\n    $sortDirection: SearchSortDirection\n  ) {\n    productGroupDetails(\n      paging: $paging\n      id: $id\n      storeId: $storeId\n      shoppingContext: $shoppingContext\n      filter: $filter\n      sortBy: $sortBy\n      sortDirection: $sortDirection\n    ) {\n      records {\n        ...ProductSearchFragment\n      }\n      cursorList\n      previousCursor\n      nextCursor\n      total\n      hasMoreRecords\n      filters {\n        ...ProductSearchFiltersFragment\n      }\n      sortValues {\n        displayName\n        sortBy\n        sortDirection\n        selected\n        isDefault\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "CategoryBrowsePage",
+    "body": "\n  query CategoryBrowsePage(\n    $params: CategoryBrowsePageParams!\n    $storeId: Int!\n    $storeIdString: String!\n    $categoryId: String!\n    $searchContextToken: String\n    $searchPageLayout: SearchPageLayout!\n    $shoppingContext: ShoppingContext!\n    $userIsLoggedIn: Boolean = false\n  ) {\n    categoryBrowsePage(\n      params: $params\n      searchContextToken: $searchContextToken\n      searchPageLayout: $searchPageLayout\n    ) {\n      ... on SearchPage {\n        layout {\n          ...LayoutFragment\n          ... on VerticalStackLayout {\n            visualComponents {\n              ... on HrmBannerV1 {\n                ...CategoryBillboardBannerFragment\n              }\n            }\n          }\n        }\n        redirectToUrl\n        categoryBreadCrumbs {\n          ...CategoryBreadcrumbsFragment\n        }\n        sponsoredHeaderBanners {\n          ...SponsoredHeaderBannerFragment\n        }\n      }\n      ... on SearchPageError {\n        code\n        message\n      }\n    }\n  }\n"
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "CategoryList",
+    "body": "\n  query CategoryList($context: String, $shoppingStore: Int) {\n    categoryList(context: $context, shoppingStore: $shoppingStore) {\n      categories {\n        categoryId\n        categoryName\n      }\n    }\n  }\n"
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "productPrefsForProduct",
+    "body": "\n  query productPrefsForProduct($id: String!, $storeId: String) {\n    product: getProductById(id: $id, storeId: $storeId) {\n      id\n      purchasePreferenceList {\n        label\n        purchasePreferences {\n          preferenceId\n          text\n          subtext\n        }\n      }\n    }\n  }\n"
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "productSearchPageV2",
+    "body": "\n  query productSearchPageV2(\n    $params: SearchPageParamsV2!\n    $searchMode: SearchMode\n    $searchContextToken: String\n    $searchPageLayout: SearchPageLayout\n    $storeId: Int!\n    $shoppingContext: ShoppingContext!\n    $userIsLoggedIn: Boolean = false\n  ) {\n    productSearchPageV2(\n      params: $params\n      searchMode: $searchMode\n      searchContextToken: $searchContextToken\n      searchPageLayout: $searchPageLayout\n    ) {\n      ... on SearchPage {\n        layout {\n          ...LayoutFragment\n        }\n        redirectToUrl\n        sponsoredHeaderBanners {\n          ...SponsoredHeaderBannerFragment\n        }\n      }\n      ... on SearchPageError {\n        code\n        message\n      }\n    }\n  }\n"
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "productSearchItems",
+    "body": "\n  query productSearchItems(\n    $params: SearchPageParamsV2!\n    $searchMode: SearchMode\n    $searchContextToken: String\n    $searchPageLayout: SearchPageLayout!\n    $amount: Float = 0.00\n    $includeUnitPriceDiff: Boolean! = false\n    $storeId: Int!\n    $shoppingContext: ShoppingContext!\n    $userIsLoggedIn: Boolean = false\n  ) {\n    productSearchItems(\n      params: $params\n      searchMode: $searchMode\n      searchContextToken: $searchContextToken\n      searchPageLayout: $searchPageLayout\n    ) {\n      ... on ProductSearchItemsResult {\n        redirectToUrl\n        searchGrid {\n          ...SearchGridV2Fragment\n          items {\n            ... on Product @skip(if: $includeUnitPriceDiff) {\n              ...ProductSearchFragment\n            }\n            ... on Product @include(if: $includeUnitPriceDiff) {\n              ...ProductSearchWithPriceDiffFragment\n            }\n          }\n        }\n        sponsoredHeaderBanners {\n          ...SponsoredHeaderBannerFragment\n        }\n      }\n      ... on SearchPageError {\n        code\n        message\n      }\n    }\n  }\n"
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "DeleteRecentSearch",
+    "body": "\n  mutation DeleteRecentSearch($query: String!) {\n    deleteRecentSearch(query: $query) {\n      message\n    }\n  }\n"
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "CartSource",
+    "body": "\n  query CartSource {\n    cartV2 {\n      ... on Cart {\n        ...CartSourceFragment\n      }\n      ... on CartError {\n        code\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "cartEstimated",
+    "body": "\n  query cartEstimated($orderId: String, $userIsLoggedIn: Boolean! = false) {\n    cartV2(orderId: $orderId) {\n      ...CartWithCouponsFragment\n      ... on CartError {\n        code\n        title\n        message\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "cartItemsTable",
+    "body": "\n  query cartItemsTable {\n    cartV2 {\n      ...CartItemsFragment\n      ...SessionContextFulfillmentFragment\n      ... on CartError {\n        code\n        title\n        message\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "shoppingListCarouselV2",
+    "body": "\n  query shoppingListCarouselV2($input: ShoppingListCarouselInputV2!) {\n    ShoppingListCarouselV2(input: $input) {\n      ... on ProductList {\n        productItems {\n          ...ProductCardFragment\n        }\n      }\n      ... on ShoppingListErrorV2 {\n        message\n        title\n        code\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "getSimilarProducts",
+    "body": "\n  query getSimilarProducts(\n    $productId: ID!\n    $storeId: ID!\n    $count: Int\n    $shoppingContext: ShoppingContext!\n    $timeSlotStartTime: DateTimeISO\n  ) {\n    getSimilarProducts(\n      productId: $productId\n      storeId: $storeId\n      count: $count\n      timeSlotStartTime: $timeSlotStartTime\n      shoppingContext: $shoppingContext\n    ) {\n      ... on SimilarProductsList {\n        similarProducts {\n          ...CartSimilarProduct\n        }\n      }\n      ... on SimilarProductsError {\n        code\n        title\n        message\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "getSuggestedBackups",
+    "body": "\n  query getSuggestedBackups($input: SuggestedBackupsInput!, $userIsLoggedIn: Boolean = false) {\n    getSuggestedBackups(input: $input) {\n      ... on Product {\n        ...CartSimilarProduct\n      }\n    }\n    cartV2 {\n      ... on Cart {\n        ...CartWithCouponsFragment\n      }\n      ... on CartError {\n        code\n        title\n        message\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "getBuyItAgainCarousel",
+    "body": "\n  query getBuyItAgainCarousel(\n    $storeIdString: ID!\n    $shoppingContext: ShoppingContext!\n    $excludeInCart: ExcludeInCart\n    $timeSlotStartTime: DateTimeISO\n    $storeId: Int!\n    $userIsLoggedIn: Boolean!\n    $productCount: Int\n  ) {\n    getBuyItAgainCarousel(\n      storeId: $storeIdString\n      shoppingContext: $shoppingContext\n      excludeInCart: $excludeInCart\n      timeSlotStartTime: $timeSlotStartTime\n      productCount: $productCount\n    ) {\n      ... on Carousel {\n        ...CarouselFragment\n      }\n      ... on GetBuyItAgainCarouselError {\n        code\n        title\n        message\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "GetCartFulfillment",
+    "body": "\n  query GetCartFulfillment {\n    getCartFulfillment {\n      ... on FulfillmentContext {\n        cartId\n        addressAllowAlcohol\n        fulfillmentType\n        storeId\n        timeslot {\n          recordId\n          expiryDateTime\n          expiry\n          startDateTime\n          startTime\n          date\n        }\n      }\n      ... on CartError {\n        code\n        title\n        message\n      }\n    }\n  }\n"
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "DefaultFulfillment",
+    "body": "\n  query DefaultFulfillment {\n    defaultFulfillment {\n      ... on DefaultFulfillment {\n        pickupStoreV2 {\n          ...PickupStoreAddressFragment\n        }\n        deliveryAddress {\n          address1\n          address2\n          city\n          state\n          postalCode\n          nickname\n        }\n        deliveryAddressStore {\n          store {\n            id\n            name\n          }\n        }\n      }\n      ... on DefaultFulfillmentError {\n        title\n        message\n        code\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "SessionContext",
+    "body": "\n  query SessionContext {\n    cartV2 {\n      ... on Cart {\n        ...SessionContextFulfillmentFragment\n      }\n      ... on CartError {\n        code\n        title\n        message\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "CartContext",
+    "body": "\n  query CartContext {\n    cartV2 {\n      ... on Cart {\n        ...SessionContextFulfillmentFragment\n        ...CartItemsFragment\n        ...CartSourceFragment\n      }\n      ... on CartError {\n        code\n        title\n        message\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "header",
+    "body": "\n  query header {\n    cartV2 {\n      ... on Cart {\n        ...SessionContextFulfillmentFragment\n        ...CartSourceFragment\n      }\n      ... on CartError {\n        code\n        title\n        message\n      }\n    }\n    me {\n      ...MySessionFragment\n    }\n    mySecurityStatus\n  }\n  "
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "ShopNavigation",
+    "body": "\n  query ShopNavigation($storeId: Int!, $shoppingContext: ShoppingContext!) {\n    shopNavigation: shopNavigationV2(storeId: $storeId, shoppingContext: $shoppingContext) {\n      id\n      destinationUrl\n      displayName\n      subItems {\n        destinationUrl\n        displayName\n      }\n    }\n  }\n"
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "ShoppingStore",
+    "body": "\n  query ShoppingStore($storeNumber: Int!) {\n    storeById(storeNumber: $storeNumber) {\n      ... on Store {\n        ...ShoppingStore\n      }\n      ... on ErrorMessage {\n        title\n        message\n        code\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "GetLoggedInUserInformation",
+    "body": "\n  query GetLoggedInUserInformation {\n    me {\n      ...BaseUserFragment\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "UserChatContactInfo",
+    "body": "\n  query UserChatContactInfo {\n    me {\n      email\n      daytimeTelephoneNumber\n    }\n  }\n",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "myPreferredStore",
+    "body": "\n  query myPreferredStore {\n    me {\n      id\n      preferredStore {\n        storeNumber\n      }\n    }\n  }\n",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "typeaheadContent",
+    "body": "\n  query typeaheadContent($term: String, $searchMode: SearchMode) {\n    typeaheadContent(term: $term, searchMode: $searchMode) {\n      verticalStack {\n        ... on TypeaheadTypingSuggestedSearches {\n          terms\n        }\n        ... on TypeaheadRecentSearches {\n          recentSearchTerms\n        }\n        ... on TypeaheadTrendingSearches {\n          trendingSearches\n        }\n        ... on TypeaheadTrendingCategories {\n          trendingCategories {\n            categoryName\n            categoryUrl\n          }\n        }\n        ... on TypeaheadShortcuts {\n          sectionTitle\n          typeaheadShortcuts {\n            name\n            id\n            shortcutImageUrl\n            shortcutText\n            shortcutCardDestinationUrl\n            shortcutImageAltText\n          }\n        }\n      }\n    }\n  }\n",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "ProductGroupDetails",
+    "body": "\n  query ProductGroupDetails(\n    $paging: PagingArgs!\n    $id: String!\n    $storeId: Int!\n    $shoppingContext: ShoppingContext!\n    $filter: String\n    $sortBy: SearchSortBy\n    $sortDirection: SearchSortDirection\n  ) {\n    productGroupDetails(\n      paging: $paging\n      id: $id\n      storeId: $storeId\n      shoppingContext: $shoppingContext\n      filter: $filter\n      sortBy: $sortBy\n      sortDirection: $sortDirection\n    ) {\n      records {\n        ...ProductSearchFragment\n      }\n      cursorList\n      previousCursor\n      nextCursor\n      total\n      hasMoreRecords\n      filters {\n        ...ProductSearchFiltersFragment\n      }\n      sortValues {\n        displayName\n        sortBy\n        sortDirection\n        selected\n        isDefault\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "CategoryList",
+    "body": "\n  query CategoryList($context: String, $shoppingStore: Int) {\n    categoryList(context: $context, shoppingStore: $shoppingStore) {\n      categories {\n        categoryId\n        categoryName\n      }\n    }\n  }\n",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "productPrefsForProduct",
+    "body": "\n  query productPrefsForProduct($id: String!, $storeId: String) {\n    product: getProductById(id: $id, storeId: $storeId) {\n      id\n      purchasePreferenceList {\n        label\n        purchasePreferences {\n          preferenceId\n          text\n          subtext\n        }\n      }\n    }\n  }\n",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "DeleteRecentSearch",
+    "body": "\n  mutation DeleteRecentSearch($query: String!) {\n    deleteRecentSearch(query: $query) {\n      message\n    }\n  }\n",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "CartSource",
+    "body": "\n  query CartSource {\n    cartV2 {\n      ... on Cart {\n        ...CartSourceFragment\n      }\n      ... on CartError {\n        code\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "cartEstimated",
+    "body": "\n  query cartEstimated($orderId: String, $userIsLoggedIn: Boolean! = false) {\n    cartV2(orderId: $orderId) {\n      ...CartWithCouponsFragment\n      ... on CartError {\n        code\n        title\n        message\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "cartItemsTable",
+    "body": "\n  query cartItemsTable {\n    cartV2 {\n      ...CartItemsFragment\n      ...SessionContextFulfillmentFragment\n      ... on CartError {\n        code\n        title\n        message\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "shoppingListCarouselV2",
+    "body": "\n  query shoppingListCarouselV2($input: ShoppingListCarouselInputV2!) {\n    ShoppingListCarouselV2(input: $input) {\n      ... on ProductList {\n        productItems {\n          ...ProductCardFragment\n        }\n      }\n      ... on ShoppingListErrorV2 {\n        message\n        title\n        code\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "getSimilarProducts",
+    "body": "\n  query getSimilarProducts(\n    $productId: ID!\n    $storeId: ID!\n    $count: Int\n    $shoppingContext: ShoppingContext!\n    $timeSlotStartTime: DateTimeISO\n  ) {\n    getSimilarProducts(\n      productId: $productId\n      storeId: $storeId\n      count: $count\n      timeSlotStartTime: $timeSlotStartTime\n      shoppingContext: $shoppingContext\n    ) {\n      ... on SimilarProductsList {\n        similarProducts {\n          ...CartSimilarProduct\n        }\n      }\n      ... on SimilarProductsError {\n        code\n        title\n        message\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "getSuggestedBackups",
+    "body": "\n  query getSuggestedBackups($input: SuggestedBackupsInput!, $userIsLoggedIn: Boolean = false) {\n    getSuggestedBackups(input: $input) {\n      ... on Product {\n        ...CartSimilarProduct\n      }\n    }\n    cartV2 {\n      ... on Cart {\n        ...CartWithCouponsFragment\n      }\n      ... on CartError {\n        code\n        title\n        message\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "getBuyItAgainCarousel",
+    "body": "\n  query getBuyItAgainCarousel(\n    $storeIdString: ID!\n    $shoppingContext: ShoppingContext!\n    $excludeInCart: ExcludeInCart\n    $timeSlotStartTime: DateTimeISO\n    $storeId: Int!\n    $userIsLoggedIn: Boolean!\n    $productCount: Int\n  ) {\n    getBuyItAgainCarousel(\n      storeId: $storeIdString\n      shoppingContext: $shoppingContext\n      excludeInCart: $excludeInCart\n      timeSlotStartTime: $timeSlotStartTime\n      productCount: $productCount\n    ) {\n      ... on Carousel {\n        ...CarouselFragment\n      }\n      ... on GetBuyItAgainCarouselError {\n        code\n        title\n        message\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "GetCartFulfillment",
+    "body": "\n  query GetCartFulfillment {\n    getCartFulfillment {\n      ... on FulfillmentContext {\n        cartId\n        addressAllowAlcohol\n        fulfillmentType\n        storeId\n        timeslot {\n          recordId\n          expiryDateTime\n          expiry\n          startDateTime\n          startTime\n          date\n        }\n      }\n      ... on CartError {\n        code\n        title\n        message\n      }\n    }\n  }\n",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "DefaultFulfillment",
+    "body": "\n  query DefaultFulfillment {\n    defaultFulfillment {\n      ... on DefaultFulfillment {\n        pickupStoreV2 {\n          ...PickupStoreAddressFragment\n        }\n        deliveryAddress {\n          address1\n          address2\n          city\n          state\n          postalCode\n          nickname\n        }\n        deliveryAddressStore {\n          store {\n            id\n            name\n          }\n        }\n      }\n      ... on DefaultFulfillmentError {\n        title\n        message\n        code\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "SessionContext",
+    "body": "\n  query SessionContext {\n    cartV2 {\n      ... on Cart {\n        ...SessionContextFulfillmentFragment\n      }\n      ... on CartError {\n        code\n        title\n        message\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "CartContext",
+    "body": "\n  query CartContext {\n    cartV2 {\n      ... on Cart {\n        ...SessionContextFulfillmentFragment\n        ...CartItemsFragment\n        ...CartSourceFragment\n      }\n      ... on CartError {\n        code\n        title\n        message\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "header",
+    "body": "\n  query header {\n    cartV2 {\n      ... on Cart {\n        ...SessionContextFulfillmentFragment\n        ...CartSourceFragment\n      }\n      ... on CartError {\n        code\n        title\n        message\n      }\n    }\n    me {\n      ...MySessionFragment\n    }\n    mySecurityStatus\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "ShopNavigation",
+    "body": "\n  query ShopNavigation($storeId: Int!, $shoppingContext: ShoppingContext!) {\n    shopNavigation: shopNavigationV2(storeId: $storeId, shoppingContext: $shoppingContext) {\n      id\n      destinationUrl\n      displayName\n      subItems {\n        destinationUrl\n        displayName\n      }\n    }\n  }\n",
+    "array_form": true
+  },
+  {
+    "chunk": "_app-6e1a4bf0aabf9c21.js",
+    "operation": "ShoppingStore",
+    "body": "\n  query ShoppingStore($storeNumber: Int!) {\n    storeById(storeNumber: $storeNumber) {\n      ... on Store {\n        ...ShoppingStore\n      }\n      ... on ErrorMessage {\n        title\n        message\n        code\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "1419-0df097880f4bb9af.js",
+    "operation": "emptyCartV2",
+    "body": "\n  mutation emptyCartV2($orderId: String, $userIsLoggedIn: Boolean! = false) {\n    emptyCartV2(orderId: $orderId) {\n      ... on Cart {\n        ...CartWithCouponsFragment\n      }\n      ... on EmptyCartError {\n        title\n        message\n        code: errorCode\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "1419-0df097880f4bb9af.js",
+    "operation": "allowAllSubs",
+    "body": "\n  mutation allowAllSubs(\n    $allowSubstitutions: Boolean!\n    $parentOrderId: String\n    $userIsLoggedIn: Boolean! = false\n  ) {\n    updateCartAllowAllSubstitutions(\n      allowSubstitutions: $allowSubstitutions\n      parentOrderId: $parentOrderId\n    ) {\n      ... on Cart {\n        ...CartWithCouponsFragment\n      }\n      ... on ErrorMessage {\n        title\n        message\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "1419-0df097880f4bb9af.js",
+    "operation": "cartItemV2",
+    "body": "\n  mutation cartItemV2(\n    $productId: String!\n    $skuId: String!\n    $weight: Float\n    $note: String\n    $quantity: Int\n    $purchasePreferenceId: String\n    $allowSubstitution: Boolean\n    $parentOrderId: String\n    $userIsLoggedIn: Boolean = false\n  ) {\n    addItemToCartV2(\n      productId: $productId\n      skuId: $skuId\n      weight: $weight\n      note: $note\n      quantity: $quantity\n      purchasePreferenceId: $purchasePreferenceId\n      allowSubstitution: $allowSubstitution\n      parentOrderId: $parentOrderId\n    ) {\n      ... on Cart {\n        ...CartWithCouponsFragment\n      }\n      ... on AddOnsCart {\n        id\n        maxAddOnItems\n        remainingAddOnItems\n        cart {\n          ...CartWithCouponsFragment\n        }\n      }\n      ... on AddItemToCartV2Error {\n        message\n        title\n        code\n      }\n      ... on AddItemToCartV2TimeslotError {\n        message\n        title\n        errorCode: code\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "1419-0df097880f4bb9af.js",
+    "operation": "applyPromo",
+    "body": "\n  mutation applyPromo($promoCode: String!, $includeTax: Boolean = false) {\n    applyPromoCodeV2(promoCode: $promoCode) {\n      ...CartTotalFragment\n      ... on ApplyPromoCodeError {\n        message\n        title\n        code\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "1419-0df097880f4bb9af.js",
+    "operation": "editOrderNote",
+    "body": "\n  mutation editOrderNote($note: String) {\n    editOrderNoteV2(note: $note) {\n      ... on Cart {\n        id\n        orderNote\n      }\n      ... on ErrorMessage {\n        message\n        title\n        code\n      }\n    }\n  }\n"
+  },
+  {
+    "chunk": "1419-0df097880f4bb9af.js",
+    "operation": "multipleCartItemsV2",
+    "body": "\n  mutation multipleCartItemsV2($items: [CartItemInput]!, $userIsLoggedIn: Boolean = false) {\n    addMultipleItemsToCartV2(items: $items) {\n      ... on AddMultipleItemsToCartSuccess {\n        cart {\n          ...CartWithCouponsFragment\n        }\n      }\n      ... on AddMultipleItemsToCartPartialSuccess {\n        cart {\n          ...CartWithCouponsFragment\n        }\n        errors {\n          ...CartPartialSuccessErrorFragment\n        }\n      }\n      ... on AddMultipleItemsToCartErrors {\n        code\n        message\n        title\n        timestamp\n        errors {\n          ...CartErrorFragment\n        }\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "1419-0df097880f4bb9af.js",
+    "operation": "allowSubsWithBackupSubs",
+    "body": "\n  mutation allowSubsWithBackupSubs(\n    $upsertBackupSubstitutionInput: UpsertBackupSubstitutionInput!\n    $userIsLoggedIn: Boolean = false\n  ) {\n    upsertBackupSubstitution(upsertBackupSubstitutionInput: $upsertBackupSubstitutionInput) {\n      ... on Cart {\n        ...CartWithCouponsFragment\n      }\n      ... on BackupSubstitutionError {\n        code\n        title\n        message\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "1419-0df097880f4bb9af.js",
+    "operation": "AddOnsCart",
+    "body": "\n  query AddOnsCart($orderId: String!) {\n    addOnsCart(orderId: $orderId) {\n      maxAddOnItems\n      cart {\n        id\n        currentTime\n        containsBestAvailableItem\n        bestAvailableDisclaimer\n        ageVerificationRequired\n        containsAlcohol\n        contactInfo {\n          firstName\n          lastName\n          phoneNumber\n          email\n        }\n        timeslot {\n          ...CheckoutTimeslotFragment\n        }\n        paymentGroups {\n          ...AddOnsCartPaymentGroupsFragment\n        }\n        itemCount {\n          total\n        }\n        fulfillment {\n          ...CheckoutFulfillmentFragment\n        }\n        items {\n          ...CheckoutItemsFragment\n        }\n        price {\n          ...AddOnsCartTotalFragment\n        }\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "1419-0df097880f4bb9af.js",
+    "operation": "addOnsCartCart",
+    "body": "\n  query addOnsCartCart($orderId: String!, $userIsLoggedIn: Boolean! = false) {\n    addOnsCart(orderId: $orderId) {\n      id\n      maxAddOnItems\n      remainingAddOnItems\n      cart {\n        ...CartWithCouponsFragment\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "1419-0df097880f4bb9af.js",
+    "operation": "maxAddOnItems",
+    "body": "\n  query maxAddOnItems($orderId: String!) {\n    addOnsCart(orderId: $orderId) {\n      id\n      maxAddOnItems\n      remainingAddOnItems\n    }\n  }\n"
+  },
+  {
+    "chunk": "1419-0df097880f4bb9af.js",
+    "operation": "emptyCartV2",
+    "body": "\n  mutation emptyCartV2($orderId: String, $userIsLoggedIn: Boolean! = false) {\n    emptyCartV2(orderId: $orderId) {\n      ... on Cart {\n        ...CartWithCouponsFragment\n      }\n      ... on EmptyCartError {\n        title\n        message\n        code: errorCode\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "1419-0df097880f4bb9af.js",
+    "operation": "allowAllSubs",
+    "body": "\n  mutation allowAllSubs(\n    $allowSubstitutions: Boolean!\n    $parentOrderId: String\n    $userIsLoggedIn: Boolean! = false\n  ) {\n    updateCartAllowAllSubstitutions(\n      allowSubstitutions: $allowSubstitutions\n      parentOrderId: $parentOrderId\n    ) {\n      ... on Cart {\n        ...CartWithCouponsFragment\n      }\n      ... on ErrorMessage {\n        title\n        message\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "1419-0df097880f4bb9af.js",
+    "operation": "cartItemV2",
+    "body": "\n  mutation cartItemV2(\n    $productId: String!\n    $skuId: String!\n    $weight: Float\n    $note: String\n    $quantity: Int\n    $purchasePreferenceId: String\n    $allowSubstitution: Boolean\n    $parentOrderId: String\n    $userIsLoggedIn: Boolean = false\n  ) {\n    addItemToCartV2(\n      productId: $productId\n      skuId: $skuId\n      weight: $weight\n      note: $note\n      quantity: $quantity\n      purchasePreferenceId: $purchasePreferenceId\n      allowSubstitution: $allowSubstitution\n      parentOrderId: $parentOrderId\n    ) {\n      ... on Cart {\n        ...CartWithCouponsFragment\n      }\n      ... on AddOnsCart {\n        id\n        maxAddOnItems\n        remainingAddOnItems\n        cart {\n          ...CartWithCouponsFragment\n        }\n      }\n      ... on AddItemToCartV2Error {\n        message\n        title\n        code\n      }\n      ... on AddItemToCartV2TimeslotError {\n        message\n        title\n        errorCode: code\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "1419-0df097880f4bb9af.js",
+    "operation": "applyPromo",
+    "body": "\n  mutation applyPromo($promoCode: String!, $includeTax: Boolean = false) {\n    applyPromoCodeV2(promoCode: $promoCode) {\n      ...CartTotalFragment\n      ... on ApplyPromoCodeError {\n        message\n        title\n        code\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "1419-0df097880f4bb9af.js",
+    "operation": "editOrderNote",
+    "body": "\n  mutation editOrderNote($note: String) {\n    editOrderNoteV2(note: $note) {\n      ... on Cart {\n        id\n        orderNote\n      }\n      ... on ErrorMessage {\n        message\n        title\n        code\n      }\n    }\n  }\n",
+    "array_form": true
+  },
+  {
+    "chunk": "1419-0df097880f4bb9af.js",
+    "operation": "multipleCartItemsV2",
+    "body": "\n  mutation multipleCartItemsV2($items: [CartItemInput]!, $userIsLoggedIn: Boolean = false) {\n    addMultipleItemsToCartV2(items: $items) {\n      ... on AddMultipleItemsToCartSuccess {\n        cart {\n          ...CartWithCouponsFragment\n        }\n      }\n      ... on AddMultipleItemsToCartPartialSuccess {\n        cart {\n          ...CartWithCouponsFragment\n        }\n        errors {\n          ...CartPartialSuccessErrorFragment\n        }\n      }\n      ... on AddMultipleItemsToCartErrors {\n        code\n        message\n        title\n        timestamp\n        errors {\n          ...CartErrorFragment\n        }\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "1419-0df097880f4bb9af.js",
+    "operation": "allowSubsWithBackupSubs",
+    "body": "\n  mutation allowSubsWithBackupSubs(\n    $upsertBackupSubstitutionInput: UpsertBackupSubstitutionInput!\n    $userIsLoggedIn: Boolean = false\n  ) {\n    upsertBackupSubstitution(upsertBackupSubstitutionInput: $upsertBackupSubstitutionInput) {\n      ... on Cart {\n        ...CartWithCouponsFragment\n      }\n      ... on BackupSubstitutionError {\n        code\n        title\n        message\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "1419-0df097880f4bb9af.js",
+    "operation": "AddOnsCart",
+    "body": "\n  query AddOnsCart($orderId: String!) {\n    addOnsCart(orderId: $orderId) {\n      maxAddOnItems\n      cart {\n        id\n        currentTime\n        containsBestAvailableItem\n        bestAvailableDisclaimer\n        ageVerificationRequired\n        containsAlcohol\n        contactInfo {\n          firstName\n          lastName\n          phoneNumber\n          email\n        }\n        timeslot {\n          ...CheckoutTimeslotFragment\n        }\n        paymentGroups {\n          ...AddOnsCartPaymentGroupsFragment\n        }\n        itemCount {\n          total\n        }\n        fulfillment {\n          ...CheckoutFulfillmentFragment\n        }\n        items {\n          ...CheckoutItemsFragment\n        }\n        price {\n          ...AddOnsCartTotalFragment\n        }\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "1419-0df097880f4bb9af.js",
+    "operation": "addOnsCartCart",
+    "body": "\n  query addOnsCartCart($orderId: String!, $userIsLoggedIn: Boolean! = false) {\n    addOnsCart(orderId: $orderId) {\n      id\n      maxAddOnItems\n      remainingAddOnItems\n      cart {\n        ...CartWithCouponsFragment\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "1419-0df097880f4bb9af.js",
+    "operation": "maxAddOnItems",
+    "body": "\n  query maxAddOnItems($orderId: String!) {\n    addOnsCart(orderId: $orderId) {\n      id\n      maxAddOnItems\n      remainingAddOnItems\n    }\n  }\n",
+    "array_form": true
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "getShoppingListsV2",
+    "body": "\n  query getShoppingListsV2 {\n    getShoppingListsV2 {\n      ... on ShoppingListsWithHeaderPageV2 {\n        thisPage {\n          sort\n          sortDirection\n          totalCount\n          page\n          size\n        }\n        nextPage {\n          page\n          size\n          sort\n          sortDirection\n          totalCount\n        }\n        lists {\n          totalItemCount\n          name\n          id\n          created\n          updated\n          isActive\n          fulfillment {\n            store {\n              ... on Store {\n                storeNumber\n                name\n              }\n            }\n          }\n        }\n        header {\n          ... on ShoppingListV2 {\n            id\n            metadata {\n              role\n              shoppingListVisibilityLevel\n            }\n          }\n          ... on ShoppingListErrorV2 {\n            code\n            message\n            title\n          }\n        }\n      }\n      ... on ShoppingListErrorV2 {\n        code\n        message\n        title\n      }\n    }\n  }\n"
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "getShoppingListV2",
+    "body": "\n  query getShoppingListV2($input: GetShoppingListInputV2!) {\n    getShoppingListV2(input: $input) {\n      ... on ShoppingListV2 {\n        ...ListDetailFragment\n      }\n      ... on ShoppingListErrorV2 {\n        code\n        title\n        message\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "updateShoppingList",
+    "body": "\n  mutation updateShoppingList($input: UpdateShoppingListInputV2!) {\n    updateShoppingListV2(input: $input) {\n      ... on ShoppingListV2 {\n        id\n        name\n        description\n      }\n\n      ...ShoppingListErrorFragment\n    }\n  }\n  "
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "deleteShoppingLists",
+    "body": "\n  mutation deleteShoppingLists($input: DeleteShoppingListsInputV2!) {\n    deleteShoppingListsV2(input: $input) {\n      ... on ShoppingListsPreviewPageV2 {\n        lists {\n          id\n          name\n          description\n        }\n      }\n      ...ShoppingListErrorFragment\n    }\n  }\n  "
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "createShoppingList",
+    "body": "\n  mutation createShoppingList($input: CreateShoppingListInputV2!) {\n    createShoppingListV2(input: $input) {\n      ... on ShoppingListPreviewV2 {\n        id\n        name\n        description\n      }\n\n      ...ShoppingListErrorFragment\n    }\n  }\n  "
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "addToShoppingListV2",
+    "body": "\n  mutation addToShoppingListV2($input: AddShoppingListItemsInputV2!) {\n    addShoppingListItemsV2(input: $input) {\n      ... on ShoppingListV2 {\n        ...ListDetailFragment\n      }\n\n      ...ShoppingListErrorFragment\n    }\n  }\n  "
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "deleteShoppingListItems",
+    "body": "\n  mutation deleteShoppingListItems($input: DeleteShoppingListItemsInputV2!) {\n    deleteShoppingListItemsV2(input: $input) {\n      ... on ShoppingListV2 {\n        ...ListDetailFragment\n      }\n      ...ShoppingListErrorFragment\n    }\n  }\n\n  "
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "updateShoppingListFulfillment",
+    "body": "\n  mutation updateShoppingListFulfillment($input: UpdateShoppingListFulfillmentInputV2!) {\n    updateShoppingListFulfillmentV2(input: $input) {\n      ... on ShoppingListV2 {\n        ...ListDetailFragment\n      }\n\n      ...ShoppingListErrorFragment\n    }\n  }\n  "
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "copyShoppingListItemsV2",
+    "body": "\n  mutation copyShoppingListItemsV2($input: CopyShoppingListItemsInputV2!) {\n    copyShoppingListItemsV2(input: $input) {\n      ... on ShoppingListV2 {\n        ...ListDetailFragment\n      }\n\n      ...ShoppingListErrorFragment\n    }\n  }\n  "
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "updateShoppingListItem",
+    "body": "\n  mutation updateShoppingListItem($input: UpdateShoppingListItemInputV2!) {\n    updateShoppingListItemV2(input: $input) {\n      ... on ShoppingListV2 {\n        ...ListDetailFragment\n      }\n      ...ShoppingListErrorFragment\n    }\n  }\n  "
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "updateShoppingListAccess",
+    "body": "\n  mutation updateShoppingListAccess($input: UpdateShoppingListAccessInput!) {\n    updateShoppingListAccess(input: $input) {\n      ... on ShoppingListV2 {\n        ...ListDetailFragment\n      }\n      ...ShoppingListErrorFragment\n    }\n  }\n  "
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "addItemsToActiveShoppingList",
+    "body": "\n  mutation addItemsToActiveShoppingList($input: AddItemsToActiveShoppingListInput!) {\n    addItemsToActiveShoppingList(input: $input) {\n      ... on ShoppingListV2 {\n        ...ListDetailFragment\n      }\n      ...ShoppingListErrorFragment\n    }\n  }\n  "
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "moveShoppingListItemFromActiveShoppingList",
+    "body": "\n  mutation moveShoppingListItemFromActiveShoppingList(\n    $input: MoveShoppingListItemFromActiveListInput!\n  ) {\n    moveShoppingListItemFromActiveShoppingList(input: $input) {\n      ... on ShoppingListV2 {\n        ...ListDetailFragment\n      }\n      ...ShoppingListErrorFragment\n    }\n  }\n  "
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "getShoppingListsV2",
+    "body": "\n  query getShoppingListsV2 {\n    getShoppingListsV2 {\n      ... on ShoppingListsWithHeaderPageV2 {\n        thisPage {\n          sort\n          sortDirection\n          totalCount\n          page\n          size\n        }\n        nextPage {\n          page\n          size\n          sort\n          sortDirection\n          totalCount\n        }\n        lists {\n          totalItemCount\n          name\n          id\n          created\n          updated\n          isActive\n          fulfillment {\n            store {\n              ... on Store {\n                storeNumber\n                name\n              }\n            }\n          }\n        }\n        header {\n          ... on ShoppingListV2 {\n            id\n            metadata {\n              role\n              shoppingListVisibilityLevel\n            }\n          }\n          ... on ShoppingListErrorV2 {\n            code\n            message\n            title\n          }\n        }\n      }\n      ... on ShoppingListErrorV2 {\n        code\n        message\n        title\n      }\n    }\n  }\n",
+    "array_form": true
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "getShoppingListV2",
+    "body": "\n  query getShoppingListV2($input: GetShoppingListInputV2!) {\n    getShoppingListV2(input: $input) {\n      ... on ShoppingListV2 {\n        ...ListDetailFragment\n      }\n      ... on ShoppingListErrorV2 {\n        code\n        title\n        message\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "updateShoppingList",
+    "body": "\n  mutation updateShoppingList($input: UpdateShoppingListInputV2!) {\n    updateShoppingListV2(input: $input) {\n      ... on ShoppingListV2 {\n        id\n        name\n        description\n      }\n\n      ...ShoppingListErrorFragment\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "deleteShoppingLists",
+    "body": "\n  mutation deleteShoppingLists($input: DeleteShoppingListsInputV2!) {\n    deleteShoppingListsV2(input: $input) {\n      ... on ShoppingListsPreviewPageV2 {\n        lists {\n          id\n          name\n          description\n        }\n      }\n      ...ShoppingListErrorFragment\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "createShoppingList",
+    "body": "\n  mutation createShoppingList($input: CreateShoppingListInputV2!) {\n    createShoppingListV2(input: $input) {\n      ... on ShoppingListPreviewV2 {\n        id\n        name\n        description\n      }\n\n      ...ShoppingListErrorFragment\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "addToShoppingListV2",
+    "body": "\n  mutation addToShoppingListV2($input: AddShoppingListItemsInputV2!) {\n    addShoppingListItemsV2(input: $input) {\n      ... on ShoppingListV2 {\n        ...ListDetailFragment\n      }\n\n      ...ShoppingListErrorFragment\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "deleteShoppingListItems",
+    "body": "\n  mutation deleteShoppingListItems($input: DeleteShoppingListItemsInputV2!) {\n    deleteShoppingListItemsV2(input: $input) {\n      ... on ShoppingListV2 {\n        ...ListDetailFragment\n      }\n      ...ShoppingListErrorFragment\n    }\n  }\n\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "updateShoppingListFulfillment",
+    "body": "\n  mutation updateShoppingListFulfillment($input: UpdateShoppingListFulfillmentInputV2!) {\n    updateShoppingListFulfillmentV2(input: $input) {\n      ... on ShoppingListV2 {\n        ...ListDetailFragment\n      }\n\n      ...ShoppingListErrorFragment\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "copyShoppingListItemsV2",
+    "body": "\n  mutation copyShoppingListItemsV2($input: CopyShoppingListItemsInputV2!) {\n    copyShoppingListItemsV2(input: $input) {\n      ... on ShoppingListV2 {\n        ...ListDetailFragment\n      }\n\n      ...ShoppingListErrorFragment\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "updateShoppingListItem",
+    "body": "\n  mutation updateShoppingListItem($input: UpdateShoppingListItemInputV2!) {\n    updateShoppingListItemV2(input: $input) {\n      ... on ShoppingListV2 {\n        ...ListDetailFragment\n      }\n      ...ShoppingListErrorFragment\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "updateShoppingListAccess",
+    "body": "\n  mutation updateShoppingListAccess($input: UpdateShoppingListAccessInput!) {\n    updateShoppingListAccess(input: $input) {\n      ... on ShoppingListV2 {\n        ...ListDetailFragment\n      }\n      ...ShoppingListErrorFragment\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "addItemsToActiveShoppingList",
+    "body": "\n  mutation addItemsToActiveShoppingList($input: AddItemsToActiveShoppingListInput!) {\n    addItemsToActiveShoppingList(input: $input) {\n      ... on ShoppingListV2 {\n        ...ListDetailFragment\n      }\n      ...ShoppingListErrorFragment\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "4198-b2beab88ae4b6205.js",
+    "operation": "moveShoppingListItemFromActiveShoppingList",
+    "body": "\n  mutation moveShoppingListItemFromActiveShoppingList(\n    $input: MoveShoppingListItemFromActiveListInput!\n  ) {\n    moveShoppingListItemFromActiveShoppingList(input: $input) {\n      ... on ShoppingListV2 {\n        ...ListDetailFragment\n      }\n      ...ShoppingListErrorFragment\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "2427-0ee7b2d268074d4b.js",
+    "operation": "CouponButton",
+    "body": "\n  query CouponButton($storeId: Int!, $userIsLoggedIn: Boolean!, $ids: [Int!]!) {\n    coupon(ids: $ids, storeId: $storeId) {\n      ... on CouponQueryResult {\n        coupons {\n          ...CouponClipButtonFragment\n        }\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "2427-0ee7b2d268074d4b.js",
+    "operation": "GroupCouponButton",
+    "body": "\n  query GroupCouponButton($storeId: Int!, $userIsLoggedIn: Boolean!, $ids: [Int!]!) {\n    couponGroup(ids: $ids, storeId: $storeId) {\n      ... on CouponGroupQueryResult {\n        couponGroups {\n          ...GroupCouponButton\n        }\n      }\n      ...GroupErrorFragment\n    }\n  }\n  "
+  },
+  {
+    "chunk": "2427-0ee7b2d268074d4b.js",
+    "operation": "cdpProductsV2",
+    "body": "\n  query cdpProductsV2(\n    $ids: [Int!]!\n    $userIsLoggedIn: Boolean! = false\n    # New params for sorting, filtering, and pagination\n    $buyParams: SavingsProductDetailsParams!\n    $rewardParams: SavingsProductDetailsParams!\n  ) {\n    coupon(ids: $ids) {\n      ...ErrorFragment\n      ... on CouponQueryResult {\n        coupons {\n          ...CDPCouponFragment\n        }\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "2427-0ee7b2d268074d4b.js",
+    "operation": "CompletionProgress",
+    "body": "\n  query CompletionProgress($ids: [Int!]!, $storeId: Int!, $userIsLoggedIn: Boolean! = false) {\n    coupon(ids: $ids, storeId: $storeId) {\n      ...ErrorFragment\n      ... on CouponQueryResult {\n        coupons {\n          ...CompletionProgressFragment\n        }\n      }\n    }\n  }\n\n  "
+  },
+  {
+    "chunk": "2427-0ee7b2d268074d4b.js",
+    "operation": "MealDeal",
+    "body": "\n  query MealDeal(\n    $ids: [Int!]!\n    $storeId: Int!\n    $userIsLoggedIn: Boolean! = false\n    $buyParams: SavingsProductDetailsParams!\n    $rewardParams: SavingsProductDetailsParams!\n  ) {\n    couponGroup(ids: $ids, storeId: $storeId) {\n      ... on CouponGroupQueryResult {\n        couponGroups {\n          ...MealDealCouponGroup\n        }\n      }\n      ... on UserMessage {\n        message\n        code\n        timestamp\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "2427-0ee7b2d268074d4b.js",
+    "operation": "ComplexOfferCompletionProgress",
+    "body": "\n  query ComplexOfferCompletionProgress(\n    $ids: [Int!]!\n    $storeId: Int!\n    $userIsLoggedIn: Boolean! = false\n  ) {\n    couponGroup(ids: $ids, storeId: $storeId) {\n      ... on CouponGroupQueryResult {\n        couponGroups {\n          id\n          coupons {\n            id\n            ...CompletionProgressFragment\n          }\n        }\n      }\n    }\n  }\n\n  "
+  },
+  {
+    "chunk": "2427-0ee7b2d268074d4b.js",
+    "operation": "CouponButton",
+    "body": "\n  query CouponButton($storeId: Int!, $userIsLoggedIn: Boolean!, $ids: [Int!]!) {\n    coupon(ids: $ids, storeId: $storeId) {\n      ... on CouponQueryResult {\n        coupons {\n          ...CouponClipButtonFragment\n        }\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "2427-0ee7b2d268074d4b.js",
+    "operation": "GroupCouponButton",
+    "body": "\n  query GroupCouponButton($storeId: Int!, $userIsLoggedIn: Boolean!, $ids: [Int!]!) {\n    couponGroup(ids: $ids, storeId: $storeId) {\n      ... on CouponGroupQueryResult {\n        couponGroups {\n          ...GroupCouponButton\n        }\n      }\n      ...GroupErrorFragment\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "2427-0ee7b2d268074d4b.js",
+    "operation": "cdpProductsV2",
+    "body": "\n  query cdpProductsV2(\n    $ids: [Int!]!\n    $userIsLoggedIn: Boolean! = false\n    # New params for sorting, filtering, and pagination\n    $buyParams: SavingsProductDetailsParams!\n    $rewardParams: SavingsProductDetailsParams!\n  ) {\n    coupon(ids: $ids) {\n      ...ErrorFragment\n      ... on CouponQueryResult {\n        coupons {\n          ...CDPCouponFragment\n        }\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "2427-0ee7b2d268074d4b.js",
+    "operation": "CompletionProgress",
+    "body": "\n  query CompletionProgress($ids: [Int!]!, $storeId: Int!, $userIsLoggedIn: Boolean! = false) {\n    coupon(ids: $ids, storeId: $storeId) {\n      ...ErrorFragment\n      ... on CouponQueryResult {\n        coupons {\n          ...CompletionProgressFragment\n        }\n      }\n    }\n  }\n\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "2427-0ee7b2d268074d4b.js",
+    "operation": "MealDeal",
+    "body": "\n  query MealDeal(\n    $ids: [Int!]!\n    $storeId: Int!\n    $userIsLoggedIn: Boolean! = false\n    $buyParams: SavingsProductDetailsParams!\n    $rewardParams: SavingsProductDetailsParams!\n  ) {\n    couponGroup(ids: $ids, storeId: $storeId) {\n      ... on CouponGroupQueryResult {\n        couponGroups {\n          ...MealDealCouponGroup\n        }\n      }\n      ... on UserMessage {\n        message\n        code\n        timestamp\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "2427-0ee7b2d268074d4b.js",
+    "operation": "ComplexOfferCompletionProgress",
+    "body": "\n  query ComplexOfferCompletionProgress(\n    $ids: [Int!]!\n    $storeId: Int!\n    $userIsLoggedIn: Boolean! = false\n  ) {\n    couponGroup(ids: $ids, storeId: $storeId) {\n      ... on CouponGroupQueryResult {\n        couponGroups {\n          id\n          coupons {\n            id\n            ...CompletionProgressFragment\n          }\n        }\n      }\n    }\n  }\n\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "6238-a24b0c74f2825a6d.js",
+    "operation": "clippedCouponsButton",
+    "body": "\n  query clippedCouponsButton($filters: CouponSearchFilterV2!) {\n    searchCoupons: searchCouponsV2(searchRequests: { filters: $filters }) {\n      info {\n        ... on CouponSearchResultInfoType {\n          filterCounts {\n            clippedStatus {\n              filter\n              count\n            }\n          }\n        }\n      }\n    }\n  }\n"
+  },
+  {
+    "chunk": "6238-a24b0c74f2825a6d.js",
+    "operation": "clippedCouponsButton",
+    "body": "\n  query clippedCouponsButton($filters: CouponSearchFilterV2!) {\n    searchCoupons: searchCouponsV2(searchRequests: { filters: $filters }) {\n      info {\n        ... on CouponSearchResultInfoType {\n          filterCounts {\n            clippedStatus {\n              filter\n              count\n            }\n          }\n        }\n      }\n    }\n  }\n",
+    "array_form": true
+  },
+  {
+    "chunk": "9267-4ce48642cdadaf7e.js",
+    "operation": "RecipeDetail",
+    "body": "\n  query RecipeDetail($id: String!, $storeId: Int!, $shoppingContext: ShoppingContext!) {\n    recipeDetail(id: $id, storeId: $storeId, shoppingContext: $shoppingContext) {\n      ... on RecipeError {\n        message\n        code\n      }\n\n      ...RecipeDetails\n    }\n  }\n\n  "
+  },
+  {
+    "chunk": "9267-4ce48642cdadaf7e.js",
+    "operation": "RecipesSearch",
+    "body": "\n  query RecipesSearch(\n    $query: String!\n    $storeId: Int\n    $hasCategory: String\n    $size: Int\n    $from: Int\n    $sortBy: RecipeSearchSortBy\n    $sortOrder: RecipeSearchSortOrder\n    $enableDynamicCategories: Boolean\n  ) {\n    recipeSearchDetails(\n      query: $query\n      storeId: $storeId\n      hasCategory: $hasCategory\n      size: $size\n      from: $from\n      sortBy: $sortBy\n      sortOrder: $sortOrder\n      enableDynamicCategories: $enableDynamicCategories\n    ) {\n      ...RecipeSearchResults\n\n      ... on RecipeError {\n        code\n        message\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "9267-4ce48642cdadaf7e.js",
+    "operation": "RecipeSemanticSearch",
+    "body": "\n  query RecipeSemanticSearch($input: RecipeSemanticSearchInput!) {\n    recipeSemanticSearch(input: $input) {\n      ...RecipeSemanticSearchResponseFragment\n      ... on RecipeSemanticSearchError {\n        message\n        detail\n        code\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "9267-4ce48642cdadaf7e.js",
+    "operation": "SavedRecipesDefaultListDetails",
+    "body": "\n  query SavedRecipesDefaultListDetails {\n    getUserDefaultList {\n      ... on RecipeLists {\n        recipeLists {\n          ... on RecipeList {\n            id\n            isDefault\n            recipeItems {\n              ...SavedRecipeListItem\n            }\n          }\n        }\n      }\n      ... on RecipeDecoratorError {\n        errors {\n          code\n          detail\n          message\n        }\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "9267-4ce48642cdadaf7e.js",
+    "operation": "EditRecipePage",
+    "body": "\n  query EditRecipePage($id: ID!, $storeId: ID!, $shoppingContext: ShoppingContext!) {\n    getRecipe(id: $id) {\n      ...CreatedRecipe\n      ... on RecipeApiError {\n        code\n        message\n        detail\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "9267-4ce48642cdadaf7e.js",
+    "operation": "GetUserRecipe",
+    "body": "\n  query GetUserRecipe($id: ID!, $storeId: ID!, $shoppingContext: ShoppingContext!) {\n    getRecipe(id: $id) {\n      ...CreatedRecipe\n      ... on RecipeApiError {\n        code\n        message\n        detail\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "9267-4ce48642cdadaf7e.js",
+    "operation": "GetRecipe",
+    "body": "\n  query GetRecipe($id: ID!, $storeId: ID!, $shoppingContext: ShoppingContext!) {\n    getRecipe(id: $id) {\n      ...RecipeDetailsV2\n      ... on RecipeApiError {\n        code\n        message\n        detail\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "9267-4ce48642cdadaf7e.js",
+    "operation": "AllUserRecipes",
+    "body": "\n  query AllUserRecipes {\n    allUserRecipes: getAllUserRecipes {\n      ... on RecipesList {\n        recipes {\n          ...CreatedRecipeSummary\n        }\n      }\n      ... on RecipeApiError {\n        code\n        message\n        detail\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "9267-4ce48642cdadaf7e.js",
+    "operation": "RecipeDetail",
+    "body": "\n  query RecipeDetail($id: String!, $storeId: Int!, $shoppingContext: ShoppingContext!) {\n    recipeDetail(id: $id, storeId: $storeId, shoppingContext: $shoppingContext) {\n      ... on RecipeError {\n        message\n        code\n      }\n\n      ...RecipeDetails\n    }\n  }\n\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "9267-4ce48642cdadaf7e.js",
+    "operation": "RecipesSearch",
+    "body": "\n  query RecipesSearch(\n    $query: String!\n    $storeId: Int\n    $hasCategory: String\n    $size: Int\n    $from: Int\n    $sortBy: RecipeSearchSortBy\n    $sortOrder: RecipeSearchSortOrder\n    $enableDynamicCategories: Boolean\n  ) {\n    recipeSearchDetails(\n      query: $query\n      storeId: $storeId\n      hasCategory: $hasCategory\n      size: $size\n      from: $from\n      sortBy: $sortBy\n      sortOrder: $sortOrder\n      enableDynamicCategories: $enableDynamicCategories\n    ) {\n      ...RecipeSearchResults\n\n      ... on RecipeError {\n        code\n        message\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "9267-4ce48642cdadaf7e.js",
+    "operation": "RecipeSemanticSearch",
+    "body": "\n  query RecipeSemanticSearch($input: RecipeSemanticSearchInput!) {\n    recipeSemanticSearch(input: $input) {\n      ...RecipeSemanticSearchResponseFragment\n      ... on RecipeSemanticSearchError {\n        message\n        detail\n        code\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "9267-4ce48642cdadaf7e.js",
+    "operation": "SavedRecipesDefaultListDetails",
+    "body": "\n  query SavedRecipesDefaultListDetails {\n    getUserDefaultList {\n      ... on RecipeLists {\n        recipeLists {\n          ... on RecipeList {\n            id\n            isDefault\n            recipeItems {\n              ...SavedRecipeListItem\n            }\n          }\n        }\n      }\n      ... on RecipeDecoratorError {\n        errors {\n          code\n          detail\n          message\n        }\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "9267-4ce48642cdadaf7e.js",
+    "operation": "EditRecipePage",
+    "body": "\n  query EditRecipePage($id: ID!, $storeId: ID!, $shoppingContext: ShoppingContext!) {\n    getRecipe(id: $id) {\n      ...CreatedRecipe\n      ... on RecipeApiError {\n        code\n        message\n        detail\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "9267-4ce48642cdadaf7e.js",
+    "operation": "GetUserRecipe",
+    "body": "\n  query GetUserRecipe($id: ID!, $storeId: ID!, $shoppingContext: ShoppingContext!) {\n    getRecipe(id: $id) {\n      ...CreatedRecipe\n      ... on RecipeApiError {\n        code\n        message\n        detail\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "9267-4ce48642cdadaf7e.js",
+    "operation": "GetRecipe",
+    "body": "\n  query GetRecipe($id: ID!, $storeId: ID!, $shoppingContext: ShoppingContext!) {\n    getRecipe(id: $id) {\n      ...RecipeDetailsV2\n      ... on RecipeApiError {\n        code\n        message\n        detail\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "9267-4ce48642cdadaf7e.js",
+    "operation": "AllUserRecipes",
+    "body": "\n  query AllUserRecipes {\n    allUserRecipes: getAllUserRecipes {\n      ... on RecipesList {\n        recipes {\n          ...CreatedRecipeSummary\n        }\n      }\n      ... on RecipeApiError {\n        code\n        message\n        detail\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "5977-e8eccfb5a1f329fc.js",
+    "operation": "SaveRecipe",
+    "body": "\n  mutation SaveRecipe($recipeId: String!, $folderId: String!) {\n    addToRecipeBox(recipeId: $recipeId, folderId: $folderId) {\n      success\n    }\n  }\n"
+  },
+  {
+    "chunk": "5977-e8eccfb5a1f329fc.js",
+    "operation": "AddRecipesToUserList",
+    "body": "\n  mutation AddRecipesToUserList($listId: UUID!, $recipeIds: [String!]!) {\n    addRecipesToUserList(listId: $listId, recipeIds: $recipeIds) {\n      ... on RecipeList {\n        id\n        recipeItems {\n          ...SavedRecipeListItem\n        }\n      }\n      ... on RecipeDecoratorError {\n        errors {\n          code\n          message\n        }\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "5977-e8eccfb5a1f329fc.js",
+    "operation": "RemoveRecipesFromUserList",
+    "body": "\n  mutation RemoveRecipesFromUserList($itemIds: [UUID!]!, $listId: UUID!) {\n    removeRecipesFromUserList(itemIds: $itemIds, listId: $listId) {\n      ... on RecipeList {\n        id\n        recipeItems {\n          ...SavedRecipeListItem\n        }\n      }\n      ... on RecipeDecoratorError {\n        errors {\n          code\n          message\n        }\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "5977-e8eccfb5a1f329fc.js",
+    "operation": "CreateUserRecipe",
+    "body": "\n  mutation CreateUserRecipe(\n    $recipe: CreateUserRecipeInput!\n    $shoppingContext: ShoppingContext!\n    $storeId: ID!\n  ) {\n    createUserRecipe(recipe: $recipe, shoppingContext: $shoppingContext, storeId: $storeId) {\n      ... on RecipeApiError {\n        code\n        message\n        detail\n      }\n      ... on CreateUserRecipeOutput {\n        recipe {\n          ...CreatedRecipe\n        }\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "5977-e8eccfb5a1f329fc.js",
+    "operation": "EditUserRecipe",
+    "body": "\n  mutation EditUserRecipe(\n    $recipeId: ID!\n    $recipe: UpdateRecipeInput!\n    $storeId: ID\n    $shoppingContext: ShoppingContext\n  ) {\n    updateUserRecipe(recipeId: $recipeId, recipe: $recipe) {\n      ... on UpdateRecipeOutput {\n        recipe {\n          ...UpdatedRecipe\n        }\n      }\n      ... on RecipeApiError {\n        code\n        message\n        detail\n      }\n    }\n  }\n  "
+  },
+  {
+    "chunk": "5977-e8eccfb5a1f329fc.js",
+    "operation": "DeleteRecipeById",
+    "body": "\n  mutation DeleteRecipeById($recipeId: ID!) {\n    deleteRecipeById(recipeId: $recipeId) {\n      ... on RecipeApiError {\n        code\n        message\n        detail\n      }\n      ... on DeleteRecipeByIdResponseSuccess {\n        success\n      }\n    }\n  }\n"
+  },
+  {
+    "chunk": "5977-e8eccfb5a1f329fc.js",
+    "operation": "SaveRecipe",
+    "body": "\n  mutation SaveRecipe($recipeId: String!, $folderId: String!) {\n    addToRecipeBox(recipeId: $recipeId, folderId: $folderId) {\n      success\n    }\n  }\n",
+    "array_form": true
+  },
+  {
+    "chunk": "5977-e8eccfb5a1f329fc.js",
+    "operation": "AddRecipesToUserList",
+    "body": "\n  mutation AddRecipesToUserList($listId: UUID!, $recipeIds: [String!]!) {\n    addRecipesToUserList(listId: $listId, recipeIds: $recipeIds) {\n      ... on RecipeList {\n        id\n        recipeItems {\n          ...SavedRecipeListItem\n        }\n      }\n      ... on RecipeDecoratorError {\n        errors {\n          code\n          message\n        }\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "5977-e8eccfb5a1f329fc.js",
+    "operation": "RemoveRecipesFromUserList",
+    "body": "\n  mutation RemoveRecipesFromUserList($itemIds: [UUID!]!, $listId: UUID!) {\n    removeRecipesFromUserList(itemIds: $itemIds, listId: $listId) {\n      ... on RecipeList {\n        id\n        recipeItems {\n          ...SavedRecipeListItem\n        }\n      }\n      ... on RecipeDecoratorError {\n        errors {\n          code\n          message\n        }\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "5977-e8eccfb5a1f329fc.js",
+    "operation": "CreateUserRecipe",
+    "body": "\n  mutation CreateUserRecipe(\n    $recipe: CreateUserRecipeInput!\n    $shoppingContext: ShoppingContext!\n    $storeId: ID!\n  ) {\n    createUserRecipe(recipe: $recipe, shoppingContext: $shoppingContext, storeId: $storeId) {\n      ... on RecipeApiError {\n        code\n        message\n        detail\n      }\n      ... on CreateUserRecipeOutput {\n        recipe {\n          ...CreatedRecipe\n        }\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "5977-e8eccfb5a1f329fc.js",
+    "operation": "EditUserRecipe",
+    "body": "\n  mutation EditUserRecipe(\n    $recipeId: ID!\n    $recipe: UpdateRecipeInput!\n    $storeId: ID\n    $shoppingContext: ShoppingContext\n  ) {\n    updateUserRecipe(recipeId: $recipeId, recipe: $recipe) {\n      ... on UpdateRecipeOutput {\n        recipe {\n          ...UpdatedRecipe\n        }\n      }\n      ... on RecipeApiError {\n        code\n        message\n        detail\n      }\n    }\n  }\n  ",
+    "array_form": true
+  },
+  {
+    "chunk": "5977-e8eccfb5a1f329fc.js",
+    "operation": "DeleteRecipeById",
+    "body": "\n  mutation DeleteRecipeById($recipeId: ID!) {\n    deleteRecipeById(recipeId: $recipeId) {\n      ... on RecipeApiError {\n        code\n        message\n        detail\n      }\n      ... on DeleteRecipeByIdResponseSuccess {\n        success\n      }\n    }\n  }\n",
+    "array_form": true
+  }
+]

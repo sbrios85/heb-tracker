@@ -1,0 +1,38 @@
+[
+  {
+    "path": ".props.pageProps.product",
+    "keys": [
+      "SKUs",
+      "__typename",
+      "availability",
+      "bestAvailable",
+      "brand",
+      "breadcrumbs",
+      "carouselImageUrls",
+      "coupons",
+      "fullDisplayName",
+      "id",
+      "inAssortment",
+      "ingredientStatement",
+      "inventory",
+      "isEbtSnapProduct",
+      "isNew",
+      "lifestyles",
+      "maximumOrderQuantity",
+      "minimumOrderQuantity",
+      "nutritionLabels",
+      "onAd",
+      "pastPurchaseInfo",
+      "preparationInstructions",
+      "productDescription",
+      "productImageUrls",
+      "productLocation",
+      "productPageURL",
+      "purchasePreferenceList",
+      "safetyWarning",
+      "shoppingContext",
+      "showCouponFlag"
+    ],
+    "sample": "{\"id\": \"583162\", \"storeId\": 92, \"shoppingContext\": null, \"fullDisplayName\": \"CAFE Ol\\u00e9 by H-E-B Texas Pecan Medium Roast Ground Coffee\", \"productDescription\": \"Ground from 100% Arabica beans, CAFE Ol\\u00e9 by H-E-B Texas Pecan coffee is medium-bodied and brimming with the flavor of caramel and pecans. An aromatic treat as it brews, this medium roast blend is perfect for making a big pot or just a single cup with a reusable coffee pod filter.<br><br>&bull; One 12 oz bag of ground coffee<br>&bull; Medium Roast and medium bodied<br>&bull; Texas Pecan: Creamy caramel and Texas pecan flavors<br"
+  }
+]
