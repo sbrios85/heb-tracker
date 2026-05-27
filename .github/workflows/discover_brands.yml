@@ -1,0 +1,41 @@
+name: Discover Brands
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run brand discovery
+        run: python scraper/heb_discover_brands.py
+
+      - name: Upload brands.json as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: brands
+          path: data/brands.json
+          retention-days: 30
+
+      - name: Commit brands.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f data/brands.json
+          git diff --staged --quiet || git commit -m "Brand discovery $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push
