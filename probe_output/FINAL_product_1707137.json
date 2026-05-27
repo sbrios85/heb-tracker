@@ -1,0 +1,194 @@
+{
+  "id": "1707137",
+  "storeId": 92,
+  "shoppingContext": null,
+  "fullDisplayName": "CAFE Ol\u00e9 by H-E-B Donut Shop, Texas Pecan & Taste of San Antonio Coffee Single Serve Cups - Variety Pack",
+  "productDescription": "Perfect for coffee lovers who like to mix it up, this big variety pack of CAFE Ol\u00e9 by H-E-B single serve pods includes 3 popular medium roast varieties. You'll get:<br><br>&bull; One 54 count box of single serve coffee cups<br>&bull; (18) pods of Donut Shop: Toasty aroma and clean finish<br>&bull; (18) pods of Texas Pecan: Creamy caramel and nutty flavor<br>&bull; (18) pods of Taste of San Antonio: Cinnamon, chocolate and vanilla flavor<br>&bull; 2.0 compatible<br>&bull; Medium Roast and medium bodied<br>&bull; 100% Arabica Coffee<br><br><b>Made to Be a Texas Favorite</b><br>Many H-E-B brand products are so unique, they could only come from H-E-B \u2014 and this is one of them! It\u2019s specially made for Texas tastes and lifestyles, whether it\u2019s the thoughtfully sourced ingredients, the distinctive flavor or the captivating scent. And as always, if it\u2019s got our name on it, you have our word \u2014 that\u2019s a 100% guarantee promise!<br><br><b>About CAFE Ol\u00e9 by H-E-B</b><br>Launched in 1997, CAFE Ol\u00e9 by H-E-B coffee is available in a variety of flavors and roasts. We begin with high quality Arabica beans harvested from legendary coffee-growing regions throughout the world. They are then roasted with precision and care to bring the artisan difference to your home. Enjoy exploring the complete collection of single cup, bagged ground, bulk beans and cold brew coffee.",
+  "productPageURL": "https://www.heb.com/product-detail/cafe-ol-by-h-e-b-donut-shop-texas-pecan-taste-of-san-antonio-coffee-single-serve-cups-variety-pack/1707137",
+  "maximumOrderQuantity": 20,
+  "onAd": false,
+  "isNew": false,
+  "pastPurchaseInfo": null,
+  "brand": {
+    "name": "CAFE Ol\u00e9 by H-E-B",
+    "isOwnBrand": true,
+    "__typename": "Brand"
+  },
+  "breadcrumbs": [
+    {
+      "urlPath": "/",
+      "categoryId": null,
+      "title": "H-E-B",
+      "__typename": "CategoryBreadCrumb"
+    },
+    {
+      "urlPath": "/browse/shop",
+      "categoryId": "2864",
+      "title": "Shop",
+      "__typename": "CategoryBreadCrumb"
+    },
+    {
+      "urlPath": "/category/shop/beverages/2864/490015",
+      "categoryId": "490015",
+      "title": "Beverages",
+      "__typename": "CategoryBreadCrumb"
+    },
+    {
+      "urlPath": "/category/shop/coffee/490015/490036",
+      "categoryId": "490036",
+      "title": "Coffee",
+      "__typename": "CategoryBreadCrumb"
+    }
+  ],
+  "coupons": [],
+  "carouselImageUrls": [
+    "https://images.heb.com/is/image/HEBGrocery/001707137-1"
+  ],
+  "bestAvailable": false,
+  "inAssortment": true,
+  "inventory": {
+    "inventoryState": "IN_STOCK",
+    "__typename": "Inventory"
+  },
+  "preparationInstructions": "Load single serve cup with lid into machine.  Position mug below beverage outlet and press start.  Single serve cup will be hot after the beverage is dispensed.",
+  "nutritionLabels": [],
+  "ingredientStatement": "Donut Shop: Arabica Coffee. Taste of San Antonio: Arabica Coffee, Natural and Artificial Flavors. Texas Pecan: Arabica Coffee, Natural and Artificial Flavors.",
+  "minimumOrderQuantity": 1,
+  "safetyWarning": "Allow to cool before handling. Store single serve cups at room temperature.",
+  "isEbtSnapProduct": true,
+  "showCouponFlag": false,
+  "lifestyles": [
+    {
+      "formattedName": "SNAP EBT eligible",
+      "description": "SNAP EBT ELIGIBLE",
+      "imageUrl": "https://images.heb.com/is/image/HEBGrocery/snp-large/snipe-snap-ebt.jpg",
+      "__typename": "Lifestyle"
+    }
+  ],
+  "purchasePreferenceList": null,
+  "productImageUrls": [
+    {
+      "url": "https://images.heb.com/is/image/HEBGrocery/prd-small/001707137.jpg",
+      "size": "SMALL",
+      "__typename": "Image"
+    },
+    {
+      "url": "https://images.heb.com/is/image/HEBGrocery/prd-medium/001707137.jpg",
+      "size": "MEDIUM",
+      "__typename": "Image"
+    }
+  ],
+  "thumbnailImageUrls": [
+    {
+      "url": "https://images.heb.com/is/image/HEBGrocery/prd-thumbnail/001707137.jpg",
+      "size": "SMALL",
+      "__typename": "Image"
+    },
+    {
+      "url": "https://images.heb.com/is/image/HEBGrocery/prd-xlarge/001707137.jpg",
+      "size": "MEDIUM",
+      "__typename": "Image"
+    }
+  ],
+  "productLocation": {
+    "availability": "AVAILABLE",
+    "location": "Aisle 8",
+    "__typename": "ProductLocation"
+  },
+  "store": {
+    "name": "Victoria H-E-B plus!",
+    "storeNumber": 92,
+    "latitude": 28.85178,
+    "longitude": -96.99499,
+    "address": {
+      "streetAddress": "6106 N. NAVARRO",
+      "__typename": "PostalAddress"
+    },
+    "__typename": "Store"
+  },
+  "SKUs": [
+    {
+      "id": "4122096680",
+      "weightSelectionIncrements": [],
+      "contextPrices": [
+        {
+          "context": "ONLINE",
+          "isOnSale": false,
+          "isPriceCut": false,
+          "priceType": "EACH",
+          "listPrice": {
+            "unit": "each",
+            "formattedAmount": "$28.98",
+            "amount": 28.98,
+            "__typename": "DisplayPrice"
+          },
+          "salePrice": {
+            "unit": "each",
+            "formattedAmount": "$28.98",
+            "amount": 28.98,
+            "__typename": "DisplayPrice"
+          },
+          "unitListPrice": {
+            "unit": "ct",
+            "formattedAmount": "$0.54",
+            "amount": 0.54,
+            "__typename": "DisplayPrice"
+          },
+          "unitSalePrice": {
+            "unit": "ct",
+            "formattedAmount": "$0.54",
+            "amount": 0.54,
+            "__typename": "DisplayPrice"
+          },
+          "__typename": "ItemPrice"
+        },
+        {
+          "context": "CURBSIDE",
+          "isOnSale": false,
+          "isPriceCut": false,
+          "priceType": "EACH",
+          "listPrice": {
+            "unit": "each",
+            "formattedAmount": "$30.43",
+            "amount": 30.43,
+            "__typename": "DisplayPrice"
+          },
+          "salePrice": {
+            "unit": "each",
+            "formattedAmount": "$30.43",
+            "amount": 30.43,
+            "__typename": "DisplayPrice"
+          },
+          "unitListPrice": {
+            "unit": "ct",
+            "formattedAmount": "$0.56",
+            "amount": 0.56,
+            "__typename": "DisplayPrice"
+          },
+          "unitSalePrice": {
+            "unit": "ct",
+            "formattedAmount": "$0.56",
+            "amount": 0.56,
+            "__typename": "DisplayPrice"
+          },
+          "__typename": "ItemPrice"
+        }
+      ],
+      "productAvailability": [
+        "IN_STORE",
+        "CURBSIDE_PICKUP",
+        "CURBSIDE_DELIVERY"
+      ],
+      "twelveDigitUPC": "041220966806",
+      "customerFriendlySize": "54 ct",
+      "__typename": "SKU"
+    }
+  ],
+  "similarProducts": [],
+  "availability": {
+    "schedule": null,
+    "unavailabilityReasons": [],
+    "__typename": "Availability"
+  },
+  "__typename": "Product"
+}

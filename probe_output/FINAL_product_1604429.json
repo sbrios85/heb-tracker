@@ -1,0 +1,244 @@
+{
+  "id": "1604429",
+  "storeId": 92,
+  "shoppingContext": null,
+  "fullDisplayName": "CAFE Ol\u00e9 by H-E-B Texas Pecan Medium Roast Coffee Single Serve Cups",
+  "productDescription": "Enjoy the convenience of making one cup of CAFE Ol\u00e9 by H-E-B Texan Pecan coffee at a time with these single serve pods. They're 2.0 compatible with your brewing system and offer a creamy caramel, Texas pecan taste in every sip.<br><br>&bull; One 12 count box of single serve coffee cups<br>&bull; 2.0 compatible<br>&bull; Medium Roast and medium bodied<br>&bull; Texas Pecan: Creamy caramel and Texas pecan flavors<br>&bull; 100% Arabica Coffee<br><br><b>Made to Be a Texas Favorite</b><br>Many H-E-B brand products are so unique, they could only come from H-E-B \u2014 and this is one of them! It\u2019s specially made for Texas tastes and lifestyles, whether it\u2019s the thoughtfully sourced ingredients, the distinctive flavor or the captivating scent. And as always, if it\u2019s got our name on it, you have our word \u2014 that\u2019s a 100% guarantee promise!<br><br><b>About CAFE Ol\u00e9 by H-E-B</b><br>Launched in 1997, CAFE Ol\u00e9 by H-E-B coffee is available in a variety of flavors and roasts. We begin with high quality Arabica beans harvested from legendary coffee-growing regions throughout the world. They are then roasted with precision and care to bring the artisan difference to your home. Enjoy exploring the complete collection of single cup, bagged ground, bulk beans and cold brew coffee.",
+  "productPageURL": "https://www.heb.com/product-detail/cafe-ol-by-h-e-b-texas-pecan-medium-roast-coffee-single-serve-cups/1604429",
+  "maximumOrderQuantity": 20,
+  "onAd": false,
+  "isNew": false,
+  "pastPurchaseInfo": null,
+  "brand": {
+    "name": "CAFE Ol\u00e9 by H-E-B",
+    "isOwnBrand": true,
+    "__typename": "Brand"
+  },
+  "breadcrumbs": [
+    {
+      "urlPath": "/",
+      "categoryId": null,
+      "title": "H-E-B",
+      "__typename": "CategoryBreadCrumb"
+    },
+    {
+      "urlPath": "/browse/shop",
+      "categoryId": "2864",
+      "title": "Shop",
+      "__typename": "CategoryBreadCrumb"
+    },
+    {
+      "urlPath": "/category/shop/beverages/2864/490015",
+      "categoryId": "490015",
+      "title": "Beverages",
+      "__typename": "CategoryBreadCrumb"
+    },
+    {
+      "urlPath": "/category/shop/coffee/490015/490036",
+      "categoryId": "490036",
+      "title": "Coffee",
+      "__typename": "CategoryBreadCrumb"
+    }
+  ],
+  "coupons": [
+    {
+      "id": 84049241,
+      "description": "$2 off CAFE Ole by H-E-B Coffee, 12 ct. single cup box or 12 oz. bag, assorted varieties",
+      "shortDescription": "$2 off",
+      "expirationDate": "2026-06-09",
+      "groupDetails": {
+        "groupId": null,
+        "groupDescription": null,
+        "__typename": "GroupDetails"
+      },
+      "imageUrl": "https://images.heb.com/is/image/HEBGrocery/cpn-large/coupon-00084049241.jpg",
+      "type": "NORMAL",
+      "redemptionAvailability": "GLOBAL",
+      "redemptionLimit": null,
+      "printStatuses": [
+        "PRINTED"
+      ],
+      "marketingType": "STANDARD",
+      "reward": {
+        "__typename": "BuyItemDollarAmountReward"
+      },
+      "__typename": "CouponV2"
+    }
+  ],
+  "carouselImageUrls": [
+    "https://images.heb.com/is/image/HEBGrocery/001604429-1"
+  ],
+  "bestAvailable": false,
+  "inAssortment": true,
+  "inventory": {
+    "inventoryState": "IN_STOCK",
+    "__typename": "Inventory"
+  },
+  "preparationInstructions": "Load single serve cup with lid into machine. Position mug below beverage outlet and press start. Single serve cup will be hot after the beverage is dispensed.",
+  "nutritionLabels": [
+    {
+      "servingsPerContainer": "12",
+      "servingSize": "0.37oz (10.5g)",
+      "calories": null,
+      "caloriesFromFat": null,
+      "nutrients": [],
+      "vitaminsAndMinerals": [
+        {
+          "title": "Potassium",
+          "fontModifier": "PLAIN",
+          "unit": "12.18mg",
+          "percentage": "0.22%",
+          "subItems": null,
+          "__typename": "DailyValueItemType"
+        }
+      ],
+      "labelModifier": null,
+      "__typename": "NutritionLabelType"
+    }
+  ],
+  "ingredientStatement": "Arabica Coffee, Natural and Artificial Flavors.",
+  "minimumOrderQuantity": 1,
+  "safetyWarning": "Store single serve cups at room temperature.",
+  "isEbtSnapProduct": true,
+  "showCouponFlag": true,
+  "lifestyles": [
+    {
+      "formattedName": "Kosher",
+      "description": "This product package shows a certification for Kosher. Kosher foods are those that fit Jewish dietary law. There are many types of certifications for Kosher diets, each considers the ingredients and the processing of ingredients in a product.",
+      "imageUrl": "https://images.heb.com/is/image/HEBGrocery/snp-large/snipe-skosher.jpg",
+      "__typename": "Lifestyle"
+    },
+    {
+      "formattedName": "SNAP EBT eligible",
+      "description": "SNAP EBT ELIGIBLE",
+      "imageUrl": "https://images.heb.com/is/image/HEBGrocery/snp-large/snipe-snap-ebt.jpg",
+      "__typename": "Lifestyle"
+    }
+  ],
+  "purchasePreferenceList": null,
+  "productImageUrls": [
+    {
+      "url": "https://images.heb.com/is/image/HEBGrocery/prd-small/001604429.jpg",
+      "size": "SMALL",
+      "__typename": "Image"
+    },
+    {
+      "url": "https://images.heb.com/is/image/HEBGrocery/prd-medium/001604429.jpg",
+      "size": "MEDIUM",
+      "__typename": "Image"
+    }
+  ],
+  "thumbnailImageUrls": [
+    {
+      "url": "https://images.heb.com/is/image/HEBGrocery/prd-thumbnail/001604429.jpg",
+      "size": "SMALL",
+      "__typename": "Image"
+    },
+    {
+      "url": "https://images.heb.com/is/image/HEBGrocery/prd-xlarge/001604429.jpg",
+      "size": "MEDIUM",
+      "__typename": "Image"
+    }
+  ],
+  "productLocation": {
+    "availability": "AVAILABLE",
+    "location": "Aisle 8",
+    "__typename": "ProductLocation"
+  },
+  "store": {
+    "name": "Victoria H-E-B plus!",
+    "storeNumber": 92,
+    "latitude": 28.85178,
+    "longitude": -96.99499,
+    "address": {
+      "streetAddress": "6106 N. NAVARRO",
+      "__typename": "PostalAddress"
+    },
+    "__typename": "Store"
+  },
+  "SKUs": [
+    {
+      "id": "4122092468",
+      "weightSelectionIncrements": [],
+      "contextPrices": [
+        {
+          "context": "ONLINE",
+          "isOnSale": false,
+          "isPriceCut": false,
+          "priceType": "EACH",
+          "listPrice": {
+            "unit": "each",
+            "formattedAmount": "$7.98",
+            "amount": 7.98,
+            "__typename": "DisplayPrice"
+          },
+          "salePrice": {
+            "unit": "each",
+            "formattedAmount": "$7.98",
+            "amount": 7.98,
+            "__typename": "DisplayPrice"
+          },
+          "unitListPrice": {
+            "unit": "ct",
+            "formattedAmount": "$0.67",
+            "amount": 0.67,
+            "__typename": "DisplayPrice"
+          },
+          "unitSalePrice": {
+            "unit": "ct",
+            "formattedAmount": "$0.67",
+            "amount": 0.67,
+            "__typename": "DisplayPrice"
+          },
+          "__typename": "ItemPrice"
+        },
+        {
+          "context": "CURBSIDE",
+          "isOnSale": false,
+          "isPriceCut": false,
+          "priceType": "EACH",
+          "listPrice": {
+            "unit": "each",
+            "formattedAmount": "$8.38",
+            "amount": 8.38,
+            "__typename": "DisplayPrice"
+          },
+          "salePrice": {
+            "unit": "each",
+            "formattedAmount": "$8.38",
+            "amount": 8.38,
+            "__typename": "DisplayPrice"
+          },
+          "unitListPrice": {
+            "unit": "ct",
+            "formattedAmount": "$0.70",
+            "amount": 0.7,
+            "__typename": "DisplayPrice"
+          },
+          "unitSalePrice": {
+            "unit": "ct",
+            "formattedAmount": "$0.70",
+            "amount": 0.7,
+            "__typename": "DisplayPrice"
+          },
+          "__typename": "ItemPrice"
+        }
+      ],
+      "productAvailability": [
+        "IN_STORE",
+        "CURBSIDE_PICKUP",
+        "CURBSIDE_DELIVERY"
+      ],
+      "twelveDigitUPC": "041220924684",
+      "customerFriendlySize": "12 ct",
+      "__typename": "SKU"
+    }
+  ],
+  "similarProducts": [],
+  "availability": {
+    "schedule": null,
+    "unavailabilityReasons": [],
+    "__typename": "Availability"
+  },
+  "__typename": "Product"
+}
