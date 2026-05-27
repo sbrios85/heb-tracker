@@ -1,0 +1,44 @@
+{
+  "scalar": {
+    "__typename": "BrowseProductCollection",
+    "total": 1367
+  },
+  "complex": [
+    {
+      "field": "records",
+      "type": "[Product]!"
+    },
+    {
+      "field": "filters",
+      "type": "ProductSearchFilters"
+    },
+    {
+      "field": "breadcrumbs",
+      "type": "[CategoryBreadCrumb]!"
+    }
+  ],
+  "unknown": [
+    "items",
+    "products",
+    "results",
+    "data",
+    "nodes",
+    "edges",
+    "totalCount",
+    "count",
+    "totalResults",
+    "page",
+    "pageInfo",
+    "hasNextPage",
+    "hasMore",
+    "facets",
+    "aggregations",
+    "query",
+    "term",
+    "phrase",
+    "categories",
+    "brands",
+    "navigation"
+  ],
+  "other": []
+}

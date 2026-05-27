@@ -1,0 +1,68 @@
+{
+  "data": {
+    "productSearch": {
+      "records": [
+        {
+          "__typename": "Product"
+        },
+        {
+          "__typename": "Product"
+        },
+        {
+          "__typename": "Product"
+        },
+        {
+          "__typename": "Product"
+        },
+        {
+          "__typename": "Product"
+        },
+        {
+          "__typename": "Product"
+        },
+        {
+          "__typename": "Product"
+        },
+        {
+          "__typename": "Product"
+        },
+        {
+          "__typename": "Product"
+        },
+        {
+          "__typename": "Product"
+        },
+        {
+          "__typename": "Product"
+        },
+        {
+          "__typename": "Product"
+        },
+        {
+          "__typename": "Product"
+        },
+        {
+          "__typename": "Product"
+        },
+        {
+          "__typename": "Product"
+        },
+        {
+          "__typename": "Product"
+        },
+        {
+          "__typename": "Product"
+        },
+        {
+          "__typename": "Product"
+        },
+        {
+          "__typename": "Product"
+        },
+        {
+          "__typename": "Product"
+        }
+      ]
+    }
+  }
+}

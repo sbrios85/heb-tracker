@@ -1,0 +1,1 @@
+{"errors":[{"message":"Unknown argument \"pageSize\" on field \"Query.productSearch\".","locations":[{"line":1,"column":89}],"extensions":{"code":"GRAPHQL_VALIDATION_FAILED"}}]}
