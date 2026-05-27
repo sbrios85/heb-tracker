@@ -1,25 +1,12 @@
 """
-H-E-B GraphQL Probe — Phase 6
------------------------------
-Phase 5 confirmed:
-  - ShoppingContext value: CURBSIDE_PICKUP (returns data!)
-  - PostalAddress fields: streetAddress, locality, region, postalCode, country
-  - productSearch exists (requires shoppingContext: ShoppingContext!)
-  - browseCategory exists (requires categoryId: String!)
-  - Store 92 = Victoria H-E-B plus! (still need Waldron's number)
+H-E-B GraphQL Probe — Phase 7b
+------------------------------
+Now that we know Waldron Rd = store #57 (Flour Bluff H-E-B plus!), we can
+skip the 700-store brute force entirely.
 
-Phase 6 goals:
-  A) Get the actual product data for SKU 1510154 with CURBSIDE_PICKUP context
-     (Phase 5 final-fetch had a bug — rebuilding it properly).
-  B) Discover full productDetail field set, including which fields need
-     subfields. Use one-field-at-a-time probing and capture VALID + the
-     "needs subfields" hint to learn nested types.
-  C) Find Waldron Rd store. Strategy: brute-force adjacent store numbers
-     starting from 92 (try 1-700, fast — just request name + postalCode).
-     Corpus Christi stores will turn up.
-  D) Probe productSearch full argument shape.
-  E) Probe browseCategory full argument shape — and try common H-E-B
-     category IDs to enumerate.
+Phase 7b runs against the REAL Waldron store, finds all productDetail
+fields, discovers subfield shapes for complex types, and probes
+productSearch + browseCategory.
 """
 
 import json
@@ -48,11 +35,17 @@ HEADERS = {
 OUTDIR = Path(__file__).parent.parent / "probe_output"
 OUTDIR.mkdir(exist_ok=True)
 CTX = "CURBSIDE_PICKUP"
-KNOWN_GOOD_SKU = "1510154"  # Central Market Organics Instant Coffee
+STORE_NUMBER = 57            # Waldron Rd / Flour Bluff H-E-B plus!
+STORE_NUMBER_STR = "57"
+KNOWN_GOOD_SKU = "1510154"   # Central Market Organics Instant Coffee
+
+
+def safe(s: str) -> str:
+    return re.sub(r'[^A-Za-z0-9_\-.]', '_', s)[:80]
 
 
 def save(name, data):
-    p = OUTDIR / name
+    p = OUTDIR / safe(name)
     if isinstance(data, (dict, list)):
         p.write_text(json.dumps(data, indent=2))
     else:
@@ -85,108 +78,117 @@ def main():
         print(f"  cookies: {list(c.cookies.keys())}")
 
         # =========================================================
-        # A) Get a real productDetail response
+        # 0) Sanity check: store #57 is Flour Bluff
         # =========================================================
-        section(f"A) productDetail with ctx={CTX} and __typename")
+        section(f"0) Sanity check: store(storeNumber: {STORE_NUMBER})")
+        q = f'''query Q {{
+          store(storeNumber: {STORE_NUMBER}) {{
+            storeNumber
+            name
+            phoneNumber
+            latitude
+            longitude
+            address {{ streetAddress locality region postalCode country }}
+          }}
+        }}'''
+        r = post_query(c, q)
+        print(f"  status: {r.status_code}")
+        print(f"  body: {r.text}")
+        save("0_store_57.json", r.text)
+
+        # =========================================================
+        # A) productDetail baseline
+        # =========================================================
+        section(f"A) productDetail at store #{STORE_NUMBER}, SKU {KNOWN_GOOD_SKU}")
         q = '''query Q($s: ID!, $id: ID!, $ctx: ShoppingContext!) {
           productDetail(storeId: $s, id: $id, shoppingContext: $ctx) { __typename }
         }'''
-        r = post_query(c, q, {"s": "92", "id": KNOWN_GOOD_SKU, "ctx": CTX})
+        r = post_query(c, q, {"s": STORE_NUMBER_STR, "id": KNOWN_GOOD_SKU, "ctx": CTX})
         print(f"  status: {r.status_code}")
         print(f"  body: {r.text}")
-        save("A_productDetail_typename.json", r.text)
-
-        # Try with productDetails (plural) as inline fragment selection — the
-        # response type might be a union. The error from Phase 5 said
-        # "ProductDetailResult" so it might be a union/interface.
-        section("A2) productDetail probe with union selection")
-        q2 = '''query Q($s: ID!, $id: ID!, $ctx: ShoppingContext!) {
-          productDetail(storeId: $s, id: $id, shoppingContext: $ctx) {
-            __typename
-            ... on Product {
-              __typename
-            }
-          }
-        }'''
-        r = post_query(c, q2, {"s": "92", "id": KNOWN_GOOD_SKU, "ctx": CTX})
-        print(f"  status: {r.status_code}")
-        print(f"  body: {r.text[:600]}")
-        save("A2_productDetail_union.json", r.text)
-        # The error if "Product" doesn't exist will tell us actual concrete types.
+        save("A_baseline.json", r.text)
 
         # =========================================================
-        # B) Discover ALL productDetail field names (one at a time)
+        # B) productDetail: probe every field name (verbose)
         # =========================================================
-        section("B) productDetail: probe field names one-at-a-time, full capture")
+        section("B) productDetail: verbose field-name probing")
         candidates = [
-            # IDs
             "id", "productId", "sku", "upc", "ean", "productNumber",
             "uid", "code", "primaryProductId",
-            # Names
             "name", "displayName", "title", "productName", "label",
-            # Brand
             "brand", "brandName", "manufacturer", "vendor",
-            # Pricing
             "price", "pricing", "prices", "regularPrice", "salePrice",
             "currentPrice", "listPrice", "unitPrice", "perUnitPrice",
             "displayPrice", "amount",
-            # Images
             "image", "images", "imageUrl", "imageUrls", "primaryImage",
             "thumbnail", "media", "imageGallery",
-            # Description
             "description", "longDescription", "shortDescription", "details",
             "productDescription",
-            # Availability/inventory
             "available", "availability", "inStock", "isAvailable",
             "inventory", "inventoryState", "stockStatus", "stock",
-            "isInStock", "outOfStock",
-            # Categories
+            "isInStock", "outOfStock", "inAssortment",
             "category", "categories", "department", "taxonomy",
             "taxonomyPath", "breadcrumbs", "navigationPath",
-            # Size / packaging
             "size", "weight", "uom", "unitOfMeasure", "packaging",
             "packageSize", "containerSize",
-            # URL / slug
             "url", "slug", "productUrl", "path", "permalink",
-            # Other useful stuff
             "ingredients", "nutrition", "nutritionFacts", "specifications",
             "ratings", "reviews", "averageRating", "reviewCount",
             "tags", "labels", "attributes",
             "private", "isPrivateLabel", "ownedBrand", "isHebBrand",
+            "warnings", "dietary", "dietaryAttributes",
         ]
-        valid_scalar = {}     # field -> sample value
-        valid_complex = []    # field -> needs subfields
+        valid_scalar = {}
+        valid_complex = []
+        unknown_field = []
+        other = []
         for f in candidates:
             q = f'''query Q($s: ID!, $id: ID!, $ctx: ShoppingContext!) {{
               productDetail(storeId: $s, id: $id, shoppingContext: $ctx) {{ {f} }}
             }}'''
-            r = post_query(c, q, {"s": "92", "id": KNOWN_GOOD_SKU, "ctx": CTX})
             try:
-                body = r.json()
-                if "errors" not in body:
-                    pd = body.get("data", {}).get("productDetail")
-                    if isinstance(pd, dict):
-                        v = pd.get(f)
-                        valid_scalar[f] = v
-                        preview = json.dumps(v)[:140] if v is not None else "null"
-                        print(f"  ✓ {f:25s} -> {preview}")
+                r = post_query(c, q, {"s": STORE_NUMBER_STR, "id": KNOWN_GOOD_SKU, "ctx": CTX})
+                body = r.json() if r.text.startswith("{") else None
+            except Exception as e:
+                print(f"  {f:25s} REQ_ERR: {e}")
+                continue
+            if not body:
+                continue
+            if "errors" in body:
+                em = body["errors"][0]["message"]
+                if 'Cannot query field' in em:
+                    unknown_field.append(f)
+                elif "must have a selection of subfields" in em:
+                    m = re.search(r"of type [\"']([\w!\[\]]+)[\"']", em)
+                    inner = m.group(1) if m else "?"
+                    valid_complex.append({"field": f, "type": inner})
+                    print(f"  ⊞ {f:25s} NEEDS_SUBFIELDS type={inner}")
                 else:
-                    em = body["errors"][0]["message"]
-                    if "must have a selection of subfields" in em or "of type" in em and "must have" in em:
-                        valid_complex.append({"field": f, "msg": em[:300]})
-                        # Extract the inner type from "Field 'foo' of type 'TypeName!' must have a selection of subfields"
-                        m = re.search(r"of type [\"']([\w!\[\]]+)[\"']", em)
-                        inner_type = m.group(1) if m else "?"
-                        print(f"  ⊞ {f:25s} NEEDS SUBFIELDS, type={inner_type}")
-            except Exception:
-                pass
-            time.sleep(0.18)
-        save("B_valid_scalar_fields.json", valid_scalar)
-        save("B_complex_fields.json", valid_complex)
+                    print(f"  ? {f:25s} OTHER: {em[:180]}")
+                    other.append((f, em))
+            else:
+                data = body.get("data")
+                pd = (data or {}).get("productDetail")
+                if isinstance(pd, dict) and f in pd:
+                    v = pd[f]
+                    valid_scalar[f] = v
+                    preview = json.dumps(v)[:140] if v is not None else "null"
+                    print(f"  ✓ {f:25s} -> {preview}")
+                else:
+                    other.append((f, f"unexpected: {pd}"))
+            time.sleep(0.15)
 
-        # One big query with all valid scalar fields
+        print(f"\n  Summary: {len(valid_scalar)} scalar | "
+              f"{len(valid_complex)} complex | "
+              f"{len(unknown_field)} unknown")
+        save("B_scalar.json", valid_scalar)
+        save("B_complex.json", valid_complex)
+        save("B_unknown.json", unknown_field)
+        save("B_other.json", other)
+
+        # B2: Full query with all valid scalars
         if valid_scalar:
-            section("B2) Full productDetail query with all valid scalar fields")
+            section("B2) Full productDetail with all scalars")
             scalar_keys = list(valid_scalar.keys())
             qfull = f'''query Q($s: ID!, $id: ID!, $ctx: ShoppingContext!) {{
               productDetail(storeId: $s, id: $id, shoppingContext: $ctx) {{
@@ -194,126 +196,107 @@ def main():
                 {chr(10).join('    ' + k for k in scalar_keys)}
               }}
             }}'''
-            r = post_query(c, qfull, {"s": "92", "id": KNOWN_GOOD_SKU, "ctx": CTX})
+            r = post_query(c, qfull, {"s": STORE_NUMBER_STR, "id": KNOWN_GOOD_SKU, "ctx": CTX})
             print(f"  status: {r.status_code}")
-            print(f"  body (first 2500):\n{r.text[:2500]}")
-            save("B2_PRODUCT_DETAIL_FULL.json", r.text)
+            print(f"  body (first 3500):\n{r.text[:3500]}")
+            save("B2_FULL_PRODUCT.json", r.text)
+
+        # B3: Probe subfields of complex types
+        if valid_complex:
+            section("B3) Probe subfields of complex types")
+            subfield_candidates = [
+                "url", "uri", "src", "href", "path",
+                "value", "amount", "currency", "currencyCode",
+                "price", "regularPrice", "salePrice", "displayPrice", "rawPrice",
+                "min", "max", "isOnSale", "isSale",
+                "id", "name", "label", "displayName", "title",
+                "available", "inStock", "state", "status", "level",
+                "small", "medium", "large", "primary", "alt",
+                "type", "kind", "format",
+                "categoryId", "categoryName",
+            ]
+            complex_info = {}
+            for cf in valid_complex:
+                fname = cf["field"]
+                ftype = cf["type"]
+                print(f"\n  --- {fname} ({ftype}) ---")
+                found = {}
+                for sf in subfield_candidates:
+                    q = f'''query Q($s: ID!, $id: ID!, $ctx: ShoppingContext!) {{
+                      productDetail(storeId: $s, id: $id, shoppingContext: $ctx) {{ {fname} {{ {sf} }} }}
+                    }}'''
+                    r = post_query(c, q, {"s": STORE_NUMBER_STR, "id": KNOWN_GOOD_SKU, "ctx": CTX})
+                    try:
+                        b = r.json()
+                        if "errors" not in b:
+                            pd = (b.get("data") or {}).get("productDetail") or {}
+                            val = pd.get(fname)
+                            preview = json.dumps(val)[:160] if val else "null/empty"
+                            print(f"    ✓ {sf:20s} -> {preview}")
+                            found[sf] = val
+                        else:
+                            em = b["errors"][0]["message"]
+                            if "must have" in em and "Cannot query field" not in em:
+                                m = re.search(r"of type [\"']([\w!\[\]]+)[\"']", em)
+                                inner = m.group(1) if m else "?"
+                                print(f"    ⊞ {sf:20s} NESTED type={inner}")
+                                found[sf] = f"<{inner}>"
+                    except Exception:
+                        pass
+                    time.sleep(0.12)
+                complex_info[fname] = {"type": ftype, "subfields": found}
+            save("B3_complex_subfields.json", complex_info)
 
         # =========================================================
-        # C) Brute-force store numbers to find Waldron (78418)
+        # D) productSearch with Int storeId
         # =========================================================
-        section("C) Brute-force store numbers to find Corpus Christi stores")
-        # H-E-B store numbers go up to ~700+. We'll query in chunks.
-        # Strategy: check stores in batches; for each store get name + postalCode
-        # to identify Corpus stores (78xxx).
-        corpus_stores = []
-        # Check 1..500 (covers most active stores). We do these in serial
-        # but only 1 request each, and bail early if we find Waldron.
-        # Use a compound query to make this faster — 10 stores per request as aliases.
-        BATCH_SIZE = 20
-        TOTAL_RANGE = 700
-        for start in range(1, TOTAL_RANGE + 1, BATCH_SIZE):
-            batch = list(range(start, min(start + BATCH_SIZE, TOTAL_RANGE + 1)))
-            # Build aliased query: s001: store(storeNumber: 1) { ... }
-            aliases = []
-            for n in batch:
-                aliases.append(f'''s{n}: store(storeNumber: {n}) {{
-                    storeNumber name
-                    address {{ streetAddress locality region postalCode }}
-                }}''')
-            q = "query Q {\n" + "\n".join(aliases) + "\n}"
-            r = post_query(c, q)
-            try:
-                body = r.json()
-                data = body.get("data") or {}
-                for n in batch:
-                    s = data.get(f"s{n}")
-                    if s and isinstance(s, dict):
-                        pc = (s.get("address") or {}).get("postalCode", "")
-                        loc = (s.get("address") or {}).get("locality", "")
-                        if pc.startswith("78") or "CORPUS" in (loc or "").upper():
-                            entry = {
-                                "storeNumber": s.get("storeNumber"),
-                                "name": s.get("name"),
-                                "address": s.get("address"),
-                            }
-                            corpus_stores.append(entry)
-                            print(f"  ✓ #{n}: {s.get('name')} — {(s.get('address') or {}).get('streetAddress')}, {loc} {pc}")
-            except Exception as e:
-                print(f"  batch {start}-{start+BATCH_SIZE} parse error: {e}")
-            # Brief pause between batches to be polite
-            time.sleep(0.4)
-        save("C_corpus_stores.json", corpus_stores)
-        print(f"\n  Found {len(corpus_stores)} stores with zip 78xxx or locality CORPUS")
-
-        # Identify Waldron specifically
-        waldron = None
-        for s in corpus_stores:
-            sa = (s.get("address") or {}).get("streetAddress", "")
-            if "WALDRON" in sa.upper():
-                waldron = s
-                print(f"  ⭐ WALDRON FOUND: #{s['storeNumber']} {s['name']} — {sa}")
-                save("WALDRON_STORE.json", s)
-                break
-
-        # =========================================================
-        # D) Probe productSearch full arg shape
-        # =========================================================
-        section("D) productSearch: probe argument shape")
-        # We know it needs shoppingContext. Try common search argument names.
+        section("D) productSearch: storeId as Int")
         ps_attempts = [
-            ('query Q($s: ID!, $ctx: ShoppingContext!, $q: String!) { productSearch(storeId: $s, shoppingContext: $ctx, query: $q) { __typename } }',
-             {"s": "92", "ctx": CTX, "q": "coffee"}),
-            ('query Q($s: ID!, $ctx: ShoppingContext!, $q: String!) { productSearch(storeId: $s, shoppingContext: $ctx, searchTerm: $q) { __typename } }',
-             {"s": "92", "ctx": CTX, "q": "coffee"}),
-            ('query Q($s: ID!, $ctx: ShoppingContext!, $q: String!) { productSearch(storeId: $s, shoppingContext: $ctx, term: $q) { __typename } }',
-             {"s": "92", "ctx": CTX, "q": "coffee"}),
-            ('query Q($s: ID!, $ctx: ShoppingContext!, $q: String!) { productSearch(storeId: $s, shoppingContext: $ctx, keyword: $q) { __typename } }',
-             {"s": "92", "ctx": CTX, "q": "coffee"}),
-            ('query Q($s: ID!, $ctx: ShoppingContext!) { productSearch(storeId: $s, shoppingContext: $ctx) { __typename } }',
-             {"s": "92", "ctx": CTX}),
+            ("query_arg", 'query Q($s: Int!, $ctx: ShoppingContext!, $q: String!) { productSearch(storeId: $s, shoppingContext: $ctx, query: $q) { __typename } }',
+             {"s": STORE_NUMBER, "ctx": CTX, "q": "coffee"}),
+            ("q_arg", 'query Q($s: Int!, $ctx: ShoppingContext!, $q: String!) { productSearch(storeId: $s, shoppingContext: $ctx, q: $q) { __typename } }',
+             {"s": STORE_NUMBER, "ctx": CTX, "q": "coffee"}),
+            ("searchString", 'query Q($s: Int!, $ctx: ShoppingContext!, $q: String!) { productSearch(storeId: $s, shoppingContext: $ctx, searchString: $q) { __typename } }',
+             {"s": STORE_NUMBER, "ctx": CTX, "q": "coffee"}),
+            ("phrase", 'query Q($s: Int!, $ctx: ShoppingContext!, $q: String!) { productSearch(storeId: $s, shoppingContext: $ctx, phrase: $q) { __typename } }',
+             {"s": STORE_NUMBER, "ctx": CTX, "q": "coffee"}),
+            ("text", 'query Q($s: Int!, $ctx: ShoppingContext!, $q: String!) { productSearch(storeId: $s, shoppingContext: $ctx, text: $q) { __typename } }',
+             {"s": STORE_NUMBER, "ctx": CTX, "q": "coffee"}),
+            ("noQ", 'query Q($s: Int!, $ctx: ShoppingContext!) { productSearch(storeId: $s, shoppingContext: $ctx) { __typename } }',
+             {"s": STORE_NUMBER, "ctx": CTX}),
         ]
-        for q, vars_ in ps_attempts:
+        for tag, q, vars_ in ps_attempts:
             r = post_query(c, q, vars_)
-            shape = re.search(r"productSearch\([^)]*\)", q)
-            shape_str = shape.group(0) if shape else "?"
             em = err_msg(r)
             ok = r.status_code == 200 and "errors" not in r.text
-            print(f"  {shape_str[:80]:80s} ok={ok} err={em[:140]}")
+            print(f"  tag={tag:15s} ok={ok} status={r.status_code} err={em[:240]}")
             if ok:
-                print(f"    body: {r.text[:400]}")
-            save(f"D_ps_{shape_str[:40].replace(' ','_')}.json", r.text)
+                print(f"    body: {r.text[:600]}")
+            save(f"D_ps_{tag}.json", r.text)
             time.sleep(0.4)
 
         # =========================================================
-        # E) Probe browseCategory arg shape, find category IDs
+        # E) browseCategory: storeId Int + category IDs
         # =========================================================
-        section("E) browseCategory: probe arg shape")
-        # We KNOW categoryId: String! is required. Try plausible category IDs.
-        # Some Apollo apps use slugs ("coffee"), some use UUIDs, some integers.
-        # We'll probe with several to see which work.
-        bc_attempts = [
-            ('query Q($s: ID!, $ctx: ShoppingContext!, $cid: String!) { browseCategory(storeId: $s, shoppingContext: $ctx, categoryId: $cid) { __typename } }',
-             {"s": "92", "ctx": CTX, "cid": "coffee"}),
-            ('query Q($s: ID!, $ctx: ShoppingContext!, $cid: String!) { browseCategory(storeId: $s, shoppingContext: $ctx, categoryId: $cid) { __typename } }',
-             {"s": "92", "ctx": CTX, "cid": "490086"}),  # try a numeric SKU as cat
-            ('query Q($s: ID!, $ctx: ShoppingContext!, $cid: String!) { browseCategory(storeId: $s, shoppingContext: $ctx, categoryId: $cid) { __typename } }',
-             {"s": "92", "ctx": CTX, "cid": "grocery"}),
-            ('query Q($s: ID!, $ctx: ShoppingContext!, $cid: String!) { browseCategory(storeId: $s, shoppingContext: $ctx, categoryId: $cid) { __typename } }',
-             {"s": "92", "ctx": CTX, "cid": "central-market"}),
-            # bare with required args only:
-            ('query Q($cid: String!) { browseCategory(categoryId: $cid) { __typename } }',
-             {"cid": "coffee"}),
+        section("E) browseCategory")
+        cids = [
+            "coffee", "grocery", "central-market", "central_market",
+            "490086", "100", "1", "DRINKS", "BEVERAGES",
+            "490086_0_0", "coffee-tea", "all-products",
+            "brand", "house-brand", "private-label",
         ]
-        for q, vars_ in bc_attempts:
-            r = post_query(c, q, vars_)
+        for cid in cids:
+            q = '''query Q($s: Int!, $ctx: ShoppingContext!, $cid: String!) {
+              browseCategory(storeId: $s, shoppingContext: $ctx, categoryId: $cid) { __typename }
+            }'''
+            r = post_query(c, q, {"s": STORE_NUMBER, "ctx": CTX, "cid": cid})
             em = err_msg(r)
             ok = r.status_code == 200 and "errors" not in r.text
-            print(f"  cid={vars_.get('cid')!r:25s} ok={ok} status={r.status_code} err={em[:140]}")
+            print(f"  cid={cid:25s} ok={ok} status={r.status_code} err={em[:180]}")
             if ok:
-                print(f"    body: {r.text[:400]}")
-            save(f"E_bc_{vars_.get('cid','none')}.json", r.text)
-            time.sleep(0.4)
+                print(f"    body: {r.text[:600]}")
+            save(f"E_bc_{safe(cid)}.json", r.text)
+            time.sleep(0.3)
 
     print(f"\nDone. Output in {OUTDIR}")
 
