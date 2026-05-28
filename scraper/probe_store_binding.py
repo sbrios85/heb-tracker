@@ -1,9 +1,18 @@
 """
-Probe: how to pin the store to #57 (Waldron) so product pages return
-Waldron pricing instead of the default Victoria (92).
+Probe v2: crack updatePreferredStore.
 
-We test multiple mechanisms and after each, fetch a known product page
-and check the returned storeId.
+Phase 1 findings:
+  - updatePreferredStore(storeNumber: Int) exists, returns null, no error
+  - Setting arbitrary cookies makes product pages return storeId=None (breaks something)
+  - Query params don't work
+
+Phase 2:
+  A) Discover updatePreferredStore's return type + required selection set
+  B) Run the mutation on a client, inspect what cookies it sets, then fetch
+     product on the SAME client (carry session forward)
+  C) Check if there's a 'setStore' / store-context header instead
+  D) Inspect the homepage __NEXT_DATA__ for how storeId=92 gets set (maybe
+     there's a geolocation/IP default we can override with a header)
 """
 
 import json
@@ -17,31 +26,11 @@ from lib_heb import HEADERS, HOMEPAGE, GRAPHQL_ENDPOINT
 
 TEST_PRODUCT_ID = "583162"
 TEST_SLUG = "cafe-ol-by-h-e-b-texas-pecan-medium-roast-ground-coffee"
-TARGET_STORE = 57
+TARGET = 57
 
 
 def section(t):
     print(f"\n{'=' * 70}\n  {t}\n{'=' * 70}")
-
-
-def get_product_store(client):
-    """Fetch the test product and return its storeId from __NEXT_DATA__."""
-    url = f"https://www.heb.com/product-detail/{TEST_SLUG}/{TEST_PRODUCT_ID}"
-    r = client.get(url)
-    if r.status_code != 200:
-        return None, f"status {r.status_code}"
-    m = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', r.text, re.DOTALL)
-    if not m:
-        return None, "no __NEXT_DATA__"
-    try:
-        nd = json.loads(m.group(1))
-        product = (nd.get("props") or {}).get("pageProps", {}).get("product")
-        if product:
-            return product.get("storeId"), "ok"
-        # maybe store is elsewhere
-        return None, "no product in NEXT_DATA"
-    except json.JSONDecodeError as e:
-        return None, f"parse error {e}"
 
 
 def fresh_client():
@@ -50,20 +39,80 @@ def fresh_client():
     return c
 
 
-def main():
-    # Baseline: no store setting
-    section("Baseline (no store set)")
-    c = fresh_client()
-    store, status = get_product_store(c)
-    print(f"  storeId={store} ({status})")
-    print(f"  cookies: {list(c.cookies.keys())}")
+def get_store(client):
+    url = f"https://www.heb.com/product-detail/{TEST_SLUG}/{TEST_PRODUCT_ID}"
+    r = client.get(url)
+    m = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', r.text, re.DOTALL)
+    if not m:
+        return None, f"no NEXT_DATA (status {r.status_code})"
+    try:
+        nd = json.loads(m.group(1))
+        product = (nd.get("props") or {}).get("pageProps", {}).get("product")
+        if product is None:
+            # what IS in pageProps?
+            pp = (nd.get("props") or {}).get("pageProps", {})
+            return None, f"no product; pageProps keys={list(pp.keys())[:10]}"
+        return product.get("storeId"), "ok"
+    except Exception as e:
+        return None, str(e)
 
-    # ---- Approach A: query param ?storeId=57 on the product URL ----
-    section("A) Query param variations on product URL")
-    for param in ["storeId", "store", "storeNumber", "selectedStore"]:
+
+def main():
+    # ============================================================
+    # A) updatePreferredStore return type discovery
+    # ============================================================
+    section("A) updatePreferredStore return-type probe")
+    c = fresh_client()
+    # Try selection sets to find the type
+    selections = [
+        "__typename",
+        "__typename ... on Store { storeNumber name }",
+        "__typename ... on PreferredStore { storeNumber }",
+        "__typename ... on UpdatePreferredStoreResult { __typename }",
+        "__typename ... on UserMessage { message code }",
+    ]
+    for sel in selections:
+        mut = f"mutation M($n: Int!) {{ updatePreferredStore(storeNumber: $n) {{ {sel} }} }}"
+        try:
+            r = c.post(GRAPHQL_ENDPOINT, json={"query": mut, "variables": {"n": TARGET}})
+            body = r.json()
+            if "errors" in body:
+                print(f"  sel='{sel[:40]}' ERR: {body['errors'][0]['message'][:120]}")
+            else:
+                print(f"  sel='{sel[:40]}' OK: {json.dumps(body)[:200]}")
+        except Exception as e:
+            print(f"  sel='{sel[:40]}' EXC: {e}")
+
+    # ============================================================
+    # B) Mutation then same-session product fetch + cookie inspection
+    # ============================================================
+    section("B) Mutation on client, inspect cookies, fetch product SAME session")
+    c = fresh_client()
+    cookies_before = dict(c.cookies)
+    mut = "mutation M($n: Int!) { updatePreferredStore(storeNumber: $n) { __typename } }"
+    r = c.post(GRAPHQL_ENDPOINT, json={"query": mut, "variables": {"n": TARGET}})
+    print(f"  mutation response: {r.text[:200]}")
+    print(f"  set-cookie header: {r.headers.get('set-cookie', '(none)')[:300]}")
+    cookies_after = dict(c.cookies)
+    new = {k: v for k, v in cookies_after.items() if k not in cookies_before}
+    print(f"  new cookies from mutation: {new}")
+    # Now fetch product on SAME client
+    store, status = get_store(c)
+    marker = "✓✓✓" if store == TARGET else ""
+    print(f"  product storeId after mutation (same session): {store} ({status}) {marker}")
+
+    # ============================================================
+    # C) Try a store-context HTTP header on the product fetch
+    # ============================================================
+    section("C) Store-context HTTP headers")
+    header_names = [
+        "x-heb-store", "x-store-id", "x-store-number", "heb-store-id",
+        "x-preferred-store", "store-id", "x-heb-store-id",
+    ]
+    for hname in header_names:
         c = fresh_client()
-        url = f"https://www.heb.com/product-detail/{TEST_SLUG}/{TEST_PRODUCT_ID}?{param}={TARGET_STORE}"
-        r = c.get(url)
+        url = f"https://www.heb.com/product-detail/{TEST_SLUG}/{TEST_PRODUCT_ID}"
+        r = c.get(url, headers={hname: str(TARGET)})
         m = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', r.text, re.DOTALL)
         store = None
         if m:
@@ -72,104 +121,58 @@ def main():
                 store = (nd.get("props") or {}).get("pageProps", {}).get("product", {}).get("storeId")
             except Exception:
                 pass
-        marker = "✓✓✓" if store == TARGET_STORE else ""
-        print(f"  ?{param}={TARGET_STORE} -> storeId={store} {marker}")
+        marker = "✓✓✓" if store == TARGET else ""
+        print(f"  header {hname}={TARGET} -> storeId={store} {marker}")
 
-    # ---- Approach B: various cookie names ----
-    section("B) Cookie variations")
-    cookie_names = [
-        "HEB_PREFERRED_STORE", "preferredStore", "storeNumber", "storeId",
-        "CURR_SESSION_STORE", "selected_store", "userStore",
-        "HEB_STORE", "store_id", "currentStore", "fulfillmentStoreId",
-    ]
-    for cname in cookie_names:
-        c = fresh_client()
-        c.cookies.set(cname, str(TARGET_STORE), domain=".heb.com")
-        store, status = get_product_store(c)
-        marker = "✓✓✓" if store == TARGET_STORE else ""
-        print(f"  cookie {cname}={TARGET_STORE} -> storeId={store} {marker}")
-
-    # ---- Approach C: GraphQL mutations to set store ----
-    section("C) GraphQL mutation variations")
-    mutations = [
-        ("updatePreferredStore Int",
-         "mutation M($n: Int!) { updatePreferredStore(storeNumber: $n) { __typename } }",
-         {"n": TARGET_STORE}),
-        ("updatePreferredStore storeId",
-         "mutation M($n: Int!) { updatePreferredStore(storeId: $n) { __typename } }",
-         {"n": TARGET_STORE}),
-        ("setPreferredStore",
-         "mutation M($n: Int!) { setPreferredStore(storeNumber: $n) { __typename } }",
-         {"n": TARGET_STORE}),
-        ("selectStore",
-         "mutation M($n: Int!) { selectStore(storeNumber: $n) { __typename } }",
-         {"n": TARGET_STORE}),
-    ]
-    for name, mut, vars_ in mutations:
-        c = fresh_client()
-        try:
-            r = c.post(GRAPHQL_ENDPOINT, json={"query": mut, "variables": vars_})
-            body = r.json()
-            if "errors" in body:
-                err = body["errors"][0]["message"][:80]
-                print(f"  {name}: mutation err: {err}")
-                continue
-            else:
-                print(f"  {name}: mutation OK -> {json.dumps(body)[:150]}")
-        except Exception as e:
-            print(f"  {name}: exception {e}")
-            continue
-        # Now check if the product page reflects it
-        store, status = get_product_store(c)
-        marker = "✓✓✓" if store == TARGET_STORE else ""
-        print(f"     after mutation -> storeId={store} {marker}")
-
-    # ---- Approach D: look at what cookies the site sets when we visit a store page ----
-    section("D) Visit the store page and capture cookies")
+    # ============================================================
+    # D) How is storeId=92 chosen? Inspect homepage NEXT_DATA for store context
+    # ============================================================
+    section("D) Homepage __NEXT_DATA__ store-context inspection")
     c = fresh_client()
-    before = set(c.cookies.keys())
-    store_page = f"https://www.heb.com/heb-store/tx/corpus-christi/flour-bluff-h-e-b-plus--{TARGET_STORE}"
-    r = c.get(store_page)
-    print(f"  store page status: {r.status_code}")
-    after = set(c.cookies.keys())
-    new_cookies = after - before
-    print(f"  new cookies after visiting store page: {new_cookies}")
-    for k in c.cookies.keys():
-        v = c.cookies.get(k)
-        # Only print short values (store-id-like)
-        if v and len(str(v)) < 20:
-            print(f"    {k} = {v}")
-    # Check product store now
-    store, status = get_product_store(c)
-    marker = "✓✓✓" if store == TARGET_STORE else ""
-    print(f"  after store-page visit -> storeId={store} {marker}")
-
-    # ---- Approach E: combine store-page visit THEN check ----
-    section("E) Look for a 'set store' or 'curbside' action endpoint in store page HTML")
-    # Search the store page HTML for any setStore / selectStore / storeId references
-    setters = re.findall(r'(set[A-Z]\w*[Ss]tore\w*|select[A-Z]?\w*[Ss]tore\w*)', r.text)
-    print(f"  store-setter-like tokens in store page: {set(setters)}")
-    # Look for fulfillment/store IDs in the store page __NEXT_DATA__
+    r = c.get(HOMEPAGE)
     m = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', r.text, re.DOTALL)
     if m:
         try:
             nd = json.loads(m.group(1))
-            # find storeId / storeNumber fields
             def walk(o, p=""):
                 hits = []
                 if isinstance(o, dict):
                     for k, v in o.items():
-                        if re.search(r'store(Id|Number)', k, re.I) and isinstance(v, (int, str)):
-                            hits.append((f"{p}.{k}", v))
+                        if re.search(r'store(Id|Number|Context)|fulfillment|defaultStore', k, re.I):
+                            if isinstance(v, (int, str, bool)):
+                                hits.append((f"{p}.{k}", v))
+                            elif isinstance(v, dict):
+                                hits.append((f"{p}.{k}", f"<dict keys={list(v.keys())[:8]}>"))
                         hits.extend(walk(v, f"{p}.{k}"))
                 elif isinstance(o, list):
-                    for i, v in enumerate(o[:3]):
+                    for i, v in enumerate(o[:2]):
                         hits.extend(walk(v, f"{p}[{i}]"))
                 return hits
-            for path, val in walk(nd)[:20]:
+            hits = walk(nd)
+            print(f"  store-context fields in homepage NEXT_DATA ({len(hits)}):")
+            for path, val in hits[:30]:
                 print(f"    {path} = {val}")
         except Exception as e:
             print(f"  parse error: {e}")
+
+    # ============================================================
+    # E) Check the GraphQL request the frontend uses — does productDetails
+    #    take a storeId we can override? We have productSearch working with
+    #    storeId=57. Maybe we fetch details via GraphQL instead of the page.
+    # ============================================================
+    section("E) Can we get price via GraphQL productDetails with storeId=57?")
+    # We know productSearch(storeId:57) works. The product page uses a
+    # different query. Let's see if there's a getProductById we saw earlier:
+    #   query productPrefsForProduct { product: getProductById(id, storeId) }
+    c = fresh_client()
+    q = """query Q($id: String!, $storeId: String) {
+      getProductById(id: $id, storeId: $storeId) {
+        id
+        __typename
+      }
+    }"""
+    r = c.post(GRAPHQL_ENDPOINT, json={"query": q, "variables": {"id": TEST_PRODUCT_ID, "storeId": str(TARGET)}})
+    print(f"  getProductById: {r.text[:300]}")
 
 
 if __name__ == "__main__":
