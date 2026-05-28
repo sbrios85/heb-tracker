@@ -1,0 +1,61 @@
+name: Compact Dismissed
+
+# Permanently removes dismissed products from data files to shrink them.
+# Reads data/tracked.json for the dismissed list, then prunes:
+#   - data/details.json    (drops product entries by id)
+#   - data/products.json   (drops catalog entries by id)
+# Tracked.json itself is preserved (so future re-discovery still skips them).
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  compact:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compact data files
+        run: |
+          python <<'PY'
+          import json
+          from pathlib import Path
+          tracked = json.load(open("data/tracked.json"))
+          dismissed_ids = set(tracked.get("dismissed", []))
+          print(f"Dismissed ids to purge: {len(dismissed_ids)}")
+
+          # Compact details.json
+          dpath = Path("data/details.json")
+          if dpath.exists():
+            details = json.load(open(dpath))
+            before = len(details.get("products", {}))
+            details["products"] = {pid: p for pid, p in details.get("products", {}).items()
+                                   if pid not in dismissed_ids}
+            after = len(details["products"])
+            json.dump(details, open(dpath, "w"), indent=2, ensure_ascii=False)
+            print(f"details.json: {before} -> {after} ({before-after} removed)")
+
+          # Compact products.json
+          ppath = Path("data/products.json")
+          if ppath.exists():
+            products = json.load(open(ppath))
+            arr = products.get("products", [])
+            before = len(arr)
+            products["products"] = [p for p in arr if p.get("id") not in dismissed_ids]
+            after = len(products["products"])
+            json.dump(products, open(ppath, "w"), indent=2, ensure_ascii=False)
+            print(f"products.json: {before} -> {after} ({before-after} removed)")
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f data/details.json data/products.json
+          git diff --staged --quiet || git commit -m "Compact dismissed $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push
