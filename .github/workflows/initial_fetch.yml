@@ -2,36 +2,73 @@ name: Initial Fetch
 
 on:
   workflow_dispatch:
+    inputs:
+      total_chunks:
+        description: 'Total number of chunks (default 13 = 9945 products / ~800 per chunk, safely under H-E-B IP cap)'
+        required: false
+        default: '13'
 
 permissions:
   contents: write
 
 jobs:
-  fetch:
+  fetch_chunk:
+    name: Fetch chunk ${{ matrix.chunk }}
     runs-on: ubuntu-latest
-    # GitHub Actions max is 360 (6h). Leave buffer for commit step.
-    timeout-minutes: 340
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - run: pip install -r requirements.txt
-      - name: Run initial fetch (resumable)
-        run: python scraper/heb_initial_fetch.py
-      - name: Upload details.json as artifact
-        if: always()
+      - name: Fetch chunk ${{ matrix.chunk }}
+        run: |
+          python scraper/heb_initial_fetch.py \
+            --chunk ${{ matrix.chunk }} \
+            --total-chunks ${{ github.event.inputs.total_chunks }}
+      - name: Upload chunk artifact
         uses: actions/upload-artifact@v4
         with:
-          name: details
-          path: data/details.json
-          retention-days: 30
+          name: details-chunk-${{ matrix.chunk }}
+          path: data/details_chunk_*.json
+          retention-days: 7
+
+  merge:
+    name: Merge chunks
+    needs: fetch_chunk
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Download all chunk artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+          pattern: details-chunk-*
+          merge-multiple: true
+      - name: Move chunks into data/
+        run: |
+          mkdir -p data
+          mv artifacts/details_chunk_*.json data/ 2>/dev/null || true
+          ls -la data/
+      - name: Merge chunks into details.json
+        run: python scraper/merge_details_chunks.py
       - name: Commit details.json
-        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -f data/details.json
-          git diff --staged --quiet || git commit -m "Initial fetch progress $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          git pull --rebase
+          # Don't commit the per-chunk files
+          git diff --staged --quiet || git commit -m "Initial fetch (parallel chunks) $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git pull --rebase || true
           git push
