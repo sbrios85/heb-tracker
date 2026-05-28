@@ -1,0 +1,1339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>H-E-B Tracker · Flour Bluff #57</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f3ec;
+    --bg-paper: #fffdf7;
+    --ink: #1a1916;
+    --ink-soft: #5c5b56;
+    --ink-faint: #908f88;
+    --rule: #d8d4c5;
+    --rule-soft: #ece8db;
+    --accent: #c0392b;   /* HEB red, slightly muted */
+    --accent-soft: #f9e8e5;
+    --gold: #b8893a;
+    --gold-soft: #f4ebd6;
+    --green: #5a7a3f;
+    --green-soft: #e6eedd;
+    --shadow: 0 1px 0 rgba(26,25,22,0.04), 0 8px 24px -16px rgba(26,25,22,0.18);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-feature-settings: 'ss01', 'cv11';
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .serif { font-family: 'Fraunces', Georgia, serif; }
+  .mono { font-family: 'DM Mono', ui-monospace, monospace; }
+
+  /* ===== top bar ===== */
+  .topbar {
+    position: sticky; top: 0; z-index: 30;
+    background: var(--bg-paper);
+    border-bottom: 1px solid var(--rule);
+    padding: 14px 24px;
+    display: flex; align-items: center; gap: 20px;
+  }
+  .brand { display: flex; align-items: baseline; gap: 12px; }
+  .brand .mark {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+  }
+  .brand .sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ===== tabs ===== */
+  .tabs { display: flex; gap: 4px; margin-left: 12px; }
+  .tab {
+    background: transparent;
+    border: none;
+    padding: 8px 14px;
+    font: inherit;
+    font-size: 13px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    border-radius: 999px;
+    display: flex; align-items: center; gap: 8px;
+    transition: background 0.12s, color 0.12s;
+  }
+  .tab:hover { background: var(--rule-soft); color: var(--ink); }
+  .tab.active { background: var(--ink); color: var(--bg-paper); }
+  .tab .count {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.18);
+  }
+  .tab:not(.active) .count {
+    background: var(--rule);
+    color: var(--ink-soft);
+  }
+
+  .top-spacer { flex: 1; }
+
+  /* ===== top buttons ===== */
+  .btn {
+    background: var(--bg-paper);
+    border: 1px solid var(--rule);
+    padding: 6px 12px;
+    font: inherit;
+    font-size: 12px;
+    color: var(--ink);
+    cursor: pointer;
+    border-radius: 6px;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: border-color 0.12s, background 0.12s, transform 0.05s;
+  }
+  .btn:hover { border-color: var(--ink-faint); }
+  .btn:active { transform: scale(0.98); }
+  .btn.primary { background: var(--ink); color: var(--bg-paper); border-color: var(--ink); }
+  .btn.primary:hover { background: #2d2c28; }
+  .btn.warn { background: var(--accent); color: white; border-color: var(--accent); }
+  .btn.warn:hover { background: #a82e23; }
+  .btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+  .btn .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    display: inline-block;
+  }
+
+  /* ===== filter row ===== */
+  .filters {
+    padding: 14px 24px;
+    display: flex; gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    background: var(--bg-paper);
+    border-bottom: 1px solid var(--rule);
+  }
+  .filters input[type=text],
+  .filters select {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    padding: 7px 10px;
+    font: inherit;
+    font-size: 13px;
+    color: var(--ink);
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .filters input[type=text]:focus,
+  .filters select:focus { border-color: var(--ink-soft); background: var(--bg-paper); }
+  .filters input[type=text] { flex: 1; min-width: 200px; max-width: 320px; }
+  .filters select { min-width: 130px; max-width: 200px; }
+
+  .toggle-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 10px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: var(--bg);
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--ink-soft);
+    user-select: none;
+  }
+  .toggle-chip.on {
+    background: var(--ink);
+    color: var(--bg-paper);
+    border-color: var(--ink);
+  }
+  .toggle-chip input { display: none; }
+
+  .price-range {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 12px; color: var(--ink-soft);
+  }
+  .price-range input[type=number] {
+    width: 60px;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    padding: 5px 6px;
+    font: inherit;
+    font-size: 12px;
+    color: var(--ink);
+    border-radius: 4px;
+    outline: none;
+  }
+
+  .filter-stats {
+    margin-left: auto;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ===== view toggle ===== */
+  .view-toggle {
+    display: inline-flex;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .view-toggle button {
+    background: var(--bg-paper);
+    border: none;
+    padding: 5px 9px;
+    font: inherit;
+    font-size: 16px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    line-height: 1;
+  }
+  .view-toggle button.active { background: var(--ink); color: var(--bg-paper); }
+
+  /* ===== bulk-action bar (sticky when items selected) ===== */
+  .bulk-bar {
+    position: sticky; top: 56px; z-index: 25;
+    background: var(--ink);
+    color: var(--bg-paper);
+    padding: 10px 24px;
+    display: flex; align-items: center; gap: 16px;
+    font-size: 13px;
+    display: none;
+  }
+  .bulk-bar.show { display: flex; }
+  .bulk-bar .btn { background: transparent; color: var(--bg-paper); border-color: rgba(255,255,255,0.25); }
+  .bulk-bar .btn:hover { border-color: rgba(255,255,255,0.6); }
+
+  /* ===== main content ===== */
+  main { padding: 20px 24px 80px; }
+  .empty {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--ink-faint);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+  }
+  .loading {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--ink-faint);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .loading::after {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    animation: dots 1.2s infinite;
+  }
+  @keyframes dots { 0%,20%{content:'';} 40%{content:'.';} 60%{content:'..';} 80%,100%{content:'...';} }
+
+  /* ===== grid view ===== */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 14px;
+  }
+  .card {
+    background: var(--bg-paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.12s, transform 0.08s;
+    display: flex; flex-direction: column;
+  }
+  .card:hover { border-color: var(--ink-faint); }
+  .card.selected { border-color: var(--ink); border-width: 2px; padding: 9px; }
+  .card.tracked { background: var(--gold-soft); border-color: var(--gold); }
+  .card.dismissed { opacity: 0.5; }
+  .card.oos { background: var(--rule-soft); }
+  .card .img {
+    width: 100%; aspect-ratio: 1;
+    background: var(--bg);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .card .img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .card .img .ph {
+    font-family: 'Fraunces', serif;
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-align: center; padding: 8px;
+  }
+  .card .sale-badge {
+    position: absolute; top: 6px; left: 6px;
+    background: var(--accent); color: white;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.04em;
+  }
+  .card .oos-badge {
+    position: absolute; top: 6px; left: 6px;
+    background: var(--ink); color: var(--bg-paper);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.04em;
+  }
+  .card .checkbox {
+    position: absolute; top: 6px; right: 6px;
+    width: 22px; height: 22px;
+    background: var(--bg-paper);
+    border: 1.5px solid var(--rule);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .card .checkbox:hover { border-color: var(--ink); }
+  .card .checkbox.checked { background: var(--ink); border-color: var(--ink); color: var(--bg-paper); font-size: 14px; font-weight: bold; }
+  .card .name {
+    font-size: 12px;
+    line-height: 1.35;
+    margin: 0 0 4px 0;
+    max-height: 50px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+  .card .brand {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .card .footer {
+    margin-top: auto;
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 4px;
+  }
+  .card .price {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 16px;
+  }
+  .card .price.sale { color: var(--accent); }
+  .card .unit-price {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+  }
+  .card-state {
+    position: absolute; bottom: 6px; right: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 5px;
+    border-radius: 3px;
+  }
+  .card-state.tracked { background: var(--gold); color: white; }
+  .card-state.dismissed { background: var(--ink-soft); color: white; }
+
+  /* ===== table view ===== */
+  .table-wrap {
+    background: var(--bg-paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  table.products {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.products thead th {
+    text-align: left;
+    padding: 10px 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+  table.products thead th:hover { color: var(--ink); }
+  table.products thead th .arrow { opacity: 0.4; margin-left: 2px; }
+  table.products thead th.sorted .arrow { opacity: 1; color: var(--accent); }
+  table.products tbody tr {
+    border-bottom: 1px solid var(--rule-soft);
+    cursor: pointer;
+    transition: background 0.08s;
+  }
+  table.products tbody tr:hover { background: var(--rule-soft); }
+  table.products tbody tr.tracked { background: var(--gold-soft); }
+  table.products tbody tr.tracked:hover { background: #efe1c2; }
+  table.products tbody tr.dismissed { opacity: 0.55; }
+  table.products tbody tr.selected td:first-child { box-shadow: inset 3px 0 0 var(--ink); }
+  table.products td {
+    padding: 8px 12px;
+    vertical-align: middle;
+  }
+  table.products td.num { text-align: right; font-family: 'DM Mono', monospace; }
+  table.products td.name { max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  table.products td.thumb { width: 44px; padding: 4px; }
+  table.products td.thumb img { width: 36px; height: 36px; object-fit: contain; border-radius: 3px; background: var(--bg); }
+  table.products td.thumb .ph {
+    width: 36px; height: 36px; background: var(--bg); border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif; color: var(--ink-faint); font-size: 16px;
+  }
+  table.products td.checkbox-cell { width: 32px; padding-left: 12px; }
+  table.products td.checkbox-cell input { cursor: pointer; }
+  table.products .brand-cell {
+    font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-soft);
+  }
+  table.products .price-cell.sale { color: var(--accent); font-weight: 500; }
+  table.products .badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 2px 5px; border-radius: 3px;
+  }
+  table.products .badge.tracked { background: var(--gold); color: white; }
+  table.products .badge.dismissed { background: var(--ink-soft); color: white; }
+  table.products .stock-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  table.products .stock-dot.in { background: var(--green); }
+  table.products .stock-dot.out { background: var(--ink-faint); }
+
+  /* ===== detail panel ===== */
+  .detail-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,25,22,0.45);
+    z-index: 50;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(2px);
+  }
+  .detail-overlay.show { display: flex; }
+  .detail-panel {
+    background: var(--bg-paper);
+    border-radius: 12px;
+    max-width: 720px; width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 80px -20px rgba(0,0,0,0.5);
+    display: grid;
+    grid-template-columns: 280px 1fr;
+  }
+  @media (max-width: 640px) {
+    .detail-panel { grid-template-columns: 1fr; }
+  }
+  .detail-panel .image-area {
+    background: var(--bg);
+    padding: 20px;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 280px;
+  }
+  .detail-panel .image-area img { max-width: 100%; max-height: 260px; object-fit: contain; }
+  .detail-panel .content { padding: 24px; }
+  .detail-panel .close {
+    position: absolute; top: 12px; right: 12px;
+    width: 32px; height: 32px;
+    background: var(--bg-paper);
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .detail-overlay { position: fixed; }
+  .detail-panel { position: relative; }
+  .detail-panel h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.25;
+    margin: 0 0 6px 0;
+  }
+  .detail-panel .meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 16px;
+  }
+  .detail-panel .price-block {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+    display: flex; align-items: baseline; gap: 16px;
+  }
+  .detail-panel .price-block .big {
+    font-family: 'Fraunces', serif; font-size: 28px; font-weight: 500;
+  }
+  .detail-panel .price-block .big.sale { color: var(--accent); }
+  .detail-panel .price-block .strike {
+    text-decoration: line-through;
+    color: var(--ink-faint);
+    font-size: 16px;
+  }
+  .detail-panel .price-block .unit {
+    font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-soft);
+  }
+  .detail-panel .info-grid {
+    display: grid; grid-template-columns: 100px 1fr;
+    gap: 8px 16px;
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+  .detail-panel .info-grid dt {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: var(--ink-faint); text-transform: uppercase;
+    letter-spacing: 0.06em; padding-top: 2px;
+  }
+  .detail-panel .info-grid dd { margin: 0; }
+  .detail-panel .desc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+  }
+  .detail-panel .actions {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    border-top: 1px solid var(--rule);
+    padding-top: 16px;
+    margin-top: 12px;
+  }
+
+  /* ===== sync banner ===== */
+  .sync-banner {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--bg-paper);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 12px 16px;
+    box-shadow: var(--shadow);
+    font-size: 13px;
+    z-index: 40;
+    display: none;
+    align-items: center;
+    gap: 12px;
+    max-width: 360px;
+  }
+  .sync-banner.show { display: flex; }
+  .sync-banner .label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 20px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: var(--bg-paper);
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    z-index: 60;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+  .toast.error { background: var(--accent); }
+  .toast.success { background: var(--green); }
+
+  /* dialog */
+  .dialog-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,25,22,0.55);
+    z-index: 70;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .dialog-overlay.show { display: flex; }
+  .dialog {
+    background: var(--bg-paper);
+    border-radius: 12px;
+    max-width: 460px; width: 100%;
+    padding: 24px;
+    box-shadow: 0 20px 80px -20px rgba(0,0,0,0.5);
+  }
+  .dialog h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 20px;
+    margin: 0 0 8px 0;
+  }
+  .dialog p {
+    font-size: 13px; line-height: 1.6; color: var(--ink-soft);
+    margin: 0 0 16px 0;
+  }
+  .dialog .field { margin-bottom: 14px; }
+  .dialog .field label {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+  .dialog .field input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    padding: 8px 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--ink);
+    border-radius: 6px;
+    outline: none;
+  }
+  .dialog .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+  .help-link {
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+  }
+  .help-link:hover { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <span class="mark">H·E·B</span>
+    <span class="sub">Tracker · Flour Bluff #57</span>
+  </div>
+  <div class="tabs">
+    <button class="tab active" data-tab="review">Review <span class="count" id="count-review">—</span></button>
+    <button class="tab" data-tab="tracked">Tracked <span class="count" id="count-tracked">—</span></button>
+    <button class="tab" data-tab="dismissed">Dismissed <span class="count" id="count-dismissed">—</span></button>
+    <button class="tab" data-tab="all">All <span class="count" id="count-all">—</span></button>
+  </div>
+  <div class="top-spacer"></div>
+  <button class="btn" id="btn-sync" title="Push tracked/dismissed lists to the GitHub repo">
+    <span class="dot" id="sync-dot" style="display:none;"></span>
+    Sync
+  </button>
+  <button class="btn" id="btn-compact" title="Permanently remove dismissed products from data files">Compact data…</button>
+</div>
+
+<div class="filters">
+  <input type="text" id="search" placeholder="Search product or brand…">
+  <select id="brand-filter">
+    <option value="">All brands</option>
+  </select>
+  <select id="dept-filter">
+    <option value="">All departments</option>
+  </select>
+  <label class="toggle-chip" data-filter="onsale">
+    <input type="checkbox" id="onsale-toggle"> On sale
+  </label>
+  <label class="toggle-chip" data-filter="instock">
+    <input type="checkbox" id="instock-toggle"> In stock
+  </label>
+  <span class="price-range">
+    $<input type="number" id="price-min" placeholder="min" min="0" step="0.5">
+    –
+    $<input type="number" id="price-max" placeholder="max" min="0" step="0.5">
+  </span>
+
+  <span class="filter-stats" id="stats">—</span>
+
+  <div class="view-toggle" role="tablist">
+    <button id="view-grid" class="active" title="Grid view" aria-label="grid view">▦</button>
+    <button id="view-table" title="Table view" aria-label="table view">≡</button>
+  </div>
+</div>
+
+<div class="bulk-bar" id="bulk-bar">
+  <span><strong id="selected-count">0</strong> selected</span>
+  <button class="btn" id="bulk-track">Track</button>
+  <button class="btn" id="bulk-dismiss">Dismiss</button>
+  <button class="btn" id="bulk-restore">Restore (unmark)</button>
+  <div class="top-spacer"></div>
+  <button class="btn" id="bulk-clear">Clear selection</button>
+</div>
+
+<main>
+  <div id="results"></div>
+</main>
+
+<!-- detail overlay -->
+<div class="detail-overlay" id="detail-overlay">
+  <div class="detail-panel" id="detail-panel"></div>
+</div>
+
+<!-- sync dialog -->
+<div class="dialog-overlay" id="sync-dialog">
+  <div class="dialog">
+    <h3>Sync to GitHub</h3>
+    <p>Push your tracked & dismissed lists to <code>data/tracked.json</code> in the repo, so the daily refresh workflow can read them.</p>
+    <p>This calls a GitHub Actions workflow. You need a <a href="https://github.com/settings/tokens?type=beta" target="_blank">fine-grained Personal Access Token</a> with <strong>Actions: read &amp; write</strong> and <strong>Contents: read &amp; write</strong> on <code>sbrios85/heb-tracker</code>. Saved locally only.</p>
+    <div class="field">
+      <label>GitHub token (ghp_… or github_pat_…)</label>
+      <input type="password" id="gh-token" autocomplete="off" placeholder="paste once, stored in your browser">
+    </div>
+    <div class="actions">
+      <button class="btn" id="sync-cancel">Cancel</button>
+      <button class="btn primary" id="sync-go">Sync now</button>
+    </div>
+  </div>
+</div>
+
+<!-- compact dialog -->
+<div class="dialog-overlay" id="compact-dialog">
+  <div class="dialog">
+    <h3>Compact data</h3>
+    <p>Permanently remove dismissed products from <code>data/details.json</code> and <code>data/products.json</code>, shrinking the dashboard.</p>
+    <p id="compact-summary"></p>
+    <p>This runs the <code>compact_dismissed</code> GitHub Action. Dismissed-list still survives, so any product re-added by H-E-B in the future stays hidden.</p>
+    <div class="actions">
+      <button class="btn" id="compact-cancel">Cancel</button>
+      <button class="btn warn" id="compact-go">Compact now</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// =========================================================
+// CONFIG
+// =========================================================
+const REPO_OWNER  = "sbrios85";
+const REPO_NAME   = "heb-tracker";
+const REPO_BRANCH = "main";
+const DETAILS_URL = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${REPO_BRANCH}/data/details.json`;
+const TRACKED_URL = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${REPO_BRANCH}/data/tracked.json`;
+
+const LS_TRACKED = "heb_tracked_set";
+const LS_DISMISSED = "heb_dismissed_set";
+const LS_DIRTY = "heb_dirty_since_sync";
+const LS_TOKEN = "heb_gh_token";
+const LS_VIEW = "heb_view_mode";
+const LS_SORT = "heb_sort";
+
+// =========================================================
+// STATE
+// =========================================================
+let allProducts = [];               // array of product objects
+let productById = new Map();        // id -> product
+let tracked = new Set(JSON.parse(localStorage.getItem(LS_TRACKED) || "[]"));
+let dismissed = new Set(JSON.parse(localStorage.getItem(LS_DISMISSED) || "[]"));
+let dirty = localStorage.getItem(LS_DIRTY) === "1";
+let selected = new Set();           // current selection (bulk ops)
+let currentTab = "review";
+let viewMode = localStorage.getItem(LS_VIEW) || "grid";
+let sort = JSON.parse(localStorage.getItem(LS_SORT) || '{"by":"name","dir":"asc"}');
+
+// =========================================================
+// PERSISTENCE
+// =========================================================
+function persist() {
+  localStorage.setItem(LS_TRACKED, JSON.stringify([...tracked]));
+  localStorage.setItem(LS_DISMISSED, JSON.stringify([...dismissed]));
+  localStorage.setItem(LS_DIRTY, dirty ? "1" : "0");
+  localStorage.setItem(LS_VIEW, viewMode);
+  localStorage.setItem(LS_SORT, JSON.stringify(sort));
+  updateSyncIndicator();
+}
+
+function markDirty() { dirty = true; persist(); }
+
+function updateSyncIndicator() {
+  const dot = document.getElementById("sync-dot");
+  dot.style.display = dirty ? "inline-block" : "none";
+}
+
+// =========================================================
+// TOAST
+// =========================================================
+let toastTimer;
+function toast(msg, kind) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.className = "toast show" + (kind ? " " + kind : "");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 2400);
+}
+
+// =========================================================
+// DATA LOAD
+// =========================================================
+async function loadData() {
+  const results = document.getElementById("results");
+  results.innerHTML = '<div class="loading">Loading H-E-B catalog</div>';
+  try {
+    const r = await fetch(DETAILS_URL, {cache: "no-store"});
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const data = await r.json();
+    const productsObj = data.products || {};
+    allProducts = Object.values(productsObj).filter(p => !p._failed);
+    productById = new Map(allProducts.map(p => [p.id, p]));
+  } catch (e) {
+    results.innerHTML = `<div class="empty">Couldn't load details.json — ${e.message}<br><span class="mono" style="font-size:11px">${DETAILS_URL}</span></div>`;
+    return;
+  }
+  // try to pull repo tracked.json — but local state always wins (it's newer)
+  try {
+    const r = await fetch(TRACKED_URL, {cache: "no-store"});
+    if (r.ok) {
+      const remote = await r.json();
+      // Only adopt if local is empty (first-load case)
+      if (tracked.size === 0 && dismissed.size === 0) {
+        tracked = new Set(remote.tracked || []);
+        dismissed = new Set(remote.dismissed || []);
+        dirty = false;
+        persist();
+      }
+    }
+  } catch (e) { /* no remote yet, fine */ }
+
+  populateFilters();
+  applyFilters();
+}
+
+function populateFilters() {
+  const brands = new Set();
+  const depts = new Set();
+  allProducts.forEach(p => {
+    if (p.brandName) brands.add(p.brandName);
+    if (p.department) depts.add(p.department);
+  });
+  const bSel = document.getElementById("brand-filter");
+  [...brands].sort().forEach(b => {
+    const o = document.createElement("option");
+    o.value = b; o.textContent = b;
+    bSel.appendChild(o);
+  });
+  const dSel = document.getElementById("dept-filter");
+  [...depts].sort().forEach(d => {
+    const o = document.createElement("option");
+    o.value = d; o.textContent = d;
+    dSel.appendChild(o);
+  });
+}
+
+// =========================================================
+// FILTER + RENDER
+// =========================================================
+function currentFiltered() {
+  const q = document.getElementById("search").value.trim().toLowerCase();
+  const brand = document.getElementById("brand-filter").value;
+  const dept = document.getElementById("dept-filter").value;
+  const onsale = document.getElementById("onsale-toggle").checked;
+  const instock = document.getElementById("instock-toggle").checked;
+  const pmin = parseFloat(document.getElementById("price-min").value);
+  const pmax = parseFloat(document.getElementById("price-max").value);
+
+  return allProducts.filter(p => {
+    // tab filter
+    const isTracked = tracked.has(p.id);
+    const isDismissed = dismissed.has(p.id);
+    if (currentTab === "review" && (isTracked || isDismissed)) return false;
+    if (currentTab === "tracked" && !isTracked) return false;
+    if (currentTab === "dismissed" && !isDismissed) return false;
+    // search
+    if (q) {
+      const hay = ((p.displayName||"") + " " + (p.brandName||"")).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    if (brand && p.brandName !== brand) return false;
+    if (dept && p.department !== dept) return false;
+    if (onsale && !p.isOnSale) return false;
+    if (instock && p.inventoryState !== "IN_STOCK") return false;
+    const price = p.onlineSalePrice ?? p.onlinePrice;
+    if (!isNaN(pmin) && (price ?? Infinity) < pmin) return false;
+    if (!isNaN(pmax) && (price ?? -Infinity) > pmax) return false;
+    return true;
+  });
+}
+
+function sortProducts(arr) {
+  const dir = sort.dir === "desc" ? -1 : 1;
+  const by = sort.by;
+  return [...arr].sort((a, b) => {
+    let av, bv;
+    if (by === "name") { av = (a.displayName||"").toLowerCase(); bv = (b.displayName||"").toLowerCase(); }
+    else if (by === "brand") { av = (a.brandName||"").toLowerCase(); bv = (b.brandName||"").toLowerCase(); }
+    else if (by === "price") { av = a.onlineSalePrice ?? a.onlinePrice ?? Infinity; bv = b.onlineSalePrice ?? b.onlinePrice ?? Infinity; }
+    else if (by === "unit") { av = a.unitPrice ?? Infinity; bv = b.unitPrice ?? Infinity; }
+    else if (by === "aisle") { av = (a.aisle||"~"); bv = (b.aisle||"~"); }
+    else if (by === "dept") { av = (a.department||"~"); bv = (b.department||"~"); }
+    if (av < bv) return -1 * dir;
+    if (av > bv) return 1 * dir;
+    return 0;
+  });
+}
+
+function applyFilters() {
+  const filtered = sortProducts(currentFiltered());
+  updateCounts();
+  render(filtered);
+  document.getElementById("stats").textContent =
+    `${filtered.length.toLocaleString()} / ${allProducts.length.toLocaleString()}`;
+}
+
+function updateCounts() {
+  const all = allProducts.length;
+  const t = [...tracked].filter(id => productById.has(id)).length;
+  const d = [...dismissed].filter(id => productById.has(id)).length;
+  const review = allProducts.filter(p => !tracked.has(p.id) && !dismissed.has(p.id)).length;
+  document.getElementById("count-all").textContent = all.toLocaleString();
+  document.getElementById("count-tracked").textContent = t.toLocaleString();
+  document.getElementById("count-dismissed").textContent = d.toLocaleString();
+  document.getElementById("count-review").textContent = review.toLocaleString();
+}
+
+function fmt(price) {
+  if (price == null) return "—";
+  return "$" + price.toFixed(2);
+}
+
+function render(list) {
+  const results = document.getElementById("results");
+  if (list.length === 0) {
+    results.innerHTML = `<div class="empty">Nothing here.</div>`;
+    return;
+  }
+  if (viewMode === "grid") renderGrid(results, list);
+  else renderTable(results, list);
+  updateBulkBar();
+}
+
+function escapeHtml(s) {
+  if (s == null) return "";
+  return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+
+function renderGrid(container, list) {
+  const MAX = 600;  // cap render for performance
+  const truncated = list.length > MAX;
+  const slice = list.slice(0, MAX);
+  const html = slice.map(p => {
+    const isTracked = tracked.has(p.id);
+    const isDismissed = dismissed.has(p.id);
+    const isSelected = selected.has(p.id);
+    const isOOS = p.inventoryState !== "IN_STOCK";
+    const price = p.onlineSalePrice ?? p.onlinePrice;
+    const classes = ["card"];
+    if (isTracked) classes.push("tracked");
+    if (isDismissed) classes.push("dismissed");
+    if (isOOS) classes.push("oos");
+    if (isSelected) classes.push("selected");
+    return `
+      <div class="${classes.join(' ')}" data-id="${p.id}">
+        <div class="img">
+          ${p.imageUrl ? `<img src="${escapeHtml(p.imageUrl)}" loading="lazy" alt="">` : `<div class="ph">${escapeHtml(p.displayName||"")}</div>`}
+          ${p.isOnSale ? `<span class="sale-badge">SALE</span>` : ''}
+          ${isOOS && !p.isOnSale ? `<span class="oos-badge">OOS</span>` : ''}
+          <div class="checkbox ${isSelected?'checked':''}" data-checkbox="${p.id}">${isSelected?'✓':''}</div>
+        </div>
+        <p class="name">${escapeHtml(p.displayName||"")}</p>
+        <p class="brand">${escapeHtml(p.brandName||"")}</p>
+        <div class="footer">
+          <span class="price ${p.isOnSale?'sale':''}">${fmt(price)}</span>
+          ${p.unitPrice && p.unitLabel && p.unitLabel !== "each" ? `<span class="unit-price">${fmt(p.unitPrice)}/${escapeHtml(p.unitLabel)}</span>` : ''}
+        </div>
+        ${isTracked?'<span class="card-state tracked">tracked</span>':''}
+        ${isDismissed?'<span class="card-state dismissed">dismissed</span>':''}
+      </div>
+    `;
+  }).join('');
+  container.innerHTML = `<div class="grid">${html}</div>` +
+    (truncated ? `<div class="loading" style="padding:20px 0">Showing ${MAX} of ${list.length.toLocaleString()} — refine filters to see more</div>` : '');
+}
+
+function renderTable(container, list) {
+  const MAX = 1500;
+  const truncated = list.length > MAX;
+  const slice = list.slice(0, MAX);
+  const arrow = (col) => sort.by === col ? (sort.dir === 'asc' ? '↑' : '↓') : '↕';
+  const sortedCls = (col) => sort.by === col ? 'sorted' : '';
+  const rows = slice.map(p => {
+    const isTracked = tracked.has(p.id);
+    const isDismissed = dismissed.has(p.id);
+    const isSelected = selected.has(p.id);
+    const isOOS = p.inventoryState !== "IN_STOCK";
+    const price = p.onlineSalePrice ?? p.onlinePrice;
+    const rowClass = [
+      isTracked ? "tracked" : "",
+      isDismissed ? "dismissed" : "",
+      isSelected ? "selected" : ""
+    ].filter(Boolean).join(" ");
+    return `
+      <tr class="${rowClass}" data-id="${p.id}">
+        <td class="checkbox-cell"><input type="checkbox" data-checkbox="${p.id}" ${isSelected?'checked':''}></td>
+        <td class="thumb">${p.imageUrl ? `<img src="${escapeHtml(p.imageUrl)}" loading="lazy" alt="">` : `<div class="ph">·</div>`}</td>
+        <td class="name" title="${escapeHtml(p.displayName||"")}">${escapeHtml(p.displayName||"")}</td>
+        <td class="brand-cell">${escapeHtml(p.brandName||"")}</td>
+        <td class="num price-cell ${p.isOnSale?'sale':''}">${fmt(price)}</td>
+        <td class="num">${p.unitPrice ? fmt(p.unitPrice)+(p.unitLabel?'/'+escapeHtml(p.unitLabel):'') : '—'}</td>
+        <td>${escapeHtml(p.aisle||"—")}</td>
+        <td>${escapeHtml(p.department||"—")}</td>
+        <td><span class="stock-dot ${isOOS?'out':'in'}"></span></td>
+        <td>${isTracked?'<span class="badge tracked">trk</span>':''}${isDismissed?'<span class="badge dismissed">dis</span>':''}</td>
+      </tr>
+    `;
+  }).join('');
+  container.innerHTML = `
+    <div class="table-wrap">
+      <table class="products">
+        <thead>
+          <tr>
+            <th class="checkbox-cell"><input type="checkbox" id="select-all"></th>
+            <th></th>
+            <th class="${sortedCls('name')}" data-sort="name">Product <span class="arrow">${arrow('name')}</span></th>
+            <th class="${sortedCls('brand')}" data-sort="brand">Brand <span class="arrow">${arrow('brand')}</span></th>
+            <th class="${sortedCls('price')}" data-sort="price">Price <span class="arrow">${arrow('price')}</span></th>
+            <th class="${sortedCls('unit')}" data-sort="unit">Unit <span class="arrow">${arrow('unit')}</span></th>
+            <th class="${sortedCls('aisle')}" data-sort="aisle">Aisle <span class="arrow">${arrow('aisle')}</span></th>
+            <th class="${sortedCls('dept')}" data-sort="dept">Dept <span class="arrow">${arrow('dept')}</span></th>
+            <th>Stk</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>` + (truncated ? `<div class="loading" style="padding:20px 0">Showing ${MAX} of ${list.length.toLocaleString()} — refine filters to see more</div>` : '');
+  // wire sort
+  container.querySelectorAll("thead th[data-sort]").forEach(th => {
+    th.addEventListener("click", () => {
+      const col = th.dataset.sort;
+      if (sort.by === col) sort.dir = sort.dir === "asc" ? "desc" : "asc";
+      else { sort.by = col; sort.dir = "asc"; }
+      persist();
+      applyFilters();
+    });
+  });
+  // select-all
+  const sa = container.querySelector("#select-all");
+  if (sa) sa.addEventListener("change", e => {
+    if (e.target.checked) slice.forEach(p => selected.add(p.id));
+    else slice.forEach(p => selected.delete(p.id));
+    applyFilters();
+  });
+}
+
+// =========================================================
+// DETAIL PANEL
+// =========================================================
+function openDetail(id) {
+  const p = productById.get(id);
+  if (!p) return;
+  const overlay = document.getElementById("detail-overlay");
+  const panel = document.getElementById("detail-panel");
+  const isTracked = tracked.has(p.id);
+  const isDismissed = dismissed.has(p.id);
+  const price = p.onlineSalePrice ?? p.onlinePrice;
+  panel.innerHTML = `
+    <button class="close" id="close-detail">×</button>
+    <div class="image-area">
+      ${p.imageUrl ? `<img src="${escapeHtml(p.imageUrl)}" alt="">` : `<div style="font-family:Fraunces;color:var(--ink-faint);">no image</div>`}
+    </div>
+    <div class="content">
+      <div class="meta">${escapeHtml(p.brandName||"")} · ${escapeHtml(p.department||"")}</div>
+      <h2>${escapeHtml(p.displayName||"")}</h2>
+      <div class="price-block">
+        <span class="big ${p.isOnSale?'sale':''}">${fmt(price)}</span>
+        ${p.isOnSale && p.onlinePrice && p.onlinePrice !== p.onlineSalePrice ? `<span class="strike">${fmt(p.onlinePrice)}</span>` : ''}
+        ${p.unitPrice ? `<span class="unit">${fmt(p.unitPrice)}/${escapeHtml(p.unitLabel||'')}</span>` : ''}
+      </div>
+      <dl class="info-grid">
+        <dt>ID</dt><dd class="mono" style="font-size:12px">${escapeHtml(p.id)}</dd>
+        <dt>Aisle</dt><dd>${escapeHtml(p.aisle||"—")}</dd>
+        <dt>Stock</dt><dd>${escapeHtml(p.inventoryState||"—")}</dd>
+        <dt>Category</dt><dd style="font-size:12px;color:var(--ink-soft)">${escapeHtml(p.categoryPath||"—")}</dd>
+        ${p.isEbtSnap ? '<dt>SNAP</dt><dd>EBT eligible</dd>' : ''}
+        ${p.onAd ? '<dt>Promotion</dt><dd>On ad</dd>' : ''}
+      </dl>
+      <div class="actions">
+        ${isTracked
+          ? `<button class="btn" data-act="untrack" data-id="${p.id}">Remove from tracked</button>`
+          : `<button class="btn primary" data-act="track" data-id="${p.id}">Track this product</button>`}
+        ${isDismissed
+          ? `<button class="btn" data-act="undismiss" data-id="${p.id}">Restore (un-dismiss)</button>`
+          : `<button class="btn warn" data-act="dismiss" data-id="${p.id}">Dismiss</button>`}
+        ${p.url ? `<a class="btn" href="${escapeHtml(p.url)}" target="_blank" rel="noopener">Open on heb.com ↗</a>` : ''}
+      </div>
+    </div>
+  `;
+  overlay.classList.add("show");
+  // wire
+  panel.querySelector("#close-detail").addEventListener("click", closeDetail);
+  panel.querySelectorAll("[data-act]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const act = btn.dataset.act, id = btn.dataset.id;
+      if (act === "track") { tracked.add(id); dismissed.delete(id); }
+      if (act === "untrack") tracked.delete(id);
+      if (act === "dismiss") { dismissed.add(id); tracked.delete(id); }
+      if (act === "undismiss") dismissed.delete(id);
+      markDirty();
+      closeDetail();
+      applyFilters();
+    });
+  });
+}
+
+function closeDetail() { document.getElementById("detail-overlay").classList.remove("show"); }
+
+// =========================================================
+// BULK BAR
+// =========================================================
+function updateBulkBar() {
+  const bar = document.getElementById("bulk-bar");
+  document.getElementById("selected-count").textContent = selected.size;
+  bar.classList.toggle("show", selected.size > 0);
+}
+
+function bulkApply(action) {
+  const ids = [...selected];
+  if (ids.length === 0) return;
+  for (const id of ids) {
+    if (action === "track") { tracked.add(id); dismissed.delete(id); }
+    if (action === "dismiss") { dismissed.add(id); tracked.delete(id); }
+    if (action === "restore") { tracked.delete(id); dismissed.delete(id); }
+  }
+  selected.clear();
+  markDirty();
+  applyFilters();
+  toast(`${ids.length} product${ids.length===1?'':'s'} ${action === "restore" ? "restored" : action+"ed"}`);
+}
+
+// =========================================================
+// EVENT WIRING
+// =========================================================
+function debounce(fn, ms) {
+  let t;
+  return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+}
+
+document.getElementById("search").addEventListener("input", debounce(applyFilters, 200));
+document.getElementById("brand-filter").addEventListener("change", applyFilters);
+document.getElementById("dept-filter").addEventListener("change", applyFilters);
+document.getElementById("onsale-toggle").addEventListener("change", e => {
+  e.target.closest(".toggle-chip").classList.toggle("on", e.target.checked);
+  applyFilters();
+});
+document.getElementById("instock-toggle").addEventListener("change", e => {
+  e.target.closest(".toggle-chip").classList.toggle("on", e.target.checked);
+  applyFilters();
+});
+document.getElementById("price-min").addEventListener("input", debounce(applyFilters, 300));
+document.getElementById("price-max").addEventListener("input", debounce(applyFilters, 300));
+
+document.querySelectorAll(".tab").forEach(t => {
+  t.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+    t.classList.add("active");
+    currentTab = t.dataset.tab;
+    selected.clear();
+    applyFilters();
+  });
+});
+
+document.getElementById("view-grid").addEventListener("click", () => {
+  viewMode = "grid";
+  document.getElementById("view-grid").classList.add("active");
+  document.getElementById("view-table").classList.remove("active");
+  persist();
+  applyFilters();
+});
+document.getElementById("view-table").addEventListener("click", () => {
+  viewMode = "table";
+  document.getElementById("view-table").classList.add("active");
+  document.getElementById("view-grid").classList.remove("active");
+  persist();
+  applyFilters();
+});
+
+// click delegation for results
+document.getElementById("results").addEventListener("click", (e) => {
+  // checkbox click — toggle selection without opening detail
+  const cb = e.target.closest("[data-checkbox]");
+  if (cb) {
+    e.stopPropagation();
+    const id = cb.dataset.checkbox;
+    if (selected.has(id)) selected.delete(id);
+    else selected.add(id);
+    applyFilters();
+    return;
+  }
+  const card = e.target.closest(".card");
+  const row = e.target.closest("tr[data-id]");
+  const id = card?.dataset.id || row?.dataset.id;
+  if (id) openDetail(id);
+});
+
+// detail overlay backdrop click
+document.getElementById("detail-overlay").addEventListener("click", (e) => {
+  if (e.target === e.currentTarget) closeDetail();
+});
+
+// bulk-bar buttons
+document.getElementById("bulk-track").addEventListener("click", () => bulkApply("track"));
+document.getElementById("bulk-dismiss").addEventListener("click", () => bulkApply("dismiss"));
+document.getElementById("bulk-restore").addEventListener("click", () => bulkApply("restore"));
+document.getElementById("bulk-clear").addEventListener("click", () => {
+  selected.clear();
+  applyFilters();
+});
+
+// =========================================================
+// SYNC TO REPO (dispatches a workflow_dispatch event)
+// =========================================================
+document.getElementById("btn-sync").addEventListener("click", () => {
+  const dialog = document.getElementById("sync-dialog");
+  const tok = localStorage.getItem(LS_TOKEN) || "";
+  document.getElementById("gh-token").value = tok;
+  dialog.classList.add("show");
+});
+document.getElementById("sync-cancel").addEventListener("click", () => {
+  document.getElementById("sync-dialog").classList.remove("show");
+});
+document.getElementById("sync-go").addEventListener("click", async () => {
+  const tok = document.getElementById("gh-token").value.trim();
+  if (!tok) { toast("Token required", "error"); return; }
+  localStorage.setItem(LS_TOKEN, tok);
+  document.getElementById("sync-dialog").classList.remove("show");
+  await syncToRepo(tok);
+});
+
+async function syncToRepo(token) {
+  toast("Pushing to repo…");
+  // Build payload
+  const payload = {
+    tracked: [...tracked],
+    dismissed: [...dismissed],
+    last_synced: new Date().toISOString(),
+  };
+  // We base64-encode and send as workflow_dispatch input
+  const payloadB64 = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+  // Workflows have a 64KB total input limit; we expect to stay well under.
+  // For very large lists we'd need to chunk; warn if we get close.
+  if (payloadB64.length > 60000) {
+    toast("Tracked list too big to sync as workflow input", "error");
+    return;
+  }
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/workflows/sync_tracked.yml/dispatches`;
+  try {
+    const r = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+      body: JSON.stringify({
+        ref: REPO_BRANCH,
+        inputs: { payload_b64: payloadB64 }
+      }),
+    });
+    if (r.status === 204) {
+      dirty = false;
+      persist();
+      toast("Sync workflow dispatched · check Actions tab", "success");
+    } else {
+      const txt = await r.text();
+      toast(`Sync failed: HTTP ${r.status}`, "error");
+      console.error(txt);
+    }
+  } catch (e) {
+    toast(`Sync error: ${e.message}`, "error");
+  }
+}
+
+// =========================================================
+// COMPACT DIALOG
+// =========================================================
+document.getElementById("btn-compact").addEventListener("click", () => {
+  const dCount = [...dismissed].filter(id => productById.has(id)).length;
+  document.getElementById("compact-summary").innerHTML =
+    `<strong>${dCount}</strong> dismissed products will be physically removed from data files.`;
+  document.getElementById("compact-dialog").classList.add("show");
+});
+document.getElementById("compact-cancel").addEventListener("click", () => {
+  document.getElementById("compact-dialog").classList.remove("show");
+});
+document.getElementById("compact-go").addEventListener("click", async () => {
+  document.getElementById("compact-dialog").classList.remove("show");
+  const tok = localStorage.getItem(LS_TOKEN);
+  if (!tok) { toast("Sync first (need GitHub token)", "error"); return; }
+  if (dirty) {
+    toast("Sync your tracked list first", "error");
+    return;
+  }
+  toast("Dispatching compact workflow…");
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/workflows/compact_dismissed.yml/dispatches`;
+  try {
+    const r = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${tok}`,
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+      body: JSON.stringify({ ref: REPO_BRANCH, inputs: {} }),
+    });
+    if (r.status === 204) toast("Compact workflow dispatched · check Actions tab", "success");
+    else toast(`Compact failed: HTTP ${r.status}`, "error");
+  } catch (e) {
+    toast(`Compact error: ${e.message}`, "error");
+  }
+});
+
+// keyboard shortcuts
+document.addEventListener("keydown", (e) => {
+  if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT" || e.target.tagName === "TEXTAREA") return;
+  if (e.key === "Escape") {
+    closeDetail();
+    document.getElementById("sync-dialog").classList.remove("show");
+    document.getElementById("compact-dialog").classList.remove("show");
+  }
+});
+
+// init
+updateSyncIndicator();
+loadData();
+</script>
+</body>
+</html>
