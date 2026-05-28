@@ -1,23 +1,21 @@
 """
-Probe v2: crack updatePreferredStore.
+Probe v3: getProductById is the answer (works with explicit storeId).
 
-Phase 1 findings:
-  - updatePreferredStore(storeNumber: Int) exists, returns null, no error
-  - Setting arbitrary cookies makes product pages return storeId=None (breaks something)
-  - Query params don't work
+Phase 2 finding: getProductById(id: String!, storeId: String) returns a
+Product and accepts an explicit storeId — so we can request store 57
+directly without fighting the product-page store binding (which is tied
+to a logged-in User account).
 
-Phase 2:
-  A) Discover updatePreferredStore's return type + required selection set
-  B) Run the mutation on a client, inspect what cookies it sets, then fetch
-     product on the SAME client (carry session forward)
-  C) Check if there's a 'setStore' / store-context header instead
-  D) Inspect the homepage __NEXT_DATA__ for how storeId=92 gets set (maybe
-     there's a geolocation/IP default we can override with a header)
+Phase 3: discover getProductById's full field set with storeId=57.
+We need: price, image, SKUs, inventory, availability, description, etc.
+We reuse the field names we already KNOW exist on the product blob from
+__NEXT_DATA__ (fullDisplayName, SKUs, productImageUrls, etc.) plus probe more.
 """
 
 import json
 import re
 import sys
+import time
 from pathlib import Path
 import httpx
 
@@ -25,8 +23,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from lib_heb import HEADERS, HOMEPAGE, GRAPHQL_ENDPOINT
 
 TEST_PRODUCT_ID = "583162"
-TEST_SLUG = "cafe-ol-by-h-e-b-texas-pecan-medium-roast-ground-coffee"
-TARGET = 57
+TARGET = "57"
 
 
 def section(t):
@@ -39,140 +36,125 @@ def fresh_client():
     return c
 
 
-def get_store(client):
-    url = f"https://www.heb.com/product-detail/{TEST_SLUG}/{TEST_PRODUCT_ID}"
-    r = client.get(url)
-    m = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', r.text, re.DOTALL)
-    if not m:
-        return None, f"no NEXT_DATA (status {r.status_code})"
-    try:
-        nd = json.loads(m.group(1))
-        product = (nd.get("props") or {}).get("pageProps", {}).get("product")
-        if product is None:
-            # what IS in pageProps?
-            pp = (nd.get("props") or {}).get("pageProps", {})
-            return None, f"no product; pageProps keys={list(pp.keys())[:10]}"
-        return product.get("storeId"), "ok"
-    except Exception as e:
-        return None, str(e)
+def post(c, q, v=None):
+    payload = {"query": q}
+    if v is not None:
+        payload["variables"] = v
+    return c.post(GRAPHQL_ENDPOINT, json=payload)
 
 
 def main():
-    # ============================================================
-    # A) updatePreferredStore return type discovery
-    # ============================================================
-    section("A) updatePreferredStore return-type probe")
     c = fresh_client()
-    # Try selection sets to find the type
-    selections = [
-        "__typename",
-        "__typename ... on Store { storeNumber name }",
-        "__typename ... on PreferredStore { storeNumber }",
-        "__typename ... on UpdatePreferredStoreResult { __typename }",
-        "__typename ... on UserMessage { message code }",
+
+    # ============================================================
+    # A) Probe getProductById field set (fixed logic: no error = valid)
+    # ============================================================
+    section("A) getProductById field probe with storeId=57")
+    # These are the field names we KNOW exist from the __NEXT_DATA__ product blob
+    known_fields = [
+        "id", "fullDisplayName", "productDescription", "productPageURL",
+        "brand", "breadcrumbs", "coupons", "carouselImageUrls",
+        "inAssortment", "inventory", "productImageUrls", "thumbnailImageUrls",
+        "productLocation", "SKUs", "isEbtSnapProduct", "onAd", "isNew",
+        "nutritionLabels", "ingredientStatement", "lifestyles",
+        "minimumOrderQuantity", "maximumOrderQuantity", "safetyWarning",
+        "preparationInstructions", "showCouponFlag", "store",
+        # extra guesses
+        "displayName", "name", "price", "availability",
     ]
-    for sel in selections:
-        mut = f"mutation M($n: Int!) {{ updatePreferredStore(storeNumber: $n) {{ {sel} }} }}"
+    valid_scalar, valid_complex, unknown = [], [], []
+    for f in known_fields:
+        q = f'query Q($id: String!, $s: String) {{ getProductById(id: $id, storeId: $s) {{ {f} }} }}'
+        r = post(c, q, {"id": TEST_PRODUCT_ID, "s": TARGET})
         try:
-            r = c.post(GRAPHQL_ENDPOINT, json={"query": mut, "variables": {"n": TARGET}})
             body = r.json()
-            if "errors" in body:
-                print(f"  sel='{sel[:40]}' ERR: {body['errors'][0]['message'][:120]}")
+        except Exception:
+            continue
+        if "errors" in body and body["errors"]:
+            em = body["errors"][0]["message"]
+            if "Cannot query field" in em:
+                unknown.append(f)
+            elif "must have a selection of subfields" in em:
+                m = re.search(r"of type [\"']([\w!\[\]]+)[\"']", em)
+                inner = m.group(1) if m else "?"
+                valid_complex.append({"field": f, "type": inner})
+                print(f"  ⊞ {f:25s} type={inner}")
             else:
-                print(f"  sel='{sel[:40]}' OK: {json.dumps(body)[:200]}")
-        except Exception as e:
-            print(f"  sel='{sel[:40]}' EXC: {e}")
+                print(f"  ? {f:25s} {em[:120]}")
+        else:
+            valid_scalar.append(f)
+            pd = (body.get("data") or {}).get("getProductById") or {}
+            v = pd.get(f)
+            print(f"  ✓ {f:25s} -> {json.dumps(v)[:110] if v is not None else 'null'}")
+        time.sleep(0.15)
+
+    print(f"\n  scalar={len(valid_scalar)} complex={len(valid_complex)} unknown={len(unknown)}")
 
     # ============================================================
-    # B) Mutation then same-session product fetch + cookie inspection
+    # B) Full fetch: pull everything we need in one query with storeId=57
     # ============================================================
-    section("B) Mutation on client, inspect cookies, fetch product SAME session")
-    c = fresh_client()
-    cookies_before = dict(c.cookies)
-    mut = "mutation M($n: Int!) { updatePreferredStore(storeNumber: $n) { __typename } }"
-    r = c.post(GRAPHQL_ENDPOINT, json={"query": mut, "variables": {"n": TARGET}})
-    print(f"  mutation response: {r.text[:200]}")
-    print(f"  set-cookie header: {r.headers.get('set-cookie', '(none)')[:300]}")
-    cookies_after = dict(c.cookies)
-    new = {k: v for k, v in cookies_after.items() if k not in cookies_before}
-    print(f"  new cookies from mutation: {new}")
-    # Now fetch product on SAME client
-    store, status = get_store(c)
-    marker = "✓✓✓" if store == TARGET else ""
-    print(f"  product storeId after mutation (same session): {store} ({status}) {marker}")
-
-    # ============================================================
-    # C) Try a store-context HTTP header on the product fetch
-    # ============================================================
-    section("C) Store-context HTTP headers")
-    header_names = [
-        "x-heb-store", "x-store-id", "x-store-number", "heb-store-id",
-        "x-preferred-store", "store-id", "x-heb-store-id",
-    ]
-    for hname in header_names:
-        c = fresh_client()
-        url = f"https://www.heb.com/product-detail/{TEST_SLUG}/{TEST_PRODUCT_ID}"
-        r = c.get(url, headers={hname: str(TARGET)})
-        m = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', r.text, re.DOTALL)
-        store = None
-        if m:
-            try:
-                nd = json.loads(m.group(1))
-                store = (nd.get("props") or {}).get("pageProps", {}).get("product", {}).get("storeId")
-            except Exception:
-                pass
-        marker = "✓✓✓" if store == TARGET else ""
-        print(f"  header {hname}={TARGET} -> storeId={store} {marker}")
-
-    # ============================================================
-    # D) How is storeId=92 chosen? Inspect homepage NEXT_DATA for store context
-    # ============================================================
-    section("D) Homepage __NEXT_DATA__ store-context inspection")
-    c = fresh_client()
-    r = c.get(HOMEPAGE)
-    m = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', r.text, re.DOTALL)
-    if m:
-        try:
-            nd = json.loads(m.group(1))
-            def walk(o, p=""):
-                hits = []
-                if isinstance(o, dict):
-                    for k, v in o.items():
-                        if re.search(r'store(Id|Number|Context)|fulfillment|defaultStore', k, re.I):
-                            if isinstance(v, (int, str, bool)):
-                                hits.append((f"{p}.{k}", v))
-                            elif isinstance(v, dict):
-                                hits.append((f"{p}.{k}", f"<dict keys={list(v.keys())[:8]}>"))
-                        hits.extend(walk(v, f"{p}.{k}"))
-                elif isinstance(o, list):
-                    for i, v in enumerate(o[:2]):
-                        hits.extend(walk(v, f"{p}[{i}]"))
-                return hits
-            hits = walk(nd)
-            print(f"  store-context fields in homepage NEXT_DATA ({len(hits)}):")
-            for path, val in hits[:30]:
-                print(f"    {path} = {val}")
-        except Exception as e:
-            print(f"  parse error: {e}")
-
-    # ============================================================
-    # E) Check the GraphQL request the frontend uses — does productDetails
-    #    take a storeId we can override? We have productSearch working with
-    #    storeId=57. Maybe we fetch details via GraphQL instead of the page.
-    # ============================================================
-    section("E) Can we get price via GraphQL productDetails with storeId=57?")
-    # We know productSearch(storeId:57) works. The product page uses a
-    # different query. Let's see if there's a getProductById we saw earlier:
-    #   query productPrefsForProduct { product: getProductById(id, storeId) }
-    c = fresh_client()
-    q = """query Q($id: String!, $storeId: String) {
-      getProductById(id: $id, storeId: $storeId) {
+    section("B) Full getProductById with SKUs/prices/images — storeId=57")
+    full_q = """
+    query Q($id: String!, $s: String) {
+      getProductById(id: $id, storeId: $s) {
         id
-        __typename
+        fullDisplayName
+        productPageURL
+        brand { name isOwnBrand }
+        inAssortment
+        inventory { inventoryState }
+        productImageUrls { url size }
+        productLocation { location availability }
+        SKUs {
+          id
+          contextPrices {
+            context
+            isOnSale
+            listPrice { amount formattedAmount unit }
+            salePrice { amount formattedAmount unit }
+            unitListPrice { amount formattedAmount unit }
+          }
+        }
       }
-    }"""
-    r = c.post(GRAPHQL_ENDPOINT, json={"query": q, "variables": {"id": TEST_PRODUCT_ID, "storeId": str(TARGET)}})
-    print(f"  getProductById: {r.text[:300]}")
+    }
+    """
+    r = post(c, full_q, {"id": TEST_PRODUCT_ID, "s": TARGET})
+    print(f"  status: {r.status_code}")
+    try:
+        body = r.json()
+        print(json.dumps(body, indent=2)[:3500])
+    except Exception:
+        print(r.text[:2000])
+
+    # ============================================================
+    # C) Compare: same query with storeId=92 (Victoria) to confirm prices differ
+    # ============================================================
+    section("C) Compare store 57 vs 92 — confirm storeId actually changes data")
+    for sid in ["57", "92"]:
+        r = post(c, full_q, {"id": TEST_PRODUCT_ID, "s": sid})
+        try:
+            body = r.json()
+            prod = (body.get("data") or {}).get("getProductById") or {}
+            skus = prod.get("SKUs") or []
+            online = None
+            if skus:
+                for cp in (skus[0].get("contextPrices") or []):
+                    if cp.get("context") == "ONLINE":
+                        online = (cp.get("listPrice") or {}).get("formattedAmount")
+            inv = (prod.get("inventory") or {}).get("inventoryState")
+            loc = (prod.get("productLocation") or {}).get("location")
+            print(f"  storeId={sid}: online_price={online} inventory={inv} aisle={loc}")
+        except Exception as e:
+            print(f"  storeId={sid}: error {e}")
+        time.sleep(0.3)
+
+    # ============================================================
+    # D) Does getProductById require storeId, or default if omitted?
+    # ============================================================
+    section("D) getProductById without storeId")
+    q = 'query Q($id: String!) { getProductById(id: $id) { id store { storeNumber } } }'
+    r = post(c, q, {"id": TEST_PRODUCT_ID})
+    print(f"  {r.text[:300]}")
 
 
 if __name__ == "__main__":
