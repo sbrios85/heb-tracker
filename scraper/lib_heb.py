@@ -65,12 +65,48 @@ PRICES_DIR.mkdir(parents=True, exist_ok=True)
 # =============================================================
 # CLIENT FACTORY
 # =============================================================
-def make_client(timeout: float = 30.0) -> httpx.Client:
-    """Create an httpx Client with our standard headers and cookies seeded."""
+def make_client(timeout: float = 30.0, set_store: bool = True) -> httpx.Client:
+    """Create an httpx Client with our standard headers and cookies seeded.
+    If set_store is True, attempt to pin the Waldron Rd store on the session."""
     c = httpx.Client(headers=HEADERS, follow_redirects=True, timeout=timeout)
     # Seed cookies by hitting the homepage
     c.get(HOMEPAGE)
+    if set_store:
+        _set_store_session(c, WALDRON_STORE_NUMBER)
     return c
+
+
+def _set_store_session(client: httpx.Client, store_number: int) -> None:
+    """Try to pin the store on the current session. We try a few approaches
+    since H-E-B uses different mechanisms across pages.
+
+    Strategy:
+      1. Set the HEB_PREFERRED_STORE cookie directly.
+      2. POST the UpdatePreferredStore GraphQL mutation (this is the
+         operation name we saw in JS chunks — the input shape is unknown
+         but a best-effort attempt is harmless if it fails).
+    """
+    # Approach 1: cookie
+    client.cookies.set(STORE_COOKIE_NAME, str(store_number), domain=".heb.com")
+    # Some sites also use these cookie names; set defensively
+    client.cookies.set("preferredStore", str(store_number), domain=".heb.com")
+    client.cookies.set("storeNumber", str(store_number), domain=".heb.com")
+
+    # Approach 2: mutation (best-effort)
+    mutation = """
+      mutation UpdatePreferredStore($storeNumber: Int!) {
+        updatePreferredStore(storeNumber: $storeNumber) {
+          __typename
+        }
+      }
+    """
+    try:
+        client.post(GRAPHQL_ENDPOINT, json={
+            "query": mutation,
+            "variables": {"storeNumber": store_number},
+        })
+    except Exception:
+        pass
 
 
 # =============================================================
