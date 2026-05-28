@@ -279,6 +279,30 @@ def get_product_by_id(client: httpx.Client, product_id: str,
     return (body.get("data") or {}).get("getProductById")
 
 
+def get_product_by_id_resilient(client: httpx.Client, product_id: str,
+                                store_id: int = WALDRON_STORE_NUMBER,
+                                max_retries: int = 3,
+                                backoff_base: float = 3.0) -> tuple:
+    """Like get_product_by_id but retries on None (which may be a soft
+    rate-limit false-empty). Returns (product_or_None, was_throttled).
+
+    H-E-B soft-throttles after sustained rapid requests — it returns errors
+    or empties rather than 429. On a miss we wait (exponential backoff) and
+    retry. If all retries miss, we report was_throttled=True so the caller
+    can take a longer pause.
+    """
+    for attempt in range(max_retries):
+        result = get_product_by_id(client, product_id, store_id)
+        if result is not None:
+            return result, False
+        # Miss — back off and retry
+        if attempt < max_retries - 1:
+            wait = backoff_base * (2 ** attempt)  # 3s, 6s, 12s
+            time.sleep(wait)
+    # All retries exhausted
+    return None, True
+
+
 
 # =============================================================
 # PRODUCT DATA EXTRACTION (from __NEXT_DATA__ product blob)
