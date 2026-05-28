@@ -47,3 +47,4 @@ data/
 4. Open `data/brands.json` — the `own_brands` list at the top is the H-E-B house brand catalog
 
 Then we'll write `heb_discover_products.py` to enumerate every product under those brands.
+
