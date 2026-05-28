@@ -246,12 +246,10 @@ query GetProductById($id: String!, $storeId: String) {
     inventory { inventoryState }
     productLocation { location availability }
     productImageUrls { url size }
-    coupons {
-      id
-      shortDescription
-      description
-      expirationDate
-    }
+    # NOTE: coupons deferred. To add later, use coupons(storeId: $storeIdInt) {...}
+    # — the field requires its own storeId: Int! arg. CouponV2 has id,
+    # shortDescription, description, imageUrl, type, printStatuses (but NOT
+    # expirationDate — bisect CouponV2 subfields to find the right date field).
     SKUs {
       id
       contextPrices {
