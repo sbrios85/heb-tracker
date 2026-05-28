@@ -63,7 +63,7 @@ def main():
     already_fetched = set(details["products"].keys())
     print(f"Already fetched: {len(already_fetched)}")
 
-    to_fetch = [p for p in products if p["id"] not in already_fetched]
+    to_fetch = [p for p in products if p["id"] not in already_fetched][:5]
     print(f"To fetch this run: {len(to_fetch)}")
     if not to_fetch:
         print("Nothing to do — all products fetched.")
