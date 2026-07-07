@@ -23,6 +23,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from lib_heb import (
     make_client, browse_category, save_json, load_json, polite_sleep,
+    load_blocked_brands,
     BRANDS_FILE, PRODUCTS_FILE, WALDRON_STORE_NUMBER,
 )
 
@@ -95,9 +96,21 @@ def main():
         return
 
     own_brands = brands_data.get("own_brands") or []
-    print(f"Brands to enumerate: {len(own_brands)}\n")
+    print(f"Brands to enumerate: {len(own_brands)}")
     if not own_brands:
         return
+
+    # Second-layer blocklist check — brands.json should already be filtered
+    # (discover_brands.py handles it), but if someone edited the blocklist
+    # since the last brands.json run we still want to skip them.
+    blocked = load_blocked_brands()
+    if blocked:
+        before = len(own_brands)
+        own_brands = [b for b in own_brands if b["name"] not in blocked]
+        skipped = before - len(own_brands)
+        if skipped:
+            print(f"Skipping {skipped} blocked brand(s) not yet purged from brands.json")
+    print(f"Brands to enumerate (after blocklist): {len(own_brands)}\n")
 
     client = make_client()
     today = datetime.date.today().isoformat()
