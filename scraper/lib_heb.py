@@ -56,6 +56,7 @@ PRICES_DIR = DATA_DIR / "prices"
 BRANDS_FILE = DATA_DIR / "brands.json"
 PRODUCTS_FILE = DATA_DIR / "products.json"
 PENDING_FILE = DATA_DIR / "pending.json"
+BLOCKLIST_FILE = DATA_DIR / "brand_blocklist.json"
 
 # Ensure dirs exist
 DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -219,6 +220,16 @@ def save_json(path: Path, data) -> None:
     """Save JSON pretty-printed, creating parent dirs."""
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2, ensure_ascii=False))
+
+
+def load_blocked_brands() -> set:
+    """Return the set of blocked brand names from brand_blocklist.json.
+    Discovery scripts call this to skip brands the user has excluded.
+    Returns an empty set if the file doesn't exist."""
+    data = load_json(BLOCKLIST_FILE, default=None)
+    if not data:
+        return set()
+    return set(data.get("blocked_brands") or [])
 
 
 # =============================================================
