@@ -17,6 +17,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from lib_heb import (
     make_client, browse_category, save_json, polite_sleep,
+    load_blocked_brands,
     BRANDS_FILE, WALDRON_STORE_NUMBER,
 )
 
@@ -137,8 +138,20 @@ def main():
     print(f"  pages pulled: {total_pages_pulled}")
     print(f"  product records seen: {total_records_seen}")
     print(f"  unique brands (after dedupe): {len(brands_by_canonical)}")
+
+    # Filter out user-blocked brands
+    blocked = load_blocked_brands()
+    if blocked:
+        print(f"\n  Blocked brands (from brand_blocklist.json): {len(blocked)}")
+        for b_name in sorted(blocked):
+            print(f"    - {b_name}")
+        removed = [name for name in brands_by_canonical if brands_by_canonical[name]["name"] in blocked]
+        for canonical in removed:
+            del brands_by_canonical[canonical]
+        print(f"  Removed {len(removed)} brand entr{'y' if len(removed)==1 else 'ies'} from output")
+
     own_brands = [b for b in brands_by_canonical.values() if b["isOwnBrand"]]
-    print(f"  isOwnBrand=true count: {len(own_brands)}")
+    print(f"  isOwnBrand=true count (after blocklist): {len(own_brands)}")
 
     # Sort: own brands first, then by count desc
     sorted_brands = sorted(
@@ -155,6 +168,7 @@ def main():
             "product_records_seen": total_records_seen,
             "unique_brands_found": len(brands_by_canonical),
             "own_brands_found": len(own_brands),
+            "blocked_brands_excluded": sorted(blocked),
         },
         "own_brands": [b for b in sorted_brands if b["isOwnBrand"]],
         "national_brands": [b for b in sorted_brands if not b["isOwnBrand"]],
