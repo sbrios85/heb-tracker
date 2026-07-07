@@ -661,6 +661,7 @@
   <select id="brand-filter">
     <option value="">All brands</option>
   </select>
+  <button class="btn" id="btn-block-brand" style="display:none; border-color: var(--accent); color: var(--accent);" title="Permanently exclude this brand from the tracker">🚫 Block this brand</button>
   <select id="dept-filter">
     <option value="">All departments</option>
   </select>
@@ -733,6 +734,25 @@
   </div>
 </div>
 
+<!-- block-brand dialog -->
+<div class="dialog-overlay" id="block-brand-dialog">
+  <div class="dialog">
+    <h3>Block this brand?</h3>
+    <p id="block-brand-summary"></p>
+    <p>This runs the <code>block_brand</code> GitHub Action, which:</p>
+    <ul style="font-size:13px; line-height:1.6; color: var(--ink-soft); padding-left: 20px; margin: 0 0 16px 0;">
+      <li>Adds the brand to <code>data/brand_blocklist.json</code></li>
+      <li>Physically removes all its products from <code>data/details.json</code> and <code>data/products.json</code></li>
+      <li>Skips this brand on any future discovery runs</li>
+    </ul>
+    <p style="font-size:12px; color: var(--ink-faint);">To unblock later, edit <code>brand_blocklist.json</code> directly in the repo.</p>
+    <div class="actions">
+      <button class="btn" id="block-brand-cancel">Cancel</button>
+      <button class="btn warn" id="block-brand-go">Block &amp; remove</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -744,6 +764,7 @@ const REPO_NAME   = "heb-tracker";
 const REPO_BRANCH = "main";
 const DETAILS_URL = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${REPO_BRANCH}/data/details.json`;
 const TRACKED_URL = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${REPO_BRANCH}/data/tracked.json`;
+const BLOCKLIST_URL = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${REPO_BRANCH}/data/brand_blocklist.json`;
 
 const LS_TRACKED = "heb_tracked_set";
 const LS_DISMISSED = "heb_dismissed_set";
@@ -757,6 +778,7 @@ const LS_SORT = "heb_sort";
 // =========================================================
 let allProducts = [];               // array of product objects
 let productById = new Map();        // id -> product
+let blockedBrands = new Set();      // brand names blocked at repo level (from brand_blocklist.json)
 let tracked = new Set(JSON.parse(localStorage.getItem(LS_TRACKED) || "[]"));
 let dismissed = new Set(JSON.parse(localStorage.getItem(LS_DISMISSED) || "[]"));
 let dirty = localStorage.getItem(LS_DIRTY) === "1";
@@ -802,12 +824,26 @@ function toast(msg, kind) {
 async function loadData() {
   const results = document.getElementById("results");
   results.innerHTML = '<div class="loading">Loading H-E-B catalog</div>';
+
+  // Load blocklist first so we can filter as we load products
+  try {
+    const r = await fetch(BLOCKLIST_URL, {cache: "no-store"});
+    if (r.ok) {
+      const bl = await r.json();
+      blockedBrands = new Set(bl.blocked_brands || []);
+    }
+  } catch (e) { /* no blocklist yet, fine */ }
+
   try {
     const r = await fetch(DETAILS_URL, {cache: "no-store"});
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const data = await r.json();
     const productsObj = data.products || {};
-    allProducts = Object.values(productsObj).filter(p => !p._failed);
+    // Filter out failed fetches AND anything from blocked brands (belt & suspenders —
+    // Compact should have already purged them, but this guarantees they never appear).
+    allProducts = Object.values(productsObj).filter(p =>
+      !p._failed && !blockedBrands.has(p.brandName)
+    );
     productById = new Map(allProducts.map(p => [p.id, p]));
   } catch (e) {
     results.innerHTML = `<div class="empty">Couldn't load details.json — ${e.message}<br><span class="mono" style="font-size:11px">${DETAILS_URL}</span></div>`;
@@ -839,13 +875,16 @@ function populateFilters() {
     if (p.brandName) brands.add(p.brandName);
     if (p.department) depts.add(p.department);
   });
+  // Clear existing options first (keeps "All brands" placeholder)
   const bSel = document.getElementById("brand-filter");
+  bSel.innerHTML = '<option value="">All brands</option>';
   [...brands].sort().forEach(b => {
     const o = document.createElement("option");
     o.value = b; o.textContent = b;
     bSel.appendChild(o);
   });
   const dSel = document.getElementById("dept-filter");
+  dSel.innerHTML = '<option value="">All departments</option>';
   [...depts].sort().forEach(d => {
     const o = document.createElement("option");
     o.value = d; o.textContent = d;
@@ -1148,7 +1187,17 @@ function debounce(fn, ms) {
 }
 
 document.getElementById("search").addEventListener("input", debounce(applyFilters, 200));
-document.getElementById("brand-filter").addEventListener("change", applyFilters);
+document.getElementById("brand-filter").addEventListener("change", () => {
+  updateBlockBrandButton();
+  applyFilters();
+});
+
+function updateBlockBrandButton() {
+  const brand = document.getElementById("brand-filter").value;
+  const btn = document.getElementById("btn-block-brand");
+  // Show only when a specific brand is selected (not "All brands")
+  btn.style.display = brand ? "inline-flex" : "none";
+}
 document.getElementById("dept-filter").addEventListener("change", applyFilters);
 document.getElementById("onsale-toggle").addEventListener("change", e => {
   e.target.closest(".toggle-chip").classList.toggle("on", e.target.checked);
@@ -1321,6 +1370,57 @@ document.getElementById("compact-go").addEventListener("click", async () => {
   }
 });
 
+// =========================================================
+// BLOCK BRAND (dispatch block_brand.yml workflow)
+// =========================================================
+document.getElementById("btn-block-brand").addEventListener("click", () => {
+  const brand = document.getElementById("brand-filter").value;
+  if (!brand) return;
+  const count = allProducts.filter(p => p.brandName === brand).length;
+  document.getElementById("block-brand-summary").innerHTML =
+    `Block <strong>${escapeHtml(brand)}</strong>? This will physically remove <strong>${count}</strong> product${count===1?'':'s'} from your data and permanently exclude the brand from future scraping.`;
+  document.getElementById("block-brand-dialog").classList.add("show");
+});
+document.getElementById("block-brand-cancel").addEventListener("click", () => {
+  document.getElementById("block-brand-dialog").classList.remove("show");
+});
+document.getElementById("block-brand-go").addEventListener("click", async () => {
+  const brand = document.getElementById("brand-filter").value;
+  document.getElementById("block-brand-dialog").classList.remove("show");
+  if (!brand) return;
+  const tok = localStorage.getItem(LS_TOKEN);
+  if (!tok) { toast("Sync first (need GitHub token)", "error"); return; }
+  toast(`Blocking "${brand}"…`);
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/workflows/block_brand.yml/dispatches`;
+  try {
+    const r = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${tok}`,
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+      body: JSON.stringify({ ref: REPO_BRANCH, inputs: { brand_name: brand } }),
+    });
+    if (r.status === 204) {
+      // Optimistic local update — remove products & brand from view immediately
+      blockedBrands.add(brand);
+      allProducts = allProducts.filter(p => p.brandName !== brand);
+      productById = new Map(allProducts.map(p => [p.id, p]));
+      // Reset brand filter to "All brands" so the button hides
+      document.getElementById("brand-filter").value = "";
+      updateBlockBrandButton();
+      populateFilters();
+      applyFilters();
+      toast(`"${brand}" blocked · workflow running`, "success");
+    } else {
+      toast(`Block failed: HTTP ${r.status}`, "error");
+    }
+  } catch (e) {
+    toast(`Block error: ${e.message}`, "error");
+  }
+});
+
 // keyboard shortcuts
 document.addEventListener("keydown", (e) => {
   if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT" || e.target.tagName === "TEXTAREA") return;
@@ -1328,6 +1428,7 @@ document.addEventListener("keydown", (e) => {
     closeDetail();
     document.getElementById("sync-dialog").classList.remove("show");
     document.getElementById("compact-dialog").classList.remove("show");
+    document.getElementById("block-brand-dialog").classList.remove("show");
   }
 });
 
