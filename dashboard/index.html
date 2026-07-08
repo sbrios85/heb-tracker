@@ -942,6 +942,22 @@ async function loadData() {
     }
   } catch (e) { /* no remote yet, fine */ }
 
+  // Option A migration: if any product is BOTH tracked AND has listings,
+  // remove it from the tracked Set. Under the mutually-exclusive membership
+  // rule, listed products are not in tracked. This handles pre-Option-A data
+  // written under the old model.
+  let migrated = 0;
+  for (const id of [...tracked]) {
+    if (hasListings(id)) {
+      tracked.delete(id);
+      migrated++;
+    }
+  }
+  if (migrated > 0) {
+    markDirty();
+    console.log(`Migrated ${migrated} product(s) from tracked-and-listed to listed-only`);
+  }
+
   populateFilters();
   applyFilters();
 }
@@ -983,12 +999,17 @@ function currentFiltered() {
   const pmax = parseFloat(document.getElementById("price-max").value);
 
   return allProducts.filter(p => {
-    // tab filter
+    // Membership sets are mutually exclusive under Option A:
+    //   listed = has listings (not in tracked Set)
+    //   tracked = in tracked Set (no listings)
+    //   dismissed = in dismissed Set
+    //   review = none of the above
     const isTracked = tracked.has(p.id);
     const isDismissed = dismissed.has(p.id);
-    if (currentTab === "review" && (isTracked || isDismissed)) return false;
+    const isListed = hasListings(p.id);
+    if (currentTab === "review" && (isTracked || isDismissed || isListed)) return false;
     if (currentTab === "tracked" && !isTracked) return false;
-    if (currentTab === "listed" && !(isTracked && hasListings(p.id))) return false;
+    if (currentTab === "listed" && !isListed) return false;
     if (currentTab === "dismissed" && !isDismissed) return false;
     // search
     if (q) {
@@ -1037,11 +1058,16 @@ function hasListings(id) {
 }
 
 function updateCounts() {
+  // Option A: tracked, listed, dismissed, review are mutually exclusive.
+  // Under this rule, tracked.has(id) is false whenever hasListings(id) is true,
+  // but keep the has-listings filter here as defense-in-depth against stale state.
   const all = allProducts.length;
-  const t = [...tracked].filter(id => productById.has(id)).length;
-  const d = [...dismissed].filter(id => productById.has(id)).length;
-  const l = [...tracked].filter(id => productById.has(id) && hasListings(id)).length;
-  const review = allProducts.filter(p => !tracked.has(p.id) && !dismissed.has(p.id)).length;
+  const l = allProducts.filter(p => hasListings(p.id)).length;
+  const t = allProducts.filter(p => tracked.has(p.id) && !hasListings(p.id)).length;
+  const d = allProducts.filter(p => dismissed.has(p.id)).length;
+  const review = allProducts.filter(p =>
+    !tracked.has(p.id) && !dismissed.has(p.id) && !hasListings(p.id)
+  ).length;
   document.getElementById("count-all").textContent = all.toLocaleString();
   document.getElementById("count-tracked").textContent = t.toLocaleString();
   document.getElementById("count-listed").textContent = l.toLocaleString();
@@ -1079,7 +1105,7 @@ function renderGrid(container, list) {
     const isDismissed = dismissed.has(p.id);
     const isSelected = selected.has(p.id);
     const isOOS = p.inventoryState !== "IN_STOCK";
-    const isListed = isTracked && hasListings(p.id);
+    const isListed = hasListings(p.id);
     const productListings = isListed ? listings[p.id] : [];
     const totalSold = productListings.reduce((s, l) => s + (parseInt(l.soldCount)||0), 0);
     const price = p.onlineSalePrice ?? p.onlinePrice;
@@ -1123,7 +1149,7 @@ function renderTable(container, list) {
     const isDismissed = dismissed.has(p.id);
     const isSelected = selected.has(p.id);
     const isOOS = p.inventoryState !== "IN_STOCK";
-    const isListed = isTracked && hasListings(p.id);
+    const isListed = hasListings(p.id);
     const price = p.onlineSalePrice ?? p.onlinePrice;
     const rowClass = [
       isTracked ? "tracked" : "",
@@ -1195,6 +1221,10 @@ function openDetail(id) {
   const panel = document.getElementById("detail-panel");
   const isTracked = tracked.has(p.id);
   const isDismissed = dismissed.has(p.id);
+  const isListed = hasListings(p.id);
+  // Listings section shows when product is in an "eBay-consideration" state:
+  // either tracked (deciding) or listed (already committed).
+  const showListings = isTracked || isListed;
   const price = p.onlineSalePrice ?? p.onlinePrice;
   const productListings = listings[p.id] || [];
   panel.innerHTML = `
@@ -1219,12 +1249,14 @@ function openDetail(id) {
         ${p.onAd ? '<dt>Promotion</dt><dd>On ad</dd>' : ''}
       </dl>
 
-      ${isTracked ? renderListingsSection(p.id, productListings) : ''}
+      ${showListings ? renderListingsSection(p.id, productListings) : ''}
 
       <div class="actions">
-        ${isTracked
-          ? `<button class="btn" data-act="untrack" data-id="${p.id}">Remove from tracked</button>`
-          : `<button class="btn primary" data-act="track" data-id="${p.id}">Track this product</button>`}
+        ${isListed
+          ? `<button class="btn warn" data-act="clear-listings" data-id="${p.id}">Delete all listings</button>`
+          : isTracked
+            ? `<button class="btn" data-act="untrack" data-id="${p.id}">Remove from tracked</button>`
+            : `<button class="btn primary" data-act="track" data-id="${p.id}">Track this product</button>`}
         ${isDismissed
           ? `<button class="btn" data-act="undismiss" data-id="${p.id}">Restore (un-dismiss)</button>`
           : `<button class="btn warn" data-act="dismiss" data-id="${p.id}">Dismiss</button>`}
@@ -1239,10 +1271,11 @@ function openDetail(id) {
     btn.addEventListener("click", () => {
       const act = btn.dataset.act, id = btn.dataset.id;
       if (act === "track") { tracked.add(id); dismissed.delete(id); }
-      if (act === "untrack") {
-        tracked.delete(id);
-        // Also nuke any listings — a product can't be listed if it's not tracked
+      if (act === "untrack") { tracked.delete(id); }
+      if (act === "clear-listings") {
+        if (!confirm("Delete all listings for this product? It will return to the Review tab.")) return;
         delete listings[id];
+        // Option A: clearing listings does NOT auto-re-track. It goes to Review.
       }
       if (act === "dismiss") {
         dismissed.add(id); tracked.delete(id);
@@ -1254,8 +1287,8 @@ function openDetail(id) {
       applyFilters();
     });
   });
-  // Wire listings section (only exists when tracked)
-  if (isTracked) wireListingsSection(panel, p.id);
+  // Wire listings section (shown when tracked OR listed)
+  if (showListings) wireListingsSection(panel, p.id);
 }
 
 function renderListingsSection(productId, arr) {
@@ -1331,9 +1364,17 @@ function wireListingsSection(panel, productId) {
       const idx = parseInt(delBtn.dataset.del);
       if (!confirm("Delete this listing?")) return;
       listings[productId].splice(idx, 1);
-      if (listings[productId].length === 0) delete listings[productId];
+      const nowEmpty = listings[productId].length === 0;
+      if (nowEmpty) delete listings[productId];
       markDirty();
-      // Re-render the whole section (idx values shift)
+      // If we just emptied the listings, the state changed to Review.
+      // Re-open detail so the actions row reflects the new state.
+      if (nowEmpty) {
+        openDetail(productId);
+        applyFilters();
+        return;
+      }
+      // Otherwise just re-render the section (idx values shift)
       const wrap = panel.querySelector(".listings-section");
       const fresh = document.createElement("div");
       fresh.innerHTML = renderListingsSection(productId, listings[productId] || []);
@@ -1344,14 +1385,21 @@ function wireListingsSection(panel, productId) {
   }
   if (addBtn) {
     addBtn.addEventListener("click", () => {
+      const wasEmpty = !(productId in listings) || listings[productId].length === 0;
       if (!(productId in listings)) listings[productId] = [];
       listings[productId].push({ qty: 1, price: "", url: "", soldCount: 0, notes: "" });
+      // Option A: entering the Listed state removes from tracked Set.
+      // (They're mutually exclusive membership: listed products are not in tracked.)
+      if (wasEmpty) tracked.delete(productId);
       markDirty();
       const wrap = panel.querySelector(".listings-section");
       const fresh = document.createElement("div");
       fresh.innerHTML = renderListingsSection(productId, listings[productId]);
       wrap.replaceWith(fresh.firstElementChild);
       wireListingsSection(panel, productId);
+      // Also need to re-render the action buttons because the state changed
+      // (button labels differ between tracked / listed). Easiest: re-open detail.
+      if (wasEmpty) openDetail(productId);
       applyFilters();
       // Focus the qty of the new row for fast entry
       const rows = panel.querySelectorAll(".listing-row");
