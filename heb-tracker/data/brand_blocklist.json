@@ -1,5 +1,0 @@
-{
-  "blocked_brands": ["BLOOMS by H-E-B"],
-  "last_updated": "2026-07-07T00:00:00Z",
-  "_note": "Brands in this list are (1) hidden from the dashboard, (2) their products physically removed from details.json when Compact runs, and (3) skipped during future brand/product discovery. Managed via the 'Block this brand' button on the dashboard."
-}
