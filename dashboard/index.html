@@ -357,7 +357,76 @@
     border-radius: 3px;
   }
   .card-state.tracked { background: var(--gold); color: white; }
+  .card-state.listed { background: var(--green); color: white; }
   .card-state.dismissed { background: var(--ink-soft); color: white; }
+  .card.listed { background: var(--green-soft); border-color: var(--green); }
+
+  /* ===== listings section (in detail popup) ===== */
+  .listings-section {
+    border-top: 1px solid var(--rule);
+    padding-top: 14px;
+    margin-top: 14px;
+    margin-bottom: 8px;
+  }
+  .listings-header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 12px; margin-bottom: 10px;
+  }
+  .listings-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 15px;
+  }
+  .listings-stats {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .listings-rows { display: flex; flex-direction: column; gap: 8px; }
+  .listing-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+    padding: 8px;
+    background: var(--bg);
+    border-radius: 6px;
+    flex-wrap: wrap;
+  }
+  .listing-field { display: flex; flex-direction: column; gap: 3px; }
+  .listing-field label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+  }
+  .listing-field input {
+    background: var(--bg-paper);
+    border: 1px solid var(--rule);
+    padding: 6px 8px;
+    font: inherit;
+    font-size: 12px;
+    color: var(--ink);
+    border-radius: 4px;
+    outline: none;
+    width: 100%;
+  }
+  .listing-field input:focus { border-color: var(--ink-soft); }
+  .listing-del {
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--accent);
+    border-radius: 4px;
+    width: 26px; height: 26px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0;
+    align-self: flex-end;
+  }
+  .listing-del:hover { background: var(--accent-soft); border-color: var(--accent); }
 
   /* ===== table view ===== */
   .table-wrap {
@@ -423,7 +492,10 @@
     padding: 2px 5px; border-radius: 3px;
   }
   table.products .badge.tracked { background: var(--gold); color: white; }
+  table.products .badge.listed { background: var(--green); color: white; }
   table.products .badge.dismissed { background: var(--ink-soft); color: white; }
+  table.products tbody tr.listed { background: var(--green-soft); }
+  table.products tbody tr.listed:hover { background: #d8e6c8; }
   table.products .stock-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
   table.products .stock-dot.in { background: var(--green); }
   table.products .stock-dot.out { background: var(--ink-faint); }
@@ -645,6 +717,7 @@
   <div class="tabs">
     <button class="tab active" data-tab="review">Review <span class="count" id="count-review">—</span></button>
     <button class="tab" data-tab="tracked">Tracked <span class="count" id="count-tracked">—</span></button>
+    <button class="tab" data-tab="listed">Listed on eBay <span class="count" id="count-listed">—</span></button>
     <button class="tab" data-tab="dismissed">Dismissed <span class="count" id="count-dismissed">—</span></button>
     <button class="tab" data-tab="all">All <span class="count" id="count-all">—</span></button>
   </div>
@@ -768,6 +841,7 @@ const BLOCKLIST_URL = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NA
 
 const LS_TRACKED = "heb_tracked_set";
 const LS_DISMISSED = "heb_dismissed_set";
+const LS_LISTINGS = "heb_listings_by_id";
 const LS_DIRTY = "heb_dirty_since_sync";
 const LS_TOKEN = "heb_gh_token";
 const LS_VIEW = "heb_view_mode";
@@ -781,6 +855,8 @@ let productById = new Map();        // id -> product
 let blockedBrands = new Set();      // brand names blocked at repo level (from brand_blocklist.json)
 let tracked = new Set(JSON.parse(localStorage.getItem(LS_TRACKED) || "[]"));
 let dismissed = new Set(JSON.parse(localStorage.getItem(LS_DISMISSED) || "[]"));
+// listings: { productId: [{qty, price, url, soldCount, notes}, ...], ... }
+let listings = JSON.parse(localStorage.getItem(LS_LISTINGS) || "{}");
 let dirty = localStorage.getItem(LS_DIRTY) === "1";
 let selected = new Set();           // current selection (bulk ops)
 let currentTab = "review";
@@ -793,6 +869,7 @@ let sort = JSON.parse(localStorage.getItem(LS_SORT) || '{"by":"name","dir":"asc"
 function persist() {
   localStorage.setItem(LS_TRACKED, JSON.stringify([...tracked]));
   localStorage.setItem(LS_DISMISSED, JSON.stringify([...dismissed]));
+  localStorage.setItem(LS_LISTINGS, JSON.stringify(listings));
   localStorage.setItem(LS_DIRTY, dirty ? "1" : "0");
   localStorage.setItem(LS_VIEW, viewMode);
   localStorage.setItem(LS_SORT, JSON.stringify(sort));
@@ -855,9 +932,10 @@ async function loadData() {
     if (r.ok) {
       const remote = await r.json();
       // Only adopt if local is empty (first-load case)
-      if (tracked.size === 0 && dismissed.size === 0) {
+      if (tracked.size === 0 && dismissed.size === 0 && Object.keys(listings).length === 0) {
         tracked = new Set(remote.tracked || []);
         dismissed = new Set(remote.dismissed || []);
+        listings = remote.listings || {};
         dirty = false;
         persist();
       }
@@ -910,6 +988,7 @@ function currentFiltered() {
     const isDismissed = dismissed.has(p.id);
     if (currentTab === "review" && (isTracked || isDismissed)) return false;
     if (currentTab === "tracked" && !isTracked) return false;
+    if (currentTab === "listed" && !(isTracked && hasListings(p.id))) return false;
     if (currentTab === "dismissed" && !isDismissed) return false;
     // search
     if (q) {
@@ -952,13 +1031,20 @@ function applyFilters() {
     `${filtered.length.toLocaleString()} / ${allProducts.length.toLocaleString()}`;
 }
 
+function hasListings(id) {
+  const arr = listings[id];
+  return Array.isArray(arr) && arr.length > 0;
+}
+
 function updateCounts() {
   const all = allProducts.length;
   const t = [...tracked].filter(id => productById.has(id)).length;
   const d = [...dismissed].filter(id => productById.has(id)).length;
+  const l = [...tracked].filter(id => productById.has(id) && hasListings(id)).length;
   const review = allProducts.filter(p => !tracked.has(p.id) && !dismissed.has(p.id)).length;
   document.getElementById("count-all").textContent = all.toLocaleString();
   document.getElementById("count-tracked").textContent = t.toLocaleString();
+  document.getElementById("count-listed").textContent = l.toLocaleString();
   document.getElementById("count-dismissed").textContent = d.toLocaleString();
   document.getElementById("count-review").textContent = review.toLocaleString();
 }
@@ -993,9 +1079,13 @@ function renderGrid(container, list) {
     const isDismissed = dismissed.has(p.id);
     const isSelected = selected.has(p.id);
     const isOOS = p.inventoryState !== "IN_STOCK";
+    const isListed = isTracked && hasListings(p.id);
+    const productListings = isListed ? listings[p.id] : [];
+    const totalSold = productListings.reduce((s, l) => s + (parseInt(l.soldCount)||0), 0);
     const price = p.onlineSalePrice ?? p.onlinePrice;
     const classes = ["card"];
     if (isTracked) classes.push("tracked");
+    if (isListed) classes.push("listed");
     if (isDismissed) classes.push("dismissed");
     if (isOOS) classes.push("oos");
     if (isSelected) classes.push("selected");
@@ -1013,7 +1103,7 @@ function renderGrid(container, list) {
           <span class="price ${p.isOnSale?'sale':''}">${fmt(price)}</span>
           ${p.unitPrice && p.unitLabel && p.unitLabel !== "each" ? `<span class="unit-price">${fmt(p.unitPrice)}/${escapeHtml(p.unitLabel)}</span>` : ''}
         </div>
-        ${isTracked?'<span class="card-state tracked">tracked</span>':''}
+        ${isListed ? `<span class="card-state listed">${productListings.length} listing${productListings.length===1?'':'s'}${totalSold?' · '+totalSold+' sold':''}</span>` : (isTracked ? '<span class="card-state tracked">tracked</span>' : '')}
         ${isDismissed?'<span class="card-state dismissed">dismissed</span>':''}
       </div>
     `;
@@ -1033,9 +1123,11 @@ function renderTable(container, list) {
     const isDismissed = dismissed.has(p.id);
     const isSelected = selected.has(p.id);
     const isOOS = p.inventoryState !== "IN_STOCK";
+    const isListed = isTracked && hasListings(p.id);
     const price = p.onlineSalePrice ?? p.onlinePrice;
     const rowClass = [
       isTracked ? "tracked" : "",
+      isListed ? "listed" : "",
       isDismissed ? "dismissed" : "",
       isSelected ? "selected" : ""
     ].filter(Boolean).join(" ");
@@ -1050,7 +1142,7 @@ function renderTable(container, list) {
         <td>${escapeHtml(p.aisle||"—")}</td>
         <td>${escapeHtml(p.department||"—")}</td>
         <td><span class="stock-dot ${isOOS?'out':'in'}"></span></td>
-        <td>${isTracked?'<span class="badge tracked">trk</span>':''}${isDismissed?'<span class="badge dismissed">dis</span>':''}</td>
+        <td>${isListed?'<span class="badge listed">ebay</span>':(isTracked?'<span class="badge tracked">trk</span>':'')}${isDismissed?'<span class="badge dismissed">dis</span>':''}</td>
       </tr>
     `;
   }).join('');
@@ -1104,6 +1196,7 @@ function openDetail(id) {
   const isTracked = tracked.has(p.id);
   const isDismissed = dismissed.has(p.id);
   const price = p.onlineSalePrice ?? p.onlinePrice;
+  const productListings = listings[p.id] || [];
   panel.innerHTML = `
     <button class="close" id="close-detail">×</button>
     <div class="image-area">
@@ -1125,6 +1218,9 @@ function openDetail(id) {
         ${p.isEbtSnap ? '<dt>SNAP</dt><dd>EBT eligible</dd>' : ''}
         ${p.onAd ? '<dt>Promotion</dt><dd>On ad</dd>' : ''}
       </dl>
+
+      ${isTracked ? renderListingsSection(p.id, productListings) : ''}
+
       <div class="actions">
         ${isTracked
           ? `<button class="btn" data-act="untrack" data-id="${p.id}">Remove from tracked</button>`
@@ -1143,14 +1239,137 @@ function openDetail(id) {
     btn.addEventListener("click", () => {
       const act = btn.dataset.act, id = btn.dataset.id;
       if (act === "track") { tracked.add(id); dismissed.delete(id); }
-      if (act === "untrack") tracked.delete(id);
-      if (act === "dismiss") { dismissed.add(id); tracked.delete(id); }
+      if (act === "untrack") {
+        tracked.delete(id);
+        // Also nuke any listings — a product can't be listed if it's not tracked
+        delete listings[id];
+      }
+      if (act === "dismiss") {
+        dismissed.add(id); tracked.delete(id);
+        delete listings[id];
+      }
       if (act === "undismiss") dismissed.delete(id);
       markDirty();
       closeDetail();
       applyFilters();
     });
   });
+  // Wire listings section (only exists when tracked)
+  if (isTracked) wireListingsSection(panel, p.id);
+}
+
+function renderListingsSection(productId, arr) {
+  const rows = arr.map((l, idx) => renderListingRow(productId, idx, l)).join('');
+  const totalSold = arr.reduce((sum, l) => sum + (parseInt(l.soldCount) || 0), 0);
+  return `
+    <div class="listings-section">
+      <div class="listings-header">
+        <span class="listings-title">eBay Listings</span>
+        ${arr.length > 0 ? `<span class="listings-stats">${arr.length} listing${arr.length===1?'':'s'} · ${totalSold} sold total</span>` : ''}
+      </div>
+      <div class="listings-rows" id="listings-rows">${rows}</div>
+      <button class="btn" id="btn-add-listing" style="margin-top:8px;">+ Add listing</button>
+    </div>
+  `;
+}
+
+function renderListingRow(productId, idx, l) {
+  return `
+    <div class="listing-row" data-idx="${idx}">
+      <div class="listing-field" style="width:60px;">
+        <label>Qty</label>
+        <input type="number" min="1" data-field="qty" value="${l.qty ?? ''}" placeholder="1">
+      </div>
+      <div class="listing-field" style="width:80px;">
+        <label>Price ($)</label>
+        <input type="number" min="0" step="0.01" data-field="price" value="${l.price ?? ''}" placeholder="0.00">
+      </div>
+      <div class="listing-field" style="flex:1; min-width:120px;">
+        <label>eBay URL</label>
+        <input type="text" data-field="url" value="${escapeHtml(l.url || '')}" placeholder="https://ebay.com/…">
+      </div>
+      <div class="listing-field" style="width:60px;">
+        <label>Sold</label>
+        <input type="number" min="0" data-field="soldCount" value="${l.soldCount ?? ''}" placeholder="0">
+      </div>
+      <div class="listing-field" style="flex:1; min-width:120px;">
+        <label>Notes</label>
+        <input type="text" data-field="notes" value="${escapeHtml(l.notes || '')}" placeholder="">
+      </div>
+      <button class="listing-del" data-del="${idx}" title="Delete this listing">×</button>
+    </div>
+  `;
+}
+
+function wireListingsSection(panel, productId) {
+  const rowsEl = panel.querySelector("#listings-rows");
+  const addBtn = panel.querySelector("#btn-add-listing");
+
+  // Field changes (delegated)
+  if (rowsEl) {
+    rowsEl.addEventListener("input", (e) => {
+      const input = e.target;
+      if (input.tagName !== "INPUT") return;
+      const row = input.closest(".listing-row");
+      if (!row) return;
+      const idx = parseInt(row.dataset.idx);
+      const field = input.dataset.field;
+      if (!(productId in listings)) listings[productId] = [];
+      if (!listings[productId][idx]) listings[productId][idx] = {};
+      // Coerce numeric fields
+      let v = input.value;
+      if (field === "qty" || field === "soldCount") v = v === "" ? "" : parseInt(v);
+      else if (field === "price") v = v === "" ? "" : parseFloat(v);
+      listings[productId][idx][field] = v;
+      markDirty();
+      // Live-update header stats without full re-render
+      updateListingsHeader(panel, productId);
+    });
+    rowsEl.addEventListener("click", (e) => {
+      const delBtn = e.target.closest("[data-del]");
+      if (!delBtn) return;
+      const idx = parseInt(delBtn.dataset.del);
+      if (!confirm("Delete this listing?")) return;
+      listings[productId].splice(idx, 1);
+      if (listings[productId].length === 0) delete listings[productId];
+      markDirty();
+      // Re-render the whole section (idx values shift)
+      const wrap = panel.querySelector(".listings-section");
+      const fresh = document.createElement("div");
+      fresh.innerHTML = renderListingsSection(productId, listings[productId] || []);
+      wrap.replaceWith(fresh.firstElementChild);
+      wireListingsSection(panel, productId);
+      applyFilters(); // refresh tab counts
+    });
+  }
+  if (addBtn) {
+    addBtn.addEventListener("click", () => {
+      if (!(productId in listings)) listings[productId] = [];
+      listings[productId].push({ qty: 1, price: "", url: "", soldCount: 0, notes: "" });
+      markDirty();
+      const wrap = panel.querySelector(".listings-section");
+      const fresh = document.createElement("div");
+      fresh.innerHTML = renderListingsSection(productId, listings[productId]);
+      wrap.replaceWith(fresh.firstElementChild);
+      wireListingsSection(panel, productId);
+      applyFilters();
+      // Focus the qty of the new row for fast entry
+      const rows = panel.querySelectorAll(".listing-row");
+      const last = rows[rows.length - 1];
+      if (last) last.querySelector('[data-field="qty"]').focus();
+    });
+  }
+}
+
+function updateListingsHeader(panel, productId) {
+  const arr = listings[productId] || [];
+  const totalSold = arr.reduce((s, l) => s + (parseInt(l.soldCount) || 0), 0);
+  const stats = panel.querySelector(".listings-stats");
+  if (stats) {
+    stats.textContent = arr.length > 0
+      ? `${arr.length} listing${arr.length===1?'':'s'} · ${totalSold} sold total`
+      : '';
+  }
 }
 
 function closeDetail() { document.getElementById("detail-overlay").classList.remove("show"); }
@@ -1293,6 +1512,7 @@ async function syncToRepo(token) {
   const payload = {
     tracked: [...tracked],
     dismissed: [...dismissed],
+    listings: listings,
     last_synced: new Date().toISOString(),
   };
   // We base64-encode and send as workflow_dispatch input
