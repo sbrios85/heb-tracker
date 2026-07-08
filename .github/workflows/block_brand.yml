@@ -1,0 +1,93 @@
+name: Block Brand
+
+# Called from the dashboard's "Block this brand" button.
+# In a single run: (1) adds the brand to data/brand_blocklist.json,
+# (2) physically removes all its products from data/details.json and
+# data/products.json, and (3) commits everything.
+#
+# Blocked brands are also skipped by future discovery runs, so the block
+# persists across catalog refreshes.
+
+on:
+  workflow_dispatch:
+    inputs:
+      brand_name:
+        description: 'Exact brand name to block (e.g. "BLOOMS by H-E-B")'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  block:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Block brand and compact
+        env:
+          BRAND_NAME: ${{ github.event.inputs.brand_name }}
+        run: |
+          python <<'PY'
+          import json, os, datetime
+          from pathlib import Path
+
+          brand = os.environ["BRAND_NAME"].strip()
+          if not brand:
+              raise SystemExit("empty brand_name")
+
+          # ---- Load or create blocklist ----
+          blpath = Path("data/brand_blocklist.json")
+          if blpath.exists():
+              bl = json.load(open(blpath))
+          else:
+              bl = {"blocked_brands": []}
+          existing = set(bl.get("blocked_brands", []))
+          if brand in existing:
+              print(f"'{brand}' already in blocklist — will still recompact")
+          else:
+              existing.add(brand)
+              print(f"Adding '{brand}' to blocklist")
+          bl["blocked_brands"] = sorted(existing)
+          bl["last_updated"] = datetime.datetime.utcnow().isoformat() + "Z"
+          bl.setdefault("_note", "Managed via the 'Block this brand' button on the dashboard.")
+          json.dump(bl, open(blpath, "w"), indent=2, ensure_ascii=False)
+          print(f"Blocklist now has {len(bl['blocked_brands'])} brand(s)")
+
+          blocked_set = set(bl["blocked_brands"])
+
+          # ---- Compact details.json ----
+          dpath = Path("data/details.json")
+          if dpath.exists():
+              d = json.load(open(dpath))
+              before = len(d.get("products", {}))
+              d["products"] = {
+                  pid: p for pid, p in d.get("products", {}).items()
+                  if (p.get("brandName") or "") not in blocked_set
+              }
+              after = len(d["products"])
+              json.dump(d, open(dpath, "w"), indent=2, ensure_ascii=False)
+              print(f"details.json: {before} -> {after} (-{before-after})")
+
+          # ---- Compact products.json ----
+          ppath = Path("data/products.json")
+          if ppath.exists():
+              pr = json.load(open(ppath))
+              arr = pr.get("products", [])
+              before = len(arr)
+              pr["products"] = [p for p in arr if (p.get("brandName") or "") not in blocked_set]
+              after = len(pr["products"])
+              json.dump(pr, open(ppath, "w"), indent=2, ensure_ascii=False)
+              print(f"products.json: {before} -> {after} (-{before-after})")
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f data/brand_blocklist.json data/details.json data/products.json
+          git diff --staged --quiet || git commit -m "Block brand: ${{ github.event.inputs.brand_name }}"
+          git pull --rebase || true
+          git push
