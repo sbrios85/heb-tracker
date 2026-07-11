@@ -133,7 +133,43 @@ def detect_changes(pid, prev, curr):
     return alerts
 
 
+def run_test_mode():
+    """Inject fake alerts of each severity and write the alert files so the
+    email + issue steps can be verified end-to-end. Does NOT touch snapshots
+    or the real alerts.json. Triggered by: python heb_refresh.py --test"""
+    import datetime as _dt
+    now = _dt.datetime.utcnow().isoformat() + "Z"
+    today = _dt.date.today().isoformat()
+    fake = [
+        {"id": "TEST001", "productName": "TEST — Cinnamon Hazelnut Coffee",
+         "type": "price_change", "message": "Price up: $8.98 → $9.48",
+         "old": 8.98, "new": 9.48, "severity": "info",
+         "detected_at": now, "resolved": False},
+        {"id": "TEST002", "productName": "TEST — Texas Pecan Coffee",
+         "type": "size_change", "message": "Size changed: 12 oz → 10 oz",
+         "old": "12 oz", "new": "10 oz", "severity": "warning",
+         "detected_at": now, "resolved": False},
+        {"id": "TEST003", "productName": "TEST — Hydrocortisone Ointment",
+         "type": "out_of_stock", "message": "Out of stock (OUT_OF_STOCK)",
+         "old": "IN_STOCK", "new": "OUT_OF_STOCK", "severity": "critical",
+         "detected_at": now, "resolved": False},
+    ]
+    critical = [a for a in fake if a["severity"] == "critical"]
+    save_json(DATA_DIR / "_alerts_today.json", {
+        "date": today, "count": len(fake),
+        "critical_count": len(critical), "alerts": fake,
+    })
+    save_json(DATA_DIR / "_critical_today.json", {
+        "date": today, "count": len(critical), "alerts": critical,
+    })
+    print(f"TEST MODE: wrote {len(fake)} fake alerts ({len(critical)} critical)")
+    print("The email step should now send a test digest. Snapshots/alerts.json untouched.")
+
+
 def main():
+    if "--test" in sys.argv:
+        run_test_mode()
+        return
     print(f"H-E-B daily refresh (store #{WALDRON_STORE_NUMBER})")
     today = datetime.date.today().isoformat()
 
