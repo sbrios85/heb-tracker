@@ -8,6 +8,11 @@ on:
   schedule:
     - cron: "0 6 * * *"
   workflow_dispatch:
+    inputs:
+      test_email:
+        description: 'Send a TEST email with fake alerts (does not touch real data)'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -25,9 +30,16 @@ jobs:
       - run: pip install -r requirements.txt
 
       - name: Run daily refresh
-        run: python scraper/heb_refresh.py
+        run: |
+          if [ "${{ github.event.inputs.test_email }}" = "true" ]; then
+            echo "Running in TEST mode (fake alerts, no data changes)"
+            python scraper/heb_refresh.py --test
+          else
+            python scraper/heb_refresh.py
+          fi
 
       - name: Commit snapshot + alerts
+        if: ${{ github.event.inputs.test_email != 'true' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -37,6 +49,7 @@ jobs:
           git push
 
       - name: Open GitHub Issue for critical alerts
+        if: ${{ github.event.inputs.test_email != 'true' }}
         run: |
           python <<'PY'
           import json, os, subprocess
