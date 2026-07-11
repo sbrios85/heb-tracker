@@ -1,0 +1,86 @@
+name: Daily Refresh
+
+# Runs every day at 06:00 UTC (1:00 AM Central) and refreshes all LISTED
+# products, detecting price/stock/discontinued/name/size/image changes.
+# Also runnable manually.
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+
+      - name: Run daily refresh
+        run: python scraper/heb_refresh.py
+
+      - name: Commit snapshot + alerts
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f data/prices/ data/alerts.json
+          git diff --staged --quiet || git commit -m "Daily refresh $(date -u +%Y-%m-%d)"
+          git pull --rebase || true
+          git push
+
+      - name: Open GitHub Issue for critical alerts
+        run: |
+          python <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+
+          crit_file = Path("data/_critical_today.json")
+          if not crit_file.exists():
+              print("No critical file — skipping issue")
+              raise SystemExit(0)
+          data = json.load(open(crit_file))
+          alerts = data.get("alerts", [])
+          if not alerts:
+              print("No critical alerts today — no issue opened")
+              raise SystemExit(0)
+
+          # Build issue body
+          date = data.get("date", "")
+          lines = [f"# ⚠️ {len(alerts)} critical H-E-B change(s) — {date}", ""]
+          lines.append("These listed products need attention on eBay:\n")
+          for a in alerts:
+              lines.append(f"- **{a['productName']}** (`{a['id']}`): {a['message']}")
+          lines.append("")
+          lines.append("_Open the dashboard to review and resolve these alerts._")
+          body = "\n".join(lines)
+          title = f"⚠️ {len(alerts)} critical H-E-B change(s) — {date}"
+
+          # Use gh CLI (preinstalled on runners) to open the issue
+          env = dict(os.environ)
+          env["GH_TOKEN"] = env.get("GITHUB_TOKEN", "")
+          result = subprocess.run(
+              ["gh", "issue", "create", "--title", title, "--body", body,
+               "--label", "heb-alert"],
+              capture_output=True, text=True, env=env,
+          )
+          print("stdout:", result.stdout)
+          print("stderr:", result.stderr)
+          if result.returncode != 0:
+              # Label might not exist; retry without it
+              result2 = subprocess.run(
+                  ["gh", "issue", "create", "--title", title, "--body", body],
+                  capture_output=True, text=True, env=env,
+              )
+              print("retry stdout:", result2.stdout)
+              print("retry stderr:", result2.stderr)
+          PY
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
