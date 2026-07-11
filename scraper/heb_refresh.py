@@ -229,6 +229,14 @@ def main():
         "alerts": critical_alerts,
     })
 
+    # Write ALL of today's new alerts for the email digest (email triggers on any change)
+    save_json(DATA_DIR / "_alerts_today.json", {
+        "date": today,
+        "count": len(all_new_alerts),
+        "critical_count": len(critical_alerts),
+        "alerts": all_new_alerts,
+    })
+
 
 if __name__ == "__main__":
     main()
