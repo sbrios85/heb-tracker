@@ -318,6 +318,59 @@ def get_product_by_id_resilient(client: httpx.Client, product_id: str,
 # =============================================================
 # PRODUCT DATA EXTRACTION (from __NEXT_DATA__ product blob)
 # =============================================================
+def extract_size_from_text(name: str, description: str) -> str:
+    """Best-effort extraction of a package size like '12 oz' or '6 ct' from
+    the product name and description. Returns '' when nothing parseable found.
+
+    H-E-B does not expose size as a GraphQL field, so this is our fallback
+    for card display. For Listed products the user can enter size manually
+    (100% accurate). This regex handles the common cases (coffee '12 oz',
+    chips, drinks) but will legitimately return '' for many products where
+    size isn't in the text (e.g. '1% Maximum Strength Hydrocortisone').
+    """
+    name = name or ""
+    description = description or ""
+
+    # Units we care about, in rough priority order. Longer/more-specific first.
+    # Value + unit, e.g. "12 oz", "1.5 lb", "6 ct", "12 fl oz", "750 ml"
+    unit_pattern = (
+        r'(\d+(?:\.\d+)?)\s*'
+        r'(fl\.?\s*oz|oz|lb|lbs|ct|count|pk|pack|g\b|kg|ml|mL|l\b|liter|'
+        r'gal|gallon|qt|quart|pt|pint|piece|pieces|each|ea\b)'
+    )
+
+    def normalize(num, unit):
+        unit = unit.lower().strip().rstrip('.')
+        # Normalize common variants
+        unit_map = {
+            "fl oz": "fl oz", "floz": "fl oz", "fl.oz": "fl oz",
+            "lbs": "lb", "count": "ct", "pack": "pk",
+            "pieces": "piece", "ea": "each",
+            "liter": "l", "gallon": "gal", "quart": "qt", "pint": "pt",
+        }
+        unit = unit_map.get(unit, unit)
+        # Drop trailing .0
+        if num.endswith(".0"):
+            num = num[:-2]
+        return f"{num} {unit}"
+
+    # Search NAME first (higher precision — size in a product name is
+    # almost always the real package size), then description.
+    for source in (name, description):
+        # Skip "1%" style concentration matches: require the unit to be a real
+        # size unit, and reject if immediately preceded by "%".
+        for m in re.finditer(unit_pattern, source, re.I):
+            # Reject percentage: "1% Maximum" — check char before match
+            start = m.start()
+            preceding = source[max(0, start-1):start]
+            following = source[m.end():m.end()+1]
+            if following == "%":
+                continue
+            num, unit = m.group(1), m.group(2)
+            return normalize(num, unit)
+    return ""
+
+
 def extract_product_summary(product: dict) -> dict:
     """Pull the fields we care about from the raw product blob into a flat dict.
     This is what gets stored in daily snapshots."""
@@ -379,6 +432,11 @@ def extract_product_summary(product: dict) -> dict:
     bcrumbs = product.get("breadcrumbs") or []
     category_path = " > ".join(b.get("title", "") for b in bcrumbs if b.get("title"))
 
+    # Best-effort size extraction from name + description
+    full_name = product.get("fullDisplayName") or ""
+    description = product.get("productDescription") or ""
+    size = extract_size_from_text(full_name, description)
+
     return {
         "id": product.get("id"),
         "displayName": product.get("fullDisplayName"),
@@ -398,6 +456,8 @@ def extract_product_summary(product: dict) -> dict:
         "isOnSale": is_on_sale,
         "unitPrice": unit_price,
         "unitLabel": unit_label,
+        "size": size,
+        "productDescription": description,
         "categoryPath": category_path,
         "couponCount": len(coupons),
         "coupons": coupon_summaries,
@@ -410,3 +470,20 @@ def extract_product_summary(product: dict) -> dict:
 # =============================================================
 def polite_sleep(seconds: float = DEFAULT_DELAY) -> None:
     time.sleep(seconds)
+
+
+# =============================================================
+# IMAGE HASHING (detect packaging changes when URL stays the same)
+# =============================================================
+def hash_image_bytes(client: httpx.Client, image_url: str) -> Optional[str]:
+    """Fetch an image and return a short sha256 of its bytes, or None on failure."""
+    if not image_url:
+        return None
+    try:
+        r = client.get(image_url, timeout=20.0)
+        if r.status_code != 200 or not r.content:
+            return None
+        import hashlib
+        return hashlib.sha256(r.content).hexdigest()[:16]
+    except Exception:
+        return None
