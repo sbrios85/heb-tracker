@@ -360,8 +360,99 @@
   .card-state.listed { background: var(--green); color: white; }
   .card-state.dismissed { background: var(--ink-soft); color: white; }
   .card.listed { background: var(--green-soft); border-color: var(--green); }
+  .size-line {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-soft);
+    margin: 0 0 6px 0;
+    letter-spacing: 0.03em;
+  }
+  .alert-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 16px; height: 16px; padding: 0 4px;
+    margin-left: 5px;
+    background: var(--accent); color: white;
+    border-radius: 8px;
+    font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 600;
+    vertical-align: middle;
+  }
+
+  /* ===== alerts section (in detail popup) ===== */
+  .alerts-section {
+    border: 1px solid var(--accent);
+    background: var(--accent-soft);
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 14px;
+    margin-bottom: 8px;
+  }
+  .alerts-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+  }
+  .alerts-title {
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 14px;
+    color: var(--accent);
+  }
+  .alerts-count {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 18px; height: 18px; padding: 0 5px;
+    background: var(--accent); color: white; border-radius: 9px;
+    font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 600;
+  }
+  .alerts-rows { display: flex; flex-direction: column; gap: 6px; }
+  .alert-row {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 10px; flex-wrap: wrap;
+    background: var(--bg-paper);
+    border-radius: 6px; padding: 8px 10px;
+    border-left: 3px solid var(--ink-faint);
+  }
+  .alert-row.critical { border-left-color: var(--accent); }
+  .alert-row.warning { border-left-color: var(--gold); }
+  .alert-row.info { border-left-color: var(--green); }
+  .alert-main { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 160px; }
+  .alert-type {
+    font-family: 'DM Mono', monospace; font-size: 9px; text-transform: uppercase;
+    letter-spacing: 0.06em; font-weight: 600;
+  }
+  .alert-type.critical { color: var(--accent); }
+  .alert-type.warning { color: #9a7b1f; }
+  .alert-type.info { color: #4a7c3f; }
+  .alert-msg { font-size: 13px; color: var(--ink); }
+  .alert-meta { display: flex; align-items: center; gap: 8px; }
+  .alert-date { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-faint); }
+  .alert-resolve {
+    background: transparent; border: 1px solid var(--rule);
+    color: var(--ink-soft); border-radius: 4px;
+    padding: 3px 8px; font-size: 11px; cursor: pointer;
+  }
+  .alert-resolve:hover { background: var(--bg); border-color: var(--ink-soft); }
 
   /* ===== listings section (in detail popup) ===== */
+  .manual-size-row {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 12px;
+    padding: 8px 10px;
+    background: var(--gold-soft);
+    border-radius: 6px;
+  }
+  .manual-size-row label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-soft);
+  }
+  .manual-size-row input {
+    background: var(--bg-paper);
+    border: 1px solid var(--rule);
+    padding: 6px 8px;
+    font: inherit; font-size: 13px;
+    border-radius: 4px; outline: none;
+    width: 120px;
+  }
+  .manual-size-row input:focus { border-color: var(--gold); }
+  .manual-size-row .size-hint {
+    font-size: 11px; color: var(--ink-faint); font-style: italic;
+  }
   .listings-section {
     border-top: 1px solid var(--rule);
     padding-top: 14px;
@@ -838,10 +929,12 @@ const REPO_BRANCH = "main";
 const DETAILS_URL = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${REPO_BRANCH}/data/details.json`;
 const TRACKED_URL = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${REPO_BRANCH}/data/tracked.json`;
 const BLOCKLIST_URL = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${REPO_BRANCH}/data/brand_blocklist.json`;
+const ALERTS_URL = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${REPO_BRANCH}/data/alerts.json`;
 
 const LS_TRACKED = "heb_tracked_set";
 const LS_DISMISSED = "heb_dismissed_set";
 const LS_LISTINGS = "heb_listings_by_id";
+const LS_SIZES = "heb_manual_sizes";
 const LS_DIRTY = "heb_dirty_since_sync";
 const LS_TOKEN = "heb_gh_token";
 const LS_VIEW = "heb_view_mode";
@@ -853,10 +946,14 @@ const LS_SORT = "heb_sort";
 let allProducts = [];               // array of product objects
 let productById = new Map();        // id -> product
 let blockedBrands = new Set();      // brand names blocked at repo level (from brand_blocklist.json)
+let alerts = [];                    // unresolved change alerts from alerts.json
+let resolvedAlertKeys = new Set(JSON.parse(localStorage.getItem("heb_resolved_alerts") || "[]"));
 let tracked = new Set(JSON.parse(localStorage.getItem(LS_TRACKED) || "[]"));
 let dismissed = new Set(JSON.parse(localStorage.getItem(LS_DISMISSED) || "[]"));
 // listings: { productId: [{qty, price, url, soldCount, notes}, ...], ... }
 let listings = JSON.parse(localStorage.getItem(LS_LISTINGS) || "{}");
+// manual sizes: { productId: "1 oz", ... } — user-entered, overrides parsed size
+let manualSizes = JSON.parse(localStorage.getItem(LS_SIZES) || "{}");
 let dirty = localStorage.getItem(LS_DIRTY) === "1";
 let selected = new Set();           // current selection (bulk ops)
 let currentTab = "review";
@@ -870,6 +967,7 @@ function persist() {
   localStorage.setItem(LS_TRACKED, JSON.stringify([...tracked]));
   localStorage.setItem(LS_DISMISSED, JSON.stringify([...dismissed]));
   localStorage.setItem(LS_LISTINGS, JSON.stringify(listings));
+  localStorage.setItem(LS_SIZES, JSON.stringify(manualSizes));
   localStorage.setItem(LS_DIRTY, dirty ? "1" : "0");
   localStorage.setItem(LS_VIEW, viewMode);
   localStorage.setItem(LS_SORT, JSON.stringify(sort));
@@ -911,6 +1009,18 @@ async function loadData() {
     }
   } catch (e) { /* no blocklist yet, fine */ }
 
+  // Load alerts (change history from daily refresh)
+  try {
+    const r = await fetch(ALERTS_URL, {cache: "no-store"});
+    if (r.ok) {
+      const ad = await r.json();
+      alerts = (ad.alerts || []).filter(a => {
+        const key = `${a.id}|${a.type}|${a.detected_at}`;
+        return !resolvedAlertKeys.has(key);
+      });
+    }
+  } catch (e) { /* no alerts yet, fine */ }
+
   try {
     const r = await fetch(DETAILS_URL, {cache: "no-store"});
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -936,6 +1046,7 @@ async function loadData() {
         tracked = new Set(remote.tracked || []);
         dismissed = new Set(remote.dismissed || []);
         listings = remote.listings || {};
+        manualSizes = remote.manualSizes || {};
         dirty = false;
         persist();
       }
@@ -1052,6 +1163,13 @@ function applyFilters() {
     `${filtered.length.toLocaleString()} / ${allProducts.length.toLocaleString()}`;
 }
 
+function displaySize(id, p) {
+  // Manual size (user-entered on a listing) wins; else the parsed size from data.
+  const manual = manualSizes[id];
+  if (manual && String(manual).trim()) return String(manual).trim();
+  return (p && p.size) ? p.size : "";
+}
+
 function hasListings(id) {
   const arr = listings[id];
   return Array.isArray(arr) && arr.length > 0;
@@ -1073,6 +1191,31 @@ function updateCounts() {
   document.getElementById("count-listed").textContent = l.toLocaleString();
   document.getElementById("count-dismissed").textContent = d.toLocaleString();
   document.getElementById("count-review").textContent = review.toLocaleString();
+
+  // Red alert badge on the Listed tab if there are unresolved alerts
+  updateAlertBadge();
+}
+
+function alertsForProduct(id) {
+  return alerts.filter(a => a.id === id);
+}
+
+function updateAlertBadge() {
+  const listedTab = document.querySelector('.tab[data-tab="listed"]');
+  if (!listedTab) return;
+  let badge = listedTab.querySelector('.alert-badge');
+  const n = alerts.length;
+  if (n > 0) {
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.className = 'alert-badge';
+      listedTab.appendChild(badge);
+    }
+    badge.textContent = n > 99 ? '99+' : String(n);
+    badge.title = `${n} unresolved change alert${n===1?'':'s'}`;
+  } else if (badge) {
+    badge.remove();
+  }
 }
 
 function fmt(price) {
@@ -1125,6 +1268,7 @@ function renderGrid(container, list) {
         </div>
         <p class="name">${escapeHtml(p.displayName||"")}</p>
         <p class="brand">${escapeHtml(p.brandName||"")}</p>
+        ${(() => { const sz = displaySize(p.id, p); return sz ? `<p class="size-line">${escapeHtml(sz)}</p>` : ''; })()}
         <div class="footer">
           <span class="price ${p.isOnSale?'sale':''}">${fmt(price)}</span>
           ${p.unitPrice && p.unitLabel && p.unitLabel !== "each" ? `<span class="unit-price">${fmt(p.unitPrice)}/${escapeHtml(p.unitLabel)}</span>` : ''}
@@ -1249,6 +1393,8 @@ function openDetail(id) {
         ${p.onAd ? '<dt>Promotion</dt><dd>On ad</dd>' : ''}
       </dl>
 
+      ${renderAlertsSection(p.id)}
+
       ${showListings ? renderListingsSection(p.id, productListings) : ''}
 
       <div class="actions">
@@ -1289,16 +1435,69 @@ function openDetail(id) {
   });
   // Wire listings section (shown when tracked OR listed)
   if (showListings) wireListingsSection(panel, p.id);
+
+  // Wire alert "Mark resolved" buttons
+  panel.querySelectorAll("[data-resolve]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const key = btn.dataset.resolve;
+      resolvedAlertKeys.add(key);
+      localStorage.setItem("heb_resolved_alerts", JSON.stringify([...resolvedAlertKeys]));
+      // Remove from live alerts list
+      alerts = alerts.filter(a => `${a.id}|${a.type}|${a.detected_at}` !== key);
+      // Re-render the popup + counts
+      openDetail(p.id);
+      updateCounts();
+    });
+  });
+}
+
+function renderAlertsSection(productId) {
+  const productAlerts = alertsForProduct(productId);
+  if (productAlerts.length === 0) return '';
+  const rows = productAlerts.map(a => {
+    const key = `${a.id}|${a.type}|${a.detected_at}`;
+    const date = (a.detected_at || '').slice(0, 10);
+    const sev = a.severity || 'info';
+    return `
+      <div class="alert-row ${sev}">
+        <div class="alert-main">
+          <span class="alert-type ${sev}">${escapeHtml(a.type.replace(/_/g,' '))}</span>
+          <span class="alert-msg">${escapeHtml(a.message||'')}</span>
+        </div>
+        <div class="alert-meta">
+          <span class="alert-date">${date}</span>
+          <button class="alert-resolve" data-resolve="${escapeHtml(key)}">Mark resolved</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+  return `
+    <div class="alerts-section">
+      <div class="alerts-header">
+        <span class="alerts-title">⚠ Changes detected</span>
+        <span class="alerts-count">${productAlerts.length}</span>
+      </div>
+      <div class="alerts-rows">${rows}</div>
+    </div>
+  `;
 }
 
 function renderListingsSection(productId, arr) {
   const rows = arr.map((l, idx) => renderListingRow(productId, idx, l)).join('');
   const totalSold = arr.reduce((sum, l) => sum + (parseInt(l.soldCount) || 0), 0);
+  const manualSize = manualSizes[productId] || "";
+  const parsedSize = (productById.get(productId) || {}).size || "";
   return `
     <div class="listings-section">
       <div class="listings-header">
         <span class="listings-title">eBay Listings</span>
         ${arr.length > 0 ? `<span class="listings-stats">${arr.length} listing${arr.length===1?'':'s'} · ${totalSold} sold total</span>` : ''}
+      </div>
+      <div class="manual-size-row">
+        <label>Package size</label>
+        <input type="text" id="manual-size-input" value="${escapeHtml(manualSize)}"
+               placeholder="${parsedSize ? escapeHtml(parsedSize)+' (auto)' : 'e.g. 12 oz, 6 ct'}">
+        <span class="size-hint">${parsedSize ? 'auto-detected: '+escapeHtml(parsedSize) : 'not auto-detected — enter manually'}</span>
       </div>
       <div class="listings-rows" id="listings-rows">${rows}</div>
       <button class="btn" id="btn-add-listing" style="margin-top:8px;">+ Add listing</button>
@@ -1337,6 +1536,17 @@ function renderListingRow(productId, idx, l) {
 function wireListingsSection(panel, productId) {
   const rowsEl = panel.querySelector("#listings-rows");
   const addBtn = panel.querySelector("#btn-add-listing");
+
+  // Manual size input
+  const sizeInput = panel.querySelector("#manual-size-input");
+  if (sizeInput) {
+    sizeInput.addEventListener("input", (e) => {
+      const v = e.target.value.trim();
+      if (v) manualSizes[productId] = v;
+      else delete manualSizes[productId];
+      markDirty();
+    });
+  }
 
   // Field changes (delegated)
   if (rowsEl) {
@@ -1561,6 +1771,7 @@ async function syncToRepo(token) {
     tracked: [...tracked],
     dismissed: [...dismissed],
     listings: listings,
+    manualSizes: manualSizes,
     last_synced: new Date().toISOString(),
   };
   // We base64-encode and send as workflow_dispatch input
