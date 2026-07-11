@@ -180,14 +180,22 @@ jobs:
               headers={
                   "Authorization": f"Bearer {api_key}",
                   "Content-Type": "application/json",
+                  "Accept": "application/json",
+                  "User-Agent": "heb-tracker/1.0 (github-actions)",
               },
               method="POST",
           )
+          # Debug: confirm the key is present (masked) and recipient set
+          print(f"Key present: {'yes' if api_key else 'NO'} (len={len(api_key)}, prefix={api_key[:3]})")
+          print(f"Recipient: {recipient}")
           try:
               with urllib.request.urlopen(req) as resp:
                   print(f"Email sent: HTTP {resp.status}")
                   print(resp.read().decode()[:300])
           except urllib.error.HTTPError as e:
               print(f"Email failed: HTTP {e.code}")
-              print(e.read().decode()[:500])
+              print("Response headers:", dict(e.headers))
+              print("Body:", e.read().decode()[:600])
+          except Exception as e:
+              print(f"Email error: {type(e).__name__}: {e}")
           PY
