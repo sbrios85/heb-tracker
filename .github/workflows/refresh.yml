@@ -84,3 +84,97 @@ jobs:
           PY
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Send email digest (Resend) for any change
+        if: ${{ always() }}
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+        run: |
+          python <<'PY'
+          import json, os, urllib.request
+          from pathlib import Path
+
+          api_key = os.environ.get("RESEND_API_KEY", "")
+          recipient = os.environ.get("RECIPIENT_EMAIL", "")
+          if not api_key or not recipient:
+              print("RESEND_API_KEY or RECIPIENT_EMAIL not set — skipping email")
+              raise SystemExit(0)
+
+          af = Path("data/_alerts_today.json")
+          if not af.exists():
+              print("No _alerts_today.json — nothing to email")
+              raise SystemExit(0)
+          data = json.load(open(af))
+          alerts = data.get("alerts", [])
+          if not alerts:
+              print("No new alerts today — no email sent")
+              raise SystemExit(0)
+
+          date = data.get("date", "")
+          n = len(alerts)
+          n_crit = data.get("critical_count", 0)
+
+          # Sort: critical first, then warning, then info
+          sev_order = {"critical": 0, "warning": 1, "info": 2}
+          alerts_sorted = sorted(alerts, key=lambda a: sev_order.get(a.get("severity"), 3))
+
+          # Build HTML rows
+          sev_color = {"critical": "#c0392b", "warning": "#b8860b", "info": "#4a7c3f"}
+          rows = ""
+          for a in alerts_sorted:
+              color = sev_color.get(a.get("severity"), "#555")
+              rows += f'''
+              <tr>
+                <td style="padding:10px 12px;border-bottom:1px solid #eee;">
+                  <div style="font-weight:600;color:#1a1916;">{a.get("productName","")}</div>
+                  <div style="font-size:12px;color:{color};text-transform:uppercase;letter-spacing:.04em;font-weight:600;margin-top:2px;">{a.get("type","").replace("_"," ")}</div>
+                  <div style="font-size:14px;color:#444;margin-top:4px;">{a.get("message","")}</div>
+                </td>
+              </tr>'''
+
+          crit_banner = ""
+          if n_crit > 0:
+              crit_banner = f'<div style="background:#fdecea;border-left:4px solid #c0392b;padding:10px 14px;margin-bottom:16px;border-radius:4px;color:#c0392b;font-weight:600;">⚠️ {n_crit} critical change{"s" if n_crit!=1 else ""} — may need immediate eBay action</div>'
+
+          html = f'''
+          <div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:600px;margin:0 auto;">
+            <h2 style="color:#c0392b;font-family:Georgia,serif;">H-E-B Tracker — {n} change{"s" if n!=1 else ""} today</h2>
+            <p style="color:#666;font-size:14px;">{date} · Flour Bluff #57 · your listed products</p>
+            {crit_banner}
+            <table style="width:100%;border-collapse:collapse;border:1px solid #eee;border-radius:8px;overflow:hidden;">
+              {rows}
+            </table>
+            <p style="margin-top:20px;font-size:13px;color:#888;">
+              Review and resolve these in your
+              <a href="https://sbrios85.github.io/heb-tracker/dashboard/" style="color:#c0392b;">dashboard</a>.
+            </p>
+          </div>'''
+
+          subject = f"H-E-B: {n} change{'s' if n!=1 else ''} today"
+          if n_crit > 0:
+              subject = f"⚠️ H-E-B: {n_crit} critical + {n-n_crit} other change{'s' if (n-n_crit)!=1 else ''}"
+
+          payload = {
+              "from": "H-E-B Tracker <onboarding@resend.dev>",
+              "to": [recipient],
+              "subject": subject,
+              "html": html,
+          }
+          req = urllib.request.Request(
+              "https://api.resend.com/emails",
+              data=json.dumps(payload).encode(),
+              headers={
+                  "Authorization": f"Bearer {api_key}",
+                  "Content-Type": "application/json",
+              },
+              method="POST",
+          )
+          try:
+              with urllib.request.urlopen(req) as resp:
+                  print(f"Email sent: HTTP {resp.status}")
+                  print(resp.read().decode()[:300])
+          except urllib.error.HTTPError as e:
+              print(f"Email failed: HTTP {e.code}")
+              print(e.read().decode()[:500])
+          PY
