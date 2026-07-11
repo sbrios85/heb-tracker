@@ -1,1 +1,30 @@
-{}
+{
+  "542812": {
+    "id": "542812",
+    "displayName": "CAFE Olé by H-E-B Medium Roast Cinnamon Hazelnut Ground Coffee- Trial Size",
+    "brandName": "CAFE Olé by H-E-B",
+    "isOwnBrand": true,
+    "url": "https://www.heb.com/product-detail/cafe-ol-by-h-e-b-medium-roast-cinnamon-hazelnut-ground-coffee-trial-size/542812",
+    "imageUrl": "https://images.heb.com/is/image/HEBGrocery/prd-medium/000542812.jpg",
+    "inventoryState": "IN_STOCK",
+    "inAssortment": true,
+    "aisle": "Aisle 14",
+    "locationAvailability": "AVAILABLE",
+    "onAd": false,
+    "isNew": false,
+    "isEbtSnap": true,
+    "onlinePrice": 1.58,
+    "onlineSalePrice": 1.58,
+    "isOnSale": false,
+    "unitPrice": 0.9,
+    "unitLabel": "oz",
+    "size": "",
+    "productDescription": "Venture out and try a new kind of ground coffee with this trial-sized sampler of CAFE Olé by H-E-B Cinnamon Hazelnut. Medium-bodied, it offers the flavor of cinnamon and German hazelnuts in every sip. Makes 1 pot of coffee.<br><br>&bull; Ground coffee<br>&bull; Medium roast<br>&bull; Cinnamon and hazelnut flavor<br>&bull; 100% Arabica coffee<br><br><b>About CAFE Olé by H-E-B</b><br>Launched in 1997, CAFE Olé by H-E-B coffee is available in a variety of flavors and roasts. We begin with high quality Arabica beans harvested from legendary coffee-growing regions throughout the world. They are then roasted with precision and care to bring the artisan difference to your home. Enjoy exploring the complete collection of single cup, bagged ground, bulk beans and cold brew coffee.",
+    "categoryPath": "H-E-B > Shop > Beverages > Coffee",
+    "couponCount": 0,
+    "coupons": [],
+    "storeIdReturned": null,
+    "last_checked": "2026-07-11",
+    "imageHash": "ceba21d694a49ecf"
+  }
+}
