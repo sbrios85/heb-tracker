@@ -50,6 +50,18 @@ def listed_product_ids(tracked_data: dict) -> list:
     return [pid for pid, arr in listings.items() if isinstance(arr, list) and len(arr) > 0]
 
 
+def refresh_target_ids(tracked_data: dict) -> list:
+    """Return ids to refresh daily: all LISTED products plus all TRACKED
+    candidates. Listed = has >=1 listing. Tracked = in the tracked array.
+    (Under the dashboard's Option A, listed products aren't in the tracked
+    array, so we union both.) Dismissed products are never included."""
+    listed = set(listed_product_ids(tracked_data))
+    tracked = set(str(x) for x in (tracked_data.get("tracked") or []))
+    dismissed = set(str(x) for x in (tracked_data.get("dismissed") or []))
+    # Union listed + tracked, minus anything dismissed (belt & suspenders)
+    return sorted((listed | tracked) - dismissed)
+
+
 def most_recent_snapshot() -> dict:
     """Load the most recent daily snapshot (before today), or {} if none."""
     if not PRICES_DIR.exists():
@@ -174,11 +186,12 @@ def main():
     today = datetime.date.today().isoformat()
 
     tracked_data = load_json(TRACKED_FILE, default={})
-    listed_ids = listed_product_ids(tracked_data)
-    print(f"Listed products to refresh: {len(listed_ids)}")
+    target_ids = refresh_target_ids(tracked_data)
+    n_listed = len(listed_product_ids(tracked_data))
+    print(f"Products to refresh: {len(target_ids)} ({n_listed} listed + tracked candidates)")
 
-    if not listed_ids:
-        print("No listed products. Nothing to refresh. (Add eBay listings in the dashboard.)")
+    if not target_ids:
+        print("No listed or tracked products. Nothing to refresh.")
         # Still write an empty snapshot so the baseline exists
         save_json(PRICES_DIR / f"{today}.json", {})
         return
@@ -192,11 +205,11 @@ def main():
     today_snapshot = {}
     all_new_alerts = []
 
-    for i, pid in enumerate(listed_ids):
+    for i, pid in enumerate(target_ids):
         raw, _ = get_product_by_id_resilient(client, pid, store_id=WALDRON_STORE_NUMBER)
         if raw is None:
             # Product no longer returned → discontinued
-            print(f"  [{i+1}/{len(listed_ids)}] {pid}: NOT RETURNED (discontinued?)")
+            print(f"  [{i+1}/{len(target_ids)}] {pid}: NOT RETURNED (discontinued?)")
             summary = {"id": pid, "_notReturned": True, "last_checked": today}
             today_snapshot[pid] = summary
             if not is_first_run and pid in prev_snapshot and not prev_snapshot[pid].get("_notReturned"):
@@ -228,7 +241,7 @@ def main():
                 all_new_alerts.extend(changes)
 
         price = summary.get("onlineSalePrice") if summary.get("isOnSale") else summary.get("onlinePrice")
-        print(f"  [{i+1}/{len(listed_ids)}] {summary.get('displayName','')[:45]} "
+        print(f"  [{i+1}/{len(target_ids)}] {summary.get('displayName','')[:45]} "
               f"| ${price} | {summary.get('inventoryState')} | size={summary.get('size') or '—'}")
         polite_sleep(0.5)
 
