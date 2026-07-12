@@ -57,6 +57,7 @@ BRANDS_FILE = DATA_DIR / "brands.json"
 PRODUCTS_FILE = DATA_DIR / "products.json"
 PENDING_FILE = DATA_DIR / "pending.json"
 BLOCKLIST_FILE = DATA_DIR / "brand_blocklist.json"
+TRACKED_FILE = DATA_DIR / "tracked.json"
 
 # Ensure dirs exist
 DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -230,6 +231,17 @@ def load_blocked_brands() -> set:
     if not data:
         return set()
     return set(data.get("blocked_brands") or [])
+
+
+def load_dismissed_ids() -> set:
+    """Return the set of product IDs the user has dismissed (from tracked.json).
+    Discovery + full-fetch call this to skip products the user never wants to
+    see again. Returns an empty set if tracked.json doesn't exist or has no
+    dismissed list (safe fallback — nothing gets skipped)."""
+    data = load_json(TRACKED_FILE, default=None)
+    if not data:
+        return set()
+    return set(str(x) for x in (data.get("dismissed") or []))
 
 
 # =============================================================
