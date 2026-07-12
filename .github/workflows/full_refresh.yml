@@ -1,0 +1,83 @@
+name: Full Refresh
+
+# Re-fetches CURRENT price/stock/size for every non-dismissed product in the
+# catalog (matrix-chunked to stay under H-E-B's ~1040-calls-per-IP cap).
+# Fixes stale prices on Review/Tracked products (e.g. a sale the dashboard
+# hasn't caught). Runs weekly (Sunday 07:00 UTC = 2am CT) + manually.
+#
+# Dismissed products are skipped automatically (heb_initial_fetch.py reads
+# tracked.json). This reuses the same fetch+merge machinery as Initial Fetch.
+
+on:
+  schedule:
+    - cron: "0 7 * * 0"      # Sundays 07:00 UTC (2am Central)
+  workflow_dispatch:
+    inputs:
+      total_chunks:
+        description: 'Total chunks (default 13)'
+        required: false
+        default: '13'
+
+permissions:
+  contents: write
+
+jobs:
+  fetch_chunk:
+    name: Fetch chunk ${{ matrix.chunk }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Fetch chunk ${{ matrix.chunk }}
+        run: |
+          python scraper/heb_initial_fetch.py \
+            --chunk ${{ matrix.chunk }} \
+            --total-chunks ${{ github.event.inputs.total_chunks || '13' }}
+      - name: Upload chunk artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: details-chunk-${{ matrix.chunk }}
+          path: data/details_chunk_*.json
+          retention-days: 7
+
+  merge:
+    name: Merge chunks
+    needs: fetch_chunk
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Download all chunk artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+          pattern: details-chunk-*
+          merge-multiple: true
+      - name: Move chunks into data/
+        run: |
+          mkdir -p data
+          mv artifacts/details_chunk_*.json data/ 2>/dev/null || true
+          ls -la data/
+      - name: Merge chunks into details.json
+        run: python scraper/merge_details_chunks.py
+      - name: Commit details.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f data/details.json
+          git diff --staged --quiet || git commit -m "Full refresh $(date -u +%Y-%m-%d)"
+          git pull --rebase || true
+          git push
