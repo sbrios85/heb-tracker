@@ -1,14 +1,14 @@
 {
-  "discovered_at": "2026-07-12T01:12:09.176471Z",
+  "discovered_at": "2026-07-12T04:00:09.745594Z",
   "store_number": 57,
   "stats": {
-    "brands_enumerated": 72,
-    "products_found": 6820,
-    "new_this_run": 426,
+    "brands_enumerated": 80,
+    "products_found": 7079,
+    "new_this_run": 687,
     "per_brand": [
       {
         "brand": "H-E-B",
-        "products_found": 5277,
+        "products_found": 5271,
         "departments_searched": [
           "Bakery & bread",
           "Beverages",
@@ -47,7 +47,7 @@
       },
       {
         "brand": "Central Market",
-        "products_found": 448,
+        "products_found": 447,
         "departments_searched": [
           "Beverages",
           "Deli & prepared food",
@@ -102,8 +102,16 @@
         ]
       },
       {
+        "brand": "Destination Holiday",
+        "products_found": 164,
+        "departments_searched": [
+          "Everyday essentials",
+          "Home & outdoor"
+        ]
+      },
+      {
         "brand": "H-E-B Mi Tienda",
-        "products_found": 184,
+        "products_found": 182,
         "departments_searched": [
           "Bakery & bread",
           "Beverages",
@@ -115,18 +123,19 @@
         ]
       },
       {
-        "brand": "Destination Holiday",
-        "products_found": 164,
-        "departments_searched": [
-          "Everyday essentials",
-          "Home & outdoor"
-        ]
-      },
-      {
         "brand": "Heritage Ranch by H-E-B",
         "products_found": 150,
         "departments_searched": [
           "Pets"
+        ]
+      },
+      {
+        "brand": "Boar's Head",
+        "products_found": 119,
+        "departments_searched": [
+          "Deli & prepared food",
+          "Meat & seafood",
+          "Pantry"
         ]
       },
       {
@@ -142,6 +151,14 @@
         "departments_searched": [
           "Everyday essentials",
           "Health & beauty"
+        ]
+      },
+      {
+        "brand": "Bolner's Fiesta",
+        "products_found": 100,
+        "departments_searched": [
+          "Beverages",
+          "Pantry"
         ]
       },
       {
@@ -223,6 +240,16 @@
         ]
       },
       {
+        "brand": "El Mexicano",
+        "products_found": 19,
+        "departments_searched": [
+          "Bakery & bread",
+          "Beverages",
+          "Meat & seafood",
+          "Pantry"
+        ]
+      },
+      {
         "brand": "GTC",
         "products_found": 16,
         "departments_searched": [
@@ -274,6 +301,13 @@
         ]
       },
       {
+        "brand": "Klass",
+        "products_found": 10,
+        "departments_searched": [
+          "Beverages"
+        ]
+      },
+      {
         "brand": "True Texas BBQ",
         "products_found": 10,
         "departments_searched": [
@@ -313,6 +347,13 @@
       {
         "brand": "Cookwell & Company",
         "products_found": 15,
+        "departments_searched": [
+          "Pantry"
+        ]
+      },
+      {
+        "brand": "The Salt Lick",
+        "products_found": 9,
         "departments_searched": [
           "Pantry"
         ]
@@ -363,6 +404,13 @@
         ]
       },
       {
+        "brand": "Franklin Barbecue",
+        "products_found": 5,
+        "departments_searched": [
+          "Pantry"
+        ]
+      },
+      {
         "brand": "Famiglia Romana",
         "products_found": 4,
         "departments_searched": [
@@ -374,13 +422,6 @@
         "products_found": 3,
         "departments_searched": [
           "Deli & prepared food"
-        ]
-      },
-      {
-        "brand": "Max & Miles",
-        "products_found": 3,
-        "departments_searched": [
-          "Home & outdoor"
         ]
       },
       {
@@ -406,6 +447,13 @@
       },
       {
         "brand": "Durhams",
+        "products_found": 3,
+        "departments_searched": [
+          "Pantry"
+        ]
+      },
+      {
+        "brand": "Terry Black's Barbecue",
         "products_found": 3,
         "departments_searched": [
           "Pantry"
@@ -438,6 +486,13 @@
         "products_found": 24,
         "departments_searched": [
           "Health & beauty"
+        ]
+      },
+      {
+        "brand": "Max & Miles",
+        "products_found": 2,
+        "departments_searched": [
+          "Home & outdoor"
         ]
       },
       {
@@ -547,6 +602,13 @@
       },
       {
         "brand": "My Nanas",
+        "products_found": 1,
+        "departments_searched": [
+          "Pantry"
+        ]
+      },
+      {
+        "brand": "Gordon's",
         "products_found": 1,
         "departments_searched": [
           "Pantry"
@@ -708,6 +770,2415 @@
       "isOwnBrand": true,
       "department": "Pantry",
       "first_seen": "2026-05-27",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1972200",
+      "displayName": "Boar's Head Authentic Italian Sub",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "414004",
+      "displayName": "Boar's Head Baby Swiss Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417404",
+      "displayName": "Boar's Head Beef Bologna, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "413313",
+      "displayName": "Boar's Head Beef Salami, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "629856",
+      "displayName": "Boar's Head Blanc Grue Gruyere Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "2149797",
+      "displayName": "Boar's Head Blanc Grue Gruyere Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "581139",
+      "displayName": "Boar's Head Blazing Buffalo-Style Chicken Breast, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1573179",
+      "displayName": "Boar's Head Bold 3 Pepper Colby Jack Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1573192",
+      "displayName": "Boar's Head Bold 3 Pepper Colby Jack Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1659436",
+      "displayName": "Boar's Head Bold Blackened Oven-Roasted Turkey Breast, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "416640",
+      "displayName": "Boar's Head Bold Cajun-Style Smoked Oven-Roasted Turkey Breast, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1573189",
+      "displayName": "Boar's Head Bold Chipotle Chicken Breast, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1573178",
+      "displayName": "Boar's Head Bold Chipotle Gouda Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1634386",
+      "displayName": "Boar's Head Bold Chipotle Gouda Cheese Cubes",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1573191",
+      "displayName": "Boar's Head Bold Chipotle Gouda Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "581156",
+      "displayName": "Boar's Head Bold Horseradish Cheddar Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "2044248",
+      "displayName": "Boar's Head Bold Italian Herb Mozzarella Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417353",
+      "displayName": "Boar's Head Bold Salsalito Roasted Turkey Breast, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "2233831",
+      "displayName": "Boar's Head Bourbon Ridge Smoked Uncured Ham, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417064",
+      "displayName": "Boar's Head Branded Deluxe Ham, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417400",
+      "displayName": "Boar's Head Branded Deluxe Lower Sodium Ham, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "10703514",
+      "displayName": "Boar's Head Brown Sugar & Spice Delight Off the Bone Ham, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "2021527",
+      "displayName": "Boar's Head Buffalo Chicken Club Wrap",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "629843",
+      "displayName": "Boar's Head Butterkase Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "629847",
+      "displayName": "Boar's Head Canadian Cheddar Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "6515047",
+      "displayName": "Boar's Head Caramelized Onion Jack Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "14832012",
+      "displayName": "Boar's Head Caramella Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "2500521",
+      "displayName": "Boar's Head Charcuterie & Cheese Board",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "629850",
+      "displayName": "Boar's Head Colby Jack Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "414027",
+      "displayName": "Boar's Head Colby Jack Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417031",
+      "displayName": "Boar's Head Cracked Pepper Mill Smoked Turkey Breast, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "629858",
+      "displayName": "Boar's Head Cream Havarti Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "414014",
+      "displayName": "Boar's Head Cream Havarti Cheese with Dill, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "629860",
+      "displayName": "Boar's Head Cream Havarti Cheese with Jalapeno",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "414016",
+      "displayName": "Boar's Head Cream Havarti Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "629853",
+      "displayName": "Boar's Head Creamy Feta Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1822876",
+      "displayName": "Boar's Head Creamy Gorgonzola Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1359740",
+      "displayName": "Boar's Head Deli Dressing",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "738423",
+      "displayName": "Boar's Head Delicatessen Style Mustard",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "12224014",
+      "displayName": "Boar's Head Dill Pickle Hummus",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1340749",
+      "displayName": "Boar's Head EverRoast Chicken Breast, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "2680023",
+      "displayName": "Boar's Head Everything Bagel Hummus",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1818365",
+      "displayName": "Boar's Head Fiery Chipotle Gourmaise",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "9045532",
+      "displayName": "Boar's Head FireSmith Flame-Grilled Chicken Breast, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "629854",
+      "displayName": "Boar's Head Fontina Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1634378",
+      "displayName": "Boar's Head Four Variety Cheese Cubes",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417403",
+      "displayName": "Boar's Head Garlic Bologna, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417081",
+      "displayName": "Boar's Head Genoa Salami, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417102",
+      "displayName": "Boar's Head Golden Classic Lower Sodium Chicken Breast, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "629855",
+      "displayName": "Boar's Head Gouda Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "413376",
+      "displayName": "Boar's Head Hard Salami, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417055",
+      "displayName": "Boar's Head Hickory-Smoked Black Forest Turkey Breast, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "738424",
+      "displayName": "Boar's Head Honey Mustard",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "738419",
+      "displayName": "Boar's Head Horseradish",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "413321",
+      "displayName": "Boar's Head Hot Uncured Capocollo, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1818358",
+      "displayName": "Boar's Head Hummus with Roasted Garlic",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "581100",
+      "displayName": "Boar's Head Imported Premium Parmesan Grated Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "414003",
+      "displayName": "Boar's Head Imported Switzerland Swiss Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1854378",
+      "displayName": "Boar's Head Italian Dry Sausage Piccante",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "629862",
+      "displayName": "Boar's Head Jalapeno Pepper Jack Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "414267",
+      "displayName": "Boar's Head Jalapeño Pepper Jack Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "416906",
+      "displayName": "Boar's Head Lacey Swiss Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417080",
+      "displayName": "Boar's Head Lebanon Bologna, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1997126",
+      "displayName": "Boar's Head London Broil Roast Beef, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417331",
+      "displayName": "Boar's Head Longhorn Colby Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "416639",
+      "displayName": "Boar's Head Low Moisture Mozzarella Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "581146",
+      "displayName": "Boar's Head Lower Sodium Creamy Blue Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417194",
+      "displayName": "Boar's Head Lower Sodium Turkey Breast, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "2228416",
+      "displayName": "Boar's Head Lower Sodium Yellow Mustard",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417078",
+      "displayName": "Boar's Head Maple Glazed Honey Coat Ham, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417257",
+      "displayName": "Boar's Head Maple Glazed Honey Coat Turkey Breast, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "415484",
+      "displayName": "Boar's Head Mesquite Wood Smoked Roasted Turkey Breast, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1619735",
+      "displayName": "Boar's Head MontOveja Spanish Sheep&rsquo;s Milk Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "629863",
+      "displayName": "Boar's Head Muenster Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417328",
+      "displayName": "Boar's Head Muenster Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1822872",
+      "displayName": "Boar's Head No Salt Added Turkey Breast, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417406",
+      "displayName": "Boar's Head Old Fashioned Canadian Style Uncured Bacon",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Meat & seafood",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "977047",
+      "displayName": "Boar's Head Oven-Roasted Lemon Pepper Chicken Breast, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1446538",
+      "displayName": "Boar's Head Ovengold Roasted Turkey Breast, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "2021511",
+      "displayName": "Boar's Head Ovengold Turkey Wrap",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417058",
+      "displayName": "Boar's Head Pastrami Top Round, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417302",
+      "displayName": "Boar's Head Pastrami-Seasoned Turkey Breast, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1285527",
+      "displayName": "Boar's Head Pepperhouse Gourmaise",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1359739",
+      "displayName": "Boar's Head Pepperoni",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "2120004",
+      "displayName": "Boar's Head Picante Provolone Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417314",
+      "displayName": "Boar's Head Picante Provolone Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417084",
+      "displayName": "Boar's Head Pistachio Nut Mortadella, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "4917009",
+      "displayName": "Boar's Head Pitcraft Slow-Smoked Turkey Breast, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417059",
+      "displayName": "Boar's Head Pork & Beef Bologna, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "738425",
+      "displayName": "Boar's Head Pub Style Horseradish Sauce",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "416782",
+      "displayName": "Boar's Head Riserva Stradolce Prosciutto, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "414002",
+      "displayName": "Boar's Head Sandwich-Style Pepperoni, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "414197",
+      "displayName": "Boar's Head Sharp Wisconsin Cheddar Cheese - Black Wax, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "629845",
+      "displayName": "Boar's Head Sharp Wisconsin Yellow Cheddar Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1882235",
+      "displayName": "Boar's Head SmokeMaster Beechwood Smoked Black Forest Uncured Ham, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "2350509",
+      "displayName": "Boar's Head Smoked Beechwood Wisconsin Cheddar Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "2431062",
+      "displayName": "Boar's Head Smoked Beechwood Wisconsin Cheddar Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1530522",
+      "displayName": "Boar's Head Smoked Gouda Cheese",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1361047",
+      "displayName": "Boar's Head Smoked Gouda Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "2184151",
+      "displayName": "Boar's Head Superiore Chorizo Spanish Style Sausage",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Meat & seafood",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1838582",
+      "displayName": "Boar's Head Superiore Sopressata Dry Sausage",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "11952511",
+      "displayName": "Boar's Head Sweet B's Honey Barbeque Glazed Chicken Breast, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "5635542",
+      "displayName": "Boar's Head Sweet Chili Garlic Hummus",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "413361",
+      "displayName": "Boar's Head Sweet Slice Uncured Ham, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1910788",
+      "displayName": "Boar's Head Tavern Ham, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "16484577",
+      "displayName": "Boar's Head The Fryer's Deep Fried Turkey Breast, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417057",
+      "displayName": "Boar's Head Top Round Corned Beef, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1007433",
+      "displayName": "Boar's Head Traditional Pepperoni",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1838584",
+      "displayName": "Boar's Head Tradizionale Genoa Salame",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1532288",
+      "displayName": "Boar's Head Turkey Pepperoni",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "415065",
+      "displayName": "Boar's Head Uncured Bianco D'Oro Italian Dry Salame, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "2677561",
+      "displayName": "Boar's Head Uncured Hard Salami",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "413377",
+      "displayName": "Boar's Head Uncured Pancetta, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1870921",
+      "displayName": "Boar's Head Uncured Peppered Salame, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "2187109",
+      "displayName": "Boar's Head Variety Cheese Board",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "581155",
+      "displayName": "Boar's Head Vermont White Cheddar Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "581154",
+      "displayName": "Boar's Head Vermont Yellow Cheddar Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417310",
+      "displayName": "Boar's Head White American Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "417327",
+      "displayName": "Boar's Head Yellow American Cheese, Custom Sliced",
+      "brandName": "Boar's Head",
+      "isOwnBrand": false,
+      "department": "Deli & prepared food",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "11080020",
+      "displayName": "Bolner's Fiesta 16 Mesh Black Pepper",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "4756056",
+      "displayName": "Bolner's Fiesta 16 Mesh Black Pepper",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169956",
+      "displayName": "Bolner's Fiesta Ancho Chili Pods",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169900",
+      "displayName": "Bolner's Fiesta Ancho Chili Pods",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "2710004",
+      "displayName": "Bolner's Fiesta Beer Salt",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170001",
+      "displayName": "Bolner's Fiesta Brisket Rub",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170000",
+      "displayName": "Bolner's Fiesta Brisket Rub",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170049",
+      "displayName": "Bolner's Fiesta Cajun All Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "11079521",
+      "displayName": "Bolner's Fiesta Carne Asada Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170009",
+      "displayName": "Bolner's Fiesta Carne Guisada Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170069",
+      "displayName": "Bolner's Fiesta Chicken Rub",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1211084",
+      "displayName": "Bolner's Fiesta Chile de Arbol, Extra Fancy",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169974",
+      "displayName": "Bolner's Fiesta Chili Cascabel",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169959",
+      "displayName": "Bolner's Fiesta Chili Cascavel",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1411530",
+      "displayName": "Bolner's Fiesta Chili Lime Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "15876124",
+      "displayName": "Bolner's Fiesta Chili Pequin",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "15876542",
+      "displayName": "Bolner's Fiesta Chili Petines",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169983",
+      "displayName": "Bolner's Fiesta Chili Powder",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169905",
+      "displayName": "Bolner's Fiesta Cinnamon Stick",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169981",
+      "displayName": "Bolner's Fiesta Cinnamon Sticks",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169908",
+      "displayName": "Bolner's Fiesta Cinnamon Sticks",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169971",
+      "displayName": "Bolner's Fiesta Coarse Ground Black Pepper",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169990",
+      "displayName": "Bolner's Fiesta Crushed Red Pepper",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169966",
+      "displayName": "Bolner's Fiesta Crushed Red Pepper",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170036",
+      "displayName": "Bolner's Fiesta Enchilada Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170006",
+      "displayName": "Bolner's Fiesta Extra Fancy Chicken Fajita Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169914",
+      "displayName": "Bolner's Fiesta Extra Fancy Comino Seeds",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169873",
+      "displayName": "Bolner's Fiesta Extra Fancy Corn Shucks",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170013",
+      "displayName": "Bolner's Fiesta Extra Fancy Lemon Pepper",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169894",
+      "displayName": "Bolner's Fiesta Extra Fancy Menudo Spice Mix",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170043",
+      "displayName": "Bolner's Fiesta Extra Fancy Onion Powder",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169927",
+      "displayName": "Bolner's Fiesta Extra Fancy Piloncillo",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169996",
+      "displayName": "Bolner's Fiesta Fajita Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169951",
+      "displayName": "Bolner's Fiesta Fajita Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169837",
+      "displayName": "Bolner's Fiesta Fajita Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169993",
+      "displayName": "Bolner's Fiesta Fancy Light Chili Powder",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169825",
+      "displayName": "Bolner's Fiesta Fancy Light Chili Powder",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170056",
+      "displayName": "Bolner's Fiesta Fideo Ole' Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1767399",
+      "displayName": "Bolner's Fiesta Garlic Pepper",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169991",
+      "displayName": "Bolner's Fiesta Garlic Powder",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169817",
+      "displayName": "Bolner's Fiesta Garlic Powder",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169816",
+      "displayName": "Bolner's Fiesta Garlic Powder",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169994",
+      "displayName": "Bolner's Fiesta Garlic Salt",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169995",
+      "displayName": "Bolner's Fiesta Ground Black Pepper",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169989",
+      "displayName": "Bolner's Fiesta Ground Chili Pepper",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169831",
+      "displayName": "Bolner's Fiesta Ground Cinnamon",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170057",
+      "displayName": "Bolner's Fiesta Ground Cinnamon",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170019",
+      "displayName": "Bolner's Fiesta Ground Comino",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169917",
+      "displayName": "Bolner's Fiesta Ground Comino",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170070",
+      "displayName": "Bolner's Fiesta Hamburger Deluxe Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169957",
+      "displayName": "Bolner's Fiesta Hot and Spicy New Mexico Chili Pods",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1719995",
+      "displayName": "Bolner's Fiesta Indonesian Cinnamon Sticks",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169928",
+      "displayName": "Bolner's Fiesta Laurel Leaves Bay Leaves",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1341453",
+      "displayName": "Bolner's Fiesta Lemon & Herb Seasoning with Butter Flavor",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "2105372",
+      "displayName": "Bolner's Fiesta Lime Pepper",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1968408",
+      "displayName": "Bolner's Fiesta Mango Habanero Rub",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169945",
+      "displayName": "Bolner's Fiesta Manzanilla Chamomile For Tea",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Beverages",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169970",
+      "displayName": "Bolner's Fiesta Medium Ground Black Pepper",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170014",
+      "displayName": "Bolner's Fiesta Menudo Spice Mix",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169844",
+      "displayName": "Bolner's Fiesta Menudo Spice Mix",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169999",
+      "displayName": "Bolner's Fiesta Mesquite Flavored Fajita Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1211086",
+      "displayName": "Bolner's Fiesta Mexican Oregano",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "468918",
+      "displayName": "Bolner's Fiesta Minced Garlic",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170044",
+      "displayName": "Bolner's Fiesta Minced Garlic",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169878",
+      "displayName": "Bolner's Fiesta Minced Onions",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169851",
+      "displayName": "Bolner's Fiesta No. 32 Ground Black Pepper",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "3587091",
+      "displayName": "Bolner's Fiesta Onion Powder",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1968390",
+      "displayName": "Bolner's Fiesta Orange Pepper Rub",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170046",
+      "displayName": "Bolner's Fiesta Paprika",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170035",
+      "displayName": "Bolner's Fiesta Pinto Bean Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170059",
+      "displayName": "Bolner's Fiesta Pork Rub",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170015",
+      "displayName": "Bolner's Fiesta Quick Chili Mix",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170065",
+      "displayName": "Bolner's Fiesta Rib Rub",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169997",
+      "displayName": "Bolner's Fiesta Salt Free Fajita Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170032",
+      "displayName": "Bolner's Fiesta Salt Free Lemon Pepper",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170017",
+      "displayName": "Bolner's Fiesta Salt-Free Brisket Rub",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170018",
+      "displayName": "Bolner's Fiesta Salt-Free Chicken Fajita Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169863",
+      "displayName": "Bolner's Fiesta Season-It All",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170007",
+      "displayName": "Bolner's Fiesta Season-It-All Family Original",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169867",
+      "displayName": "Bolner's Fiesta Season-it-All",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169935",
+      "displayName": "Bolner's Fiesta Sesame Seeds",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "5437501",
+      "displayName": "Bolner's Fiesta Smoked Paprika",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1767402",
+      "displayName": "Bolner's Fiesta Southwest Style Fajita Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170038",
+      "displayName": "Bolner's Fiesta Spanish Rice Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170066",
+      "displayName": "Bolner's Fiesta Sugar and Cinnamon",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170034",
+      "displayName": "Bolner's Fiesta Taco Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169876",
+      "displayName": "Bolner's Fiesta Tamale Fixin's Kit",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170051",
+      "displayName": "Bolner's Fiesta Texas Style Steak Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170052",
+      "displayName": "Bolner's Fiesta Texas Style Steak Seasoning With Tenderizer",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1968386",
+      "displayName": "Bolner's Fiesta Uncle Chris Gourmet Fish Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1467369",
+      "displayName": "Bolner's Fiesta Uncle Chris' Gourmet Steak Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170062",
+      "displayName": "Bolner's Fiesta Uncle Chris' Gourmet Steak Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "957125",
+      "displayName": "Bolner's Fiesta Uncle Chris' Gourmet Steak Seasoning",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "11078522",
+      "displayName": "Bolner's Fiesta Uncle Chris' TX BBQ Rub",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "170039",
+      "displayName": "Bolner's Fiesta Very Hot Cayenne Pepper",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169922",
+      "displayName": "Bolner's Fiesta Whole Anise",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169909",
+      "displayName": "Bolner's Fiesta Whole Black Pepper",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169969",
+      "displayName": "Bolner's Fiesta Whole Black Pepper",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "169933",
+      "displayName": "Bolner's Fiesta Whole Cloves",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "11078520",
+      "displayName": "Bolner's Fiesta Wing Tips",
+      "brandName": "Bolner's Fiesta",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
       "last_seen": "2026-07-12",
       "inventory_state": null,
       "in_assortment": null
@@ -2875,17 +5346,6 @@
       "isOwnBrand": true,
       "department": "Health & beauty",
       "first_seen": "2026-05-27",
-      "last_seen": "2026-07-12",
-      "inventory_state": null,
-      "in_assortment": null
-    },
-    {
-      "id": "3719502",
-      "displayName": "Central Market Balsamic Fig With Caramelized Onion Hummus",
-      "brandName": "Central Market",
-      "isOwnBrand": true,
-      "department": "Deli & prepared food",
-      "first_seen": "2026-07-12",
       "last_seen": "2026-07-12",
       "inventory_state": null,
       "in_assortment": null
@@ -10921,6 +13381,215 @@
       "in_assortment": null
     },
     {
+      "id": "2000482",
+      "displayName": "El Mexicano Achiote Rojo Spiced Seasoning Paste",
+      "brandName": "El Mexicano",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "622692",
+      "displayName": "El Mexicano Adobo Chipotle Peppers",
+      "brandName": "El Mexicano",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "912027",
+      "displayName": "El Mexicano Cueritos Botaneros Pickled Pork Skins",
+      "brandName": "El Mexicano",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "2000664",
+      "displayName": "El Mexicano Fideo Grueso",
+      "brandName": "El Mexicano",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "622713",
+      "displayName": "El Mexicano Frijoles Negros Black Beans",
+      "brandName": "El Mexicano",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "5760023",
+      "displayName": "El Mexicano Latin Fusion Mango",
+      "brandName": "El Mexicano",
+      "isOwnBrand": false,
+      "department": "Beverages",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "10655644",
+      "displayName": "El Mexicano Latin Fusion Passion Fruit Juice",
+      "brandName": "El Mexicano",
+      "isOwnBrand": false,
+      "department": "Beverages",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "2000670",
+      "displayName": "El Mexicano Mexican Style Pinto Beans",
+      "brandName": "El Mexicano",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1631400",
+      "displayName": "El Mexicano Original Aloe Vera Drink",
+      "brandName": "El Mexicano",
+      "isOwnBrand": false,
+      "department": "Beverages",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1371514",
+      "displayName": "El Mexicano Pan Molido Para Empanizar Breadcrumbs",
+      "brandName": "El Mexicano",
+      "isOwnBrand": false,
+      "department": "Bakery & bread",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "706747",
+      "displayName": "El Mexicano Pork Chorizo Sausage",
+      "brandName": "El Mexicano",
+      "isOwnBrand": false,
+      "department": "Meat & seafood",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "624791",
+      "displayName": "El Mexicano Pulpy Coconut Juice",
+      "brandName": "El Mexicano",
+      "isOwnBrand": false,
+      "department": "Beverages",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "2012122",
+      "displayName": "El Mexicano Pulpy Coconut Juice",
+      "brandName": "El Mexicano",
+      "isOwnBrand": false,
+      "department": "Beverages",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "663016",
+      "displayName": "El Mexicano Refried Beans",
+      "brandName": "El Mexicano",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "3109507",
+      "displayName": "El Mexicano Rellenitas Chocolate Flavor Filled Biscuits",
+      "brandName": "El Mexicano",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1602455",
+      "displayName": "El Mexicano Rellenitas Coconut Cookies",
+      "brandName": "El Mexicano",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "622686",
+      "displayName": "El Mexicano Sliced Jalapeños",
+      "brandName": "El Mexicano",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "2013426",
+      "displayName": "El Mexicano Tomatillos Enteros Whole Tomatillos",
+      "brandName": "El Mexicano",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "622683",
+      "displayName": "El Mexicano Whole Jalapeño Peppers",
+      "brandName": "El Mexicano",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
       "id": "15457545",
       "displayName": "FORMUFIT by H-E-B Pre-Workout Blue Raspberry",
       "brandName": "FORMUFIT by H-E-B",
@@ -12148,6 +14817,72 @@
       "isOwnBrand": true,
       "department": "Health & beauty",
       "first_seen": "2026-05-27",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "5156517",
+      "displayName": "Franklin Barbecue All Purpose Spice Rub",
+      "brandName": "Franklin Barbecue",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "15637513",
+      "displayName": "Franklin Barbecue Brisket Spice Rub&nbsp;",
+      "brandName": "Franklin Barbecue",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "5471001",
+      "displayName": "Franklin Barbecue Original Texas BBQ Sauce",
+      "brandName": "Franklin Barbecue",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "6232045",
+      "displayName": "Franklin Barbecue Spicy BBQ Sauce",
+      "brandName": "Franklin Barbecue",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "5471501",
+      "displayName": "Franklin Barbecue Vinegar BBQ Sauce",
+      "brandName": "Franklin Barbecue",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "280882",
+      "displayName": "Gordon's Old Family Recipe Grub Rub Seasoning With Tenderizer",
+      "brandName": "Gordon's",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
       "last_seen": "2026-07-12",
       "inventory_state": null,
       "in_assortment": null
@@ -16036,17 +18771,6 @@
       "in_assortment": null
     },
     {
-      "id": "1724859",
-      "displayName": "H-E-B Bakery Gourmet Apple Caramel Walnut Pie",
-      "brandName": "H-E-B",
-      "isOwnBrand": true,
-      "department": "Bakery & bread",
-      "first_seen": "2026-07-12",
-      "last_seen": "2026-07-12",
-      "inventory_state": null,
-      "in_assortment": null
-    },
-    {
       "id": "3612022",
       "displayName": "H-E-B Bakery Gourmet Brownies",
       "brandName": "H-E-B",
@@ -17978,17 +20702,6 @@
       "isOwnBrand": true,
       "department": "Pantry",
       "first_seen": "2026-05-27",
-      "last_seen": "2026-07-12",
-      "inventory_state": null,
-      "in_assortment": null
-    },
-    {
-      "id": "371835",
-      "displayName": "H-E-B Beef Top Boneless Center Cut&nbsp;Sirloin Steak Thick, USDA Select",
-      "brandName": "H-E-B",
-      "isOwnBrand": true,
-      "department": "Meat & seafood",
-      "first_seen": "2026-07-12",
       "last_seen": "2026-07-12",
       "inventory_state": null,
       "in_assortment": null
@@ -36540,17 +39253,6 @@
       "in_assortment": null
     },
     {
-      "id": "2953509",
-      "displayName": "H-E-B Natural Cubed Pork Belly",
-      "brandName": "H-E-B",
-      "isOwnBrand": true,
-      "department": "Meat & seafood",
-      "first_seen": "2026-07-12",
-      "last_seen": "2026-07-12",
-      "inventory_state": null,
-      "in_assortment": null
-    },
-    {
       "id": "576301",
       "displayName": "H-E-B Natural Hickory Wood Smoking Chunks",
       "brandName": "H-E-B",
@@ -40407,17 +43109,6 @@
       "isOwnBrand": true,
       "department": "Deli & prepared food",
       "first_seen": "2026-05-27",
-      "last_seen": "2026-07-12",
-      "inventory_state": null,
-      "in_assortment": null
-    },
-    {
-      "id": "444946",
-      "displayName": "H-E-B Pork Finger Ribs - Value Pack",
-      "brandName": "H-E-B",
-      "isOwnBrand": true,
-      "department": "Meat & seafood",
-      "first_seen": "2026-07-12",
       "last_seen": "2026-07-12",
       "inventory_state": null,
       "in_assortment": null
@@ -56153,17 +58844,6 @@
       "in_assortment": null
     },
     {
-      "id": "15892540",
-      "displayName": "H-E-B Mi Tienda Agua&nbsp;Fresca - Pineapple (Pi&ntilde;a)",
-      "brandName": "H-E-B Mi Tienda",
-      "isOwnBrand": true,
-      "department": "Beverages",
-      "first_seen": "2026-05-27",
-      "last_seen": "2026-07-12",
-      "inventory_state": null,
-      "in_assortment": null
-    },
-    {
       "id": "15891542",
       "displayName": "H-E-B Mi Tienda Agua&nbsp;Fresca - Watermelon (Sandia)",
       "brandName": "H-E-B Mi Tienda",
@@ -56565,17 +59245,6 @@
       "brandName": "H-E-B Mi Tienda",
       "isOwnBrand": true,
       "department": "Pantry",
-      "first_seen": "2026-05-27",
-      "last_seen": "2026-07-12",
-      "inventory_state": null,
-      "in_assortment": null
-    },
-    {
-      "id": "8180021",
-      "displayName": "H-E-B Mi Tienda Dried Chile Puya Peppers",
-      "brandName": "H-E-B Mi Tienda",
-      "isOwnBrand": true,
-      "department": "Fruit & vegetables",
       "first_seen": "2026-05-27",
       "last_seen": "2026-07-12",
       "inventory_state": null,
@@ -73016,6 +75685,116 @@
       "in_assortment": null
     },
     {
+      "id": "2075119",
+      "displayName": "Klass Aguas Frescas Cucumber Lemonade",
+      "brandName": "Klass",
+      "isOwnBrand": false,
+      "department": "Beverages",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "549792",
+      "displayName": "Klass Cantaloupe Drink Mix",
+      "brandName": "Klass",
+      "isOwnBrand": false,
+      "department": "Beverages",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "4821613",
+      "displayName": "Klass Cucumber Limeade Aguas Frescas Liquid Enhancer",
+      "brandName": "Klass",
+      "isOwnBrand": false,
+      "department": "Beverages",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "4821610",
+      "displayName": "Klass Hibiscus Berries Aguas Frescas Liquid Enhancer",
+      "brandName": "Klass",
+      "isOwnBrand": false,
+      "department": "Beverages",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "498725",
+      "displayName": "Klass Hibiscus Flavored Drink Mix",
+      "brandName": "Klass",
+      "isOwnBrand": false,
+      "department": "Beverages",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "498724",
+      "displayName": "Klass Horchata  Drink Mix",
+      "brandName": "Klass",
+      "isOwnBrand": false,
+      "department": "Beverages",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "595328",
+      "displayName": "Klass Listo Sandia",
+      "brandName": "Klass",
+      "isOwnBrand": false,
+      "department": "Beverages",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "547046",
+      "displayName": "Klass Pineapple Drink Mix",
+      "brandName": "Klass",
+      "isOwnBrand": false,
+      "department": "Beverages",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "4821643",
+      "displayName": "Klass Pineapple Tangerine Aguas Frescas Liquid Enhancer",
+      "brandName": "Klass",
+      "isOwnBrand": false,
+      "department": "Beverages",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "4821605",
+      "displayName": "Klass Strawberry Watermelon Aguas Frescas Liquid Enhancer",
+      "brandName": "Klass",
+      "isOwnBrand": false,
+      "department": "Beverages",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
       "id": "1826010",
       "displayName": "Mark's Good Stuff Cracked Pepper BBQ Sauce",
       "brandName": "Mark's Good Stuff",
@@ -74061,6 +76840,39 @@
       "in_assortment": null
     },
     {
+      "id": "1853171",
+      "displayName": "Terry Black's Barbecue Central Texas Original Barbecue Sauce",
+      "brandName": "Terry Black's Barbecue",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1853165",
+      "displayName": "Terry Black's Barbecue Sweet & Tangy BBQ Sauce",
+      "brandName": "Terry Black's Barbecue",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1853225",
+      "displayName": "Terry Black's Barbecue Traditional Spicy Sauce",
+      "brandName": "Terry Black's Barbecue",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
       "id": "6126551",
       "displayName": "Texas Proud Black & White Lone Star State Cowhide Coaster",
       "brandName": "Texas Proud",
@@ -74362,6 +77174,105 @@
       "displayName": "Texas Pure Milling Organic Cornbread Mix",
       "brandName": "Texas Pure Milling",
       "isOwnBrand": true,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1626076",
+      "displayName": "The Salt Lick All Around Marinade",
+      "brandName": "The Salt Lick",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1777309",
+      "displayName": "The Salt Lick Chicken Seasoning",
+      "brandName": "The Salt Lick",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1266366",
+      "displayName": "The Salt Lick Garlic Dry Rub",
+      "brandName": "The Salt Lick",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "4995507",
+      "displayName": "The Salt Lick Grill Seasoning",
+      "brandName": "The Salt Lick",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "547286",
+      "displayName": "The Salt Lick Lauren's Spicy Recipe Bar-B-Que Sauce",
+      "brandName": "The Salt Lick",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "981933",
+      "displayName": "The Salt Lick Original Dry Rub",
+      "brandName": "The Salt Lick",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "547285",
+      "displayName": "The Salt Lick Original Recipe Bar-B-Que Sauce",
+      "brandName": "The Salt Lick",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1809269",
+      "displayName": "The Salt Lick Pecan Wood Smoked Honey Pecan BBQ Sauce",
+      "brandName": "The Salt Lick",
+      "isOwnBrand": false,
+      "department": "Pantry",
+      "first_seen": "2026-07-12",
+      "last_seen": "2026-07-12",
+      "inventory_state": null,
+      "in_assortment": null
+    },
+    {
+      "id": "1999494",
+      "displayName": "The Salt Lick Steak Seasoning",
+      "brandName": "The Salt Lick",
+      "isOwnBrand": false,
       "department": "Pantry",
       "first_seen": "2026-07-12",
       "last_seen": "2026-07-12",

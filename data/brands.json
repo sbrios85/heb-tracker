@@ -1,5 +1,5 @@
 {
-  "discovered_at": "2026-07-12T01:10:10.509641Z",
+  "discovered_at": "2026-07-12T03:57:49.103005Z",
   "store_number": 57,
   "departments_walked": [
     "Bakery & bread",
@@ -14,10 +14,10 @@
     "Pets"
   ],
   "_sampling_stats": {
-    "pages_pulled": 743,
-    "product_records_seen": 44323,
-    "unique_brands_found": 5015,
-    "own_brands_found": 72,
+    "pages_pulled": 742,
+    "product_records_seen": 44309,
+    "unique_brands_found": 5016,
+    "own_brands_found": 80,
     "blocked_brands_excluded": [
       "BLOOMS by H-E-B"
     ]
@@ -26,7 +26,7 @@
     {
       "name": "H-E-B",
       "isOwnBrand": true,
-      "count_in_sample": 4855,
+      "count_in_sample": 4849,
       "departments_seen_in": [
         "Bakery & bread",
         "Beverages",
@@ -80,7 +80,7 @@
     {
       "name": "Central Market",
       "isOwnBrand": true,
-      "count_in_sample": 379,
+      "count_in_sample": 378,
       "departments_seen_in": [
         "Beverages",
         "Deli & prepared food",
@@ -152,22 +152,6 @@
       "first_seen_product_name": "CAFE Olé by H-E-B Texas Pecan Medium Roast Coffee Single Serve Cups"
     },
     {
-      "name": "H-E-B Mi Tienda",
-      "isOwnBrand": true,
-      "count_in_sample": 170,
-      "departments_seen_in": [
-        "Bakery & bread",
-        "Beverages",
-        "Deli & prepared food",
-        "Everyday essentials",
-        "Fruit & vegetables",
-        "Meat & seafood",
-        "Pantry"
-      ],
-      "first_seen_product_id": "2188466",
-      "first_seen_product_name": "H-E-B Mi Tienda Ready to Cook Flour Tortillas"
-    },
-    {
       "name": "Destination Holiday",
       "isOwnBrand": true,
       "count_in_sample": 170,
@@ -182,6 +166,22 @@
       ]
     },
     {
+      "name": "H-E-B Mi Tienda",
+      "isOwnBrand": true,
+      "count_in_sample": 168,
+      "departments_seen_in": [
+        "Bakery & bread",
+        "Beverages",
+        "Deli & prepared food",
+        "Everyday essentials",
+        "Fruit & vegetables",
+        "Meat & seafood",
+        "Pantry"
+      ],
+      "first_seen_product_id": "2188466",
+      "first_seen_product_name": "H-E-B Mi Tienda Ready to Cook Flour Tortillas"
+    },
+    {
       "name": "Heritage Ranch by H-E-B",
       "isOwnBrand": true,
       "count_in_sample": 150,
@@ -190,6 +190,19 @@
       ],
       "first_seen_product_id": "5386521",
       "first_seen_product_name": "Heritage Ranch by H-E-B Adult Dry Dog Food - Beef & Brown Rice"
+    },
+    {
+      "name": "Boar's Head",
+      "isOwnBrand": true,
+      "count_in_sample": 118,
+      "departments_seen_in": [
+        "Deli & prepared food",
+        "Meat & seafood",
+        "Pantry"
+      ],
+      "first_seen_product_id": "1446538",
+      "first_seen_product_name": "Boar's Head Ovengold Roasted Turkey Breast, Custom Sliced",
+      "_userAdded": true
     },
     {
       "name": "Cocinaware",
@@ -211,6 +224,18 @@
       ],
       "first_seen_product_id": "15891025",
       "first_seen_product_name": "Field & Future by H-E-B Dishwasher Detergent Pacs - Citrus"
+    },
+    {
+      "name": "Bolner's Fiesta",
+      "isOwnBrand": true,
+      "count_in_sample": 94,
+      "departments_seen_in": [
+        "Beverages",
+        "Pantry"
+      ],
+      "first_seen_product_id": "169945",
+      "first_seen_product_name": "Bolner's Fiesta Manzanilla Chamomile For Tea",
+      "_userAdded": true
     },
     {
       "name": "Texas Proud",
@@ -321,6 +346,20 @@
       "first_seen_product_name": "Versana Organic Stress Balance Herbal Tea"
     },
     {
+      "name": "El Mexicano",
+      "isOwnBrand": true,
+      "count_in_sample": 19,
+      "departments_seen_in": [
+        "Bakery & bread",
+        "Beverages",
+        "Meat & seafood",
+        "Pantry"
+      ],
+      "first_seen_product_id": "1371514",
+      "first_seen_product_name": "El Mexicano Pan Molido Para Empanizar Breadcrumbs",
+      "_userAdded": true
+    },
+    {
       "name": "GTC",
       "isOwnBrand": true,
       "count_in_sample": 16,
@@ -393,6 +432,17 @@
       "first_seen_product_name": "Mark's Good Stuff Lone Star Certified Restaurant Salsa - Medium"
     },
     {
+      "name": "Klass",
+      "isOwnBrand": true,
+      "count_in_sample": 10,
+      "departments_seen_in": [
+        "Beverages"
+      ],
+      "first_seen_product_id": "2075119",
+      "first_seen_product_name": "Klass Aguas Frescas Cucumber Lemonade",
+      "_userAdded": true
+    },
+    {
       "name": "True Texas BBQ",
       "isOwnBrand": true,
       "count_in_sample": 9,
@@ -453,6 +503,17 @@
       ],
       "first_seen_product_id": "1523175",
       "first_seen_product_name": "Cookwell & Company Tortilla Soup"
+    },
+    {
+      "name": "The Salt Lick",
+      "isOwnBrand": true,
+      "count_in_sample": 8,
+      "departments_seen_in": [
+        "Pantry"
+      ],
+      "first_seen_product_id": "547285",
+      "first_seen_product_name": "The Salt Lick Original Recipe Bar-B-Que Sauce",
+      "_userAdded": true
     },
     {
       "name": "Better Than Good",
@@ -521,6 +582,17 @@
       "first_seen_product_name": "Ultra 8.5 in Paper Plates"
     },
     {
+      "name": "Franklin Barbecue",
+      "isOwnBrand": true,
+      "count_in_sample": 4,
+      "departments_seen_in": [
+        "Pantry"
+      ],
+      "first_seen_product_id": "5471001",
+      "first_seen_product_name": "Franklin Barbecue Original Texas BBQ Sauce",
+      "_userAdded": true
+    },
+    {
       "name": "Famiglia Romana",
       "isOwnBrand": true,
       "count_in_sample": 4,
@@ -539,16 +611,6 @@
       ],
       "first_seen_product_id": "1739711",
       "first_seen_product_name": "Tamales Aguilar Chicken Tamales"
-    },
-    {
-      "name": "Max & Miles",
-      "isOwnBrand": true,
-      "count_in_sample": 3,
-      "departments_seen_in": [
-        "Home & outdoor"
-      ],
-      "first_seen_product_id": "2147113",
-      "first_seen_product_name": "Max & Miles Potted Premium Succulent"
     },
     {
       "name": "KODI by H-E-B",
@@ -591,6 +653,17 @@
       "first_seen_product_name": "Durhams Texas Deluxe Mixed Nuts"
     },
     {
+      "name": "Terry Black's Barbecue",
+      "isOwnBrand": true,
+      "count_in_sample": 3,
+      "departments_seen_in": [
+        "Pantry"
+      ],
+      "first_seen_product_id": "1853225",
+      "first_seen_product_name": "Terry Black's Barbecue Traditional Spicy Sauce",
+      "_userAdded": true
+    },
+    {
       "name": "Bakery",
       "isOwnBrand": true,
       "count_in_sample": 2,
@@ -630,6 +703,16 @@
       ],
       "first_seen_product_id": "4393502",
       "first_seen_product_name": "Kitsch Pink Hair Elastic"
+    },
+    {
+      "name": "Max & Miles",
+      "isOwnBrand": true,
+      "count_in_sample": 2,
+      "departments_seen_in": [
+        "Home & outdoor"
+      ],
+      "first_seen_product_id": "2114290",
+      "first_seen_product_name": "Max & Miles Tabletop Orchid"
     },
     {
       "name": "Great Catch",
@@ -790,6 +873,17 @@
       ],
       "first_seen_product_id": "2149255",
       "first_seen_product_name": "My Nanas Bu&ntilde;uelo Chips"
+    },
+    {
+      "name": "Gordon's",
+      "isOwnBrand": true,
+      "count_in_sample": 1,
+      "departments_seen_in": [
+        "Pantry"
+      ],
+      "first_seen_product_id": "280882",
+      "first_seen_product_name": "Gordon's Old Family Recipe Grub Rub Seasoning With Tenderizer",
+      "_userAdded": true
     },
     {
       "name": "Casi",
@@ -1025,18 +1119,6 @@
       "first_seen_product_name": "Garnier SkinActive Micellar Cleansing Water, For Waterproof Makeup"
     },
     {
-      "name": "Boar's Head",
-      "isOwnBrand": false,
-      "count_in_sample": 118,
-      "departments_seen_in": [
-        "Deli & prepared food",
-        "Meat & seafood",
-        "Pantry"
-      ],
-      "first_seen_product_id": "1446538",
-      "first_seen_product_name": "Boar's Head Ovengold Roasted Turkey Breast, Custom Sliced"
-    },
-    {
       "name": "Eagle Claw",
       "isOwnBrand": false,
       "count_in_sample": 118,
@@ -1078,17 +1160,6 @@
       ],
       "first_seen_product_id": "2210763",
       "first_seen_product_name": "NOW Solutions Glass Swirl USB Oil Diffuser"
-    },
-    {
-      "name": "Bolner's Fiesta",
-      "isOwnBrand": false,
-      "count_in_sample": 94,
-      "departments_seen_in": [
-        "Beverages",
-        "Pantry"
-      ],
-      "first_seen_product_id": "169945",
-      "first_seen_product_name": "Bolner's Fiesta Manzanilla Chamomile For Tea"
     },
     {
       "name": "Tide",
@@ -1552,17 +1623,6 @@
       "first_seen_product_name": "Mustad Nickel Classic Hollow Point Wide Gap Hook"
     },
     {
-      "name": "Little Debbie",
-      "isOwnBrand": false,
-      "count_in_sample": 60,
-      "departments_seen_in": [
-        "Bakery & bread",
-        "Pantry"
-      ],
-      "first_seen_product_id": "2179950",
-      "first_seen_product_name": "Little Debbie Apple Fruit Pie"
-    },
-    {
       "name": "CHI",
       "isOwnBrand": false,
       "count_in_sample": 60,
@@ -1592,6 +1652,17 @@
       ],
       "first_seen_product_id": "16315029",
       "first_seen_product_name": "Max & Marlow 9 in Flying Disc - Assorted Colors"
+    },
+    {
+      "name": "Little Debbie",
+      "isOwnBrand": false,
+      "count_in_sample": 59,
+      "departments_seen_in": [
+        "Bakery & bread",
+        "Pantry"
+      ],
+      "first_seen_product_id": "2179950",
+      "first_seen_product_name": "Little Debbie Apple Fruit Pie"
     },
     {
       "name": "CeraVe",
@@ -2213,8 +2284,8 @@
       "departments_seen_in": [
         "Beverages"
       ],
-      "first_seen_product_id": "539214",
-      "first_seen_product_name": "Dr Pepper Soda 12 pk Cans"
+      "first_seen_product_id": "2107104",
+      "first_seen_product_name": "Dr Pepper Soda 10 pk Mini Cans"
     },
     {
       "name": "Armor All",
@@ -3549,26 +3620,6 @@
       "first_seen_product_name": "Pentel GlideWrite 1.0mm Retractable Ballpoint Pens - Black Ink"
     },
     {
-      "name": "Doritos",
-      "isOwnBrand": false,
-      "count_in_sample": 26,
-      "departments_seen_in": [
-        "Pantry"
-      ],
-      "first_seen_product_id": "2092535",
-      "first_seen_product_name": "Doritos Nacho Cheese Tortilla Chips - Party Size"
-    },
-    {
-      "name": "Kind",
-      "isOwnBrand": false,
-      "count_in_sample": 26,
-      "departments_seen_in": [
-        "Pantry"
-      ],
-      "first_seen_product_id": "1542688",
-      "first_seen_product_name": "Kind Healthy Grains Granola - Oats & Honey with Coconut"
-    },
-    {
       "name": "Herdez",
       "isOwnBrand": false,
       "count_in_sample": 26,
@@ -3693,6 +3744,16 @@
       "first_seen_product_name": "Elmer's Washable Disappearing Purple School Glue Sticks"
     },
     {
+      "name": "Doritos",
+      "isOwnBrand": false,
+      "count_in_sample": 25,
+      "departments_seen_in": [
+        "Pantry"
+      ],
+      "first_seen_product_id": "2092535",
+      "first_seen_product_name": "Doritos Nacho Cheese Tortilla Chips - Party Size"
+    },
+    {
       "name": "Hunt's",
       "isOwnBrand": false,
       "count_in_sample": 25,
@@ -3701,6 +3762,16 @@
       ],
       "first_seen_product_id": "3100547",
       "first_seen_product_name": "Hunt's Tomato Ketchup"
+    },
+    {
+      "name": "Kind",
+      "isOwnBrand": false,
+      "count_in_sample": 25,
+      "departments_seen_in": [
+        "Pantry"
+      ],
+      "first_seen_product_id": "1542688",
+      "first_seen_product_name": "Kind Healthy Grains Granola - Oats & Honey with Coconut"
     },
     {
       "name": "Greenies",
@@ -3762,8 +3833,8 @@
       "departments_seen_in": [
         "Beverages"
       ],
-      "first_seen_product_id": "26101",
-      "first_seen_product_name": "Pepsi Cola Soda"
+      "first_seen_product_id": "26070",
+      "first_seen_product_name": "Pepsi Cola Soda 24 pk Cans"
     },
     {
       "name": "Mio",
@@ -4494,18 +4565,6 @@
       "first_seen_product_name": "Sartori Classic Parmesan Cheese Wedge"
     },
     {
-      "name": "Divina",
-      "isOwnBrand": false,
-      "count_in_sample": 20,
-      "departments_seen_in": [
-        "Deli & prepared food",
-        "Fruit & vegetables",
-        "Pantry"
-      ],
-      "first_seen_product_id": "3683071",
-      "first_seen_product_name": "Divina Pitted Olives and Feta in Oil"
-    },
-    {
       "name": "Sensodyne",
       "isOwnBrand": false,
       "count_in_sample": 20,
@@ -4688,19 +4747,6 @@
       "first_seen_product_name": "DeLallo Italian Pizza Dough Kit"
     },
     {
-      "name": "El Mexicano",
-      "isOwnBrand": false,
-      "count_in_sample": 19,
-      "departments_seen_in": [
-        "Bakery & bread",
-        "Beverages",
-        "Meat & seafood",
-        "Pantry"
-      ],
-      "first_seen_product_id": "1371514",
-      "first_seen_product_name": "El Mexicano Pan Molido Para Empanizar Breadcrumbs"
-    },
-    {
       "name": "LaCroix",
       "isOwnBrand": false,
       "count_in_sample": 19,
@@ -4770,6 +4816,18 @@
       ],
       "first_seen_product_id": "8877519",
       "first_seen_product_name": "SodaStream Pepsi Zero Sugar Drink Mix"
+    },
+    {
+      "name": "Divina",
+      "isOwnBrand": false,
+      "count_in_sample": 19,
+      "departments_seen_in": [
+        "Deli & prepared food",
+        "Fruit & vegetables",
+        "Pantry"
+      ],
+      "first_seen_product_id": "3683071",
+      "first_seen_product_name": "Divina Pitted Olives and Feta in Oil"
     },
     {
       "name": "Refresh",
@@ -8531,16 +8589,6 @@
       "first_seen_product_name": "Duke's Real Mayonnaise"
     },
     {
-      "name": "Clif",
-      "isOwnBrand": false,
-      "count_in_sample": 11,
-      "departments_seen_in": [
-        "Pantry"
-      ],
-      "first_seen_product_id": "1399878",
-      "first_seen_product_name": "Clif Builders 20g Protein Bars -&nbsp;&nbsp;Chocolate"
-    },
-    {
       "name": "Nutella",
       "isOwnBrand": false,
       "count_in_sample": 11,
@@ -8805,16 +8853,6 @@
       ],
       "first_seen_product_id": "2865018",
       "first_seen_product_name": "Castillo San Simon Sparkling Brut Spain Wine"
-    },
-    {
-      "name": "Klass",
-      "isOwnBrand": false,
-      "count_in_sample": 10,
-      "departments_seen_in": [
-        "Beverages"
-      ],
-      "first_seen_product_id": "2075119",
-      "first_seen_product_name": "Klass Aguas Frescas Cucumber Lemonade"
     },
     {
       "name": "illy",
@@ -9224,6 +9262,16 @@
       "first_seen_product_name": "Kiolbassa Beef Hickory Smoked Sausage, 4 ct"
     },
     {
+      "name": "Clif",
+      "isOwnBrand": false,
+      "count_in_sample": 10,
+      "departments_seen_in": [
+        "Pantry"
+      ],
+      "first_seen_product_id": "1770172",
+      "first_seen_product_name": "Clif Kid ZBar Energy Snack Bars - Iced Oatmeal Cookie"
+    },
+    {
       "name": "Samyang",
       "isOwnBrand": false,
       "count_in_sample": 10,
@@ -9522,17 +9570,6 @@
       ],
       "first_seen_product_id": "76798",
       "first_seen_product_name": "Busch Non Alcoholic Beer 12 pk Cans"
-    },
-    {
-      "name": "Carnation",
-      "isOwnBrand": false,
-      "count_in_sample": 9,
-      "departments_seen_in": [
-        "Beverages",
-        "Pantry"
-      ],
-      "first_seen_product_id": "6205516",
-      "first_seen_product_name": "Carnation Breakfast Essentials High Protein Rich Milk Chocolate&nbsp;Nutritional Drink 8 oz Bottles"
     },
     {
       "name": "Bogle Vineyards",
@@ -10493,6 +10530,17 @@
       ],
       "first_seen_product_id": "1690334",
       "first_seen_product_name": "Angry Orchard Crisp Apple Hard Cider 12 pk Cans"
+    },
+    {
+      "name": "Carnation",
+      "isOwnBrand": false,
+      "count_in_sample": 8,
+      "departments_seen_in": [
+        "Beverages",
+        "Pantry"
+      ],
+      "first_seen_product_id": "6205516",
+      "first_seen_product_name": "Carnation Breakfast Essentials High Protein Rich Milk Chocolate&nbsp;Nutritional Drink 8 oz Bottles"
     },
     {
       "name": "Austin",
@@ -11501,16 +11549,6 @@
       "first_seen_product_name": "GoMacro Organic Vegan 10g Protein Bars - Smooth Sanctuary"
     },
     {
-      "name": "The Salt Lick",
-      "isOwnBrand": false,
-      "count_in_sample": 8,
-      "departments_seen_in": [
-        "Pantry"
-      ],
-      "first_seen_product_id": "547285",
-      "first_seen_product_name": "The Salt Lick Original Recipe Bar-B-Que Sauce"
-    },
-    {
       "name": "3 Dragons",
       "isOwnBrand": false,
       "count_in_sample": 8,
@@ -11519,16 +11557,6 @@
       ],
       "first_seen_product_id": "1459230",
       "first_seen_product_name": "3 Dragons Classic Sweet & Sour Sauce"
-    },
-    {
-      "name": "Adams Reserve",
-      "isOwnBrand": false,
-      "count_in_sample": 8,
-      "departments_seen_in": [
-        "Pantry"
-      ],
-      "first_seen_product_id": "12466016",
-      "first_seen_product_name": "Adams Reserve Gunpowder House Rub Seasoning"
     },
     {
       "name": "Muir Glen Organic",
@@ -13011,6 +13039,16 @@
       ],
       "first_seen_product_id": "15147514",
       "first_seen_product_name": "Russell Stover Sugar Free Assorted Caramels in Chocolate Candy"
+    },
+    {
+      "name": "Adams Reserve",
+      "isOwnBrand": false,
+      "count_in_sample": 7,
+      "departments_seen_in": [
+        "Pantry"
+      ],
+      "first_seen_product_id": "12466016",
+      "first_seen_product_name": "Adams Reserve Gunpowder House Rub Seasoning"
     },
     {
       "name": "From The Ground Up",
@@ -14596,6 +14634,16 @@
       ]
     },
     {
+      "name": "Gamesa",
+      "isOwnBrand": false,
+      "count_in_sample": 6,
+      "departments_seen_in": [
+        "Pantry"
+      ],
+      "first_seen_product_id": "504144",
+      "first_seen_product_name": "Gamesa Cremax Sugar Wafers - Strawberry"
+    },
+    {
       "name": "Honey Maid",
       "isOwnBrand": false,
       "count_in_sample": 6,
@@ -14694,16 +14742,6 @@
       ],
       "first_seen_product_id": "539149",
       "first_seen_product_name": "Kelley's Raw Unfiltered Local Texas Honey"
-    },
-    {
-      "name": "Gamesa",
-      "isOwnBrand": false,
-      "count_in_sample": 6,
-      "departments_seen_in": [
-        "Pantry"
-      ],
-      "first_seen_product_id": "1270248",
-      "first_seen_product_name": "Gamesa Saladita Saltine Crackers"
     },
     {
       "name": "Red Gold",
@@ -15044,6 +15082,16 @@
       ],
       "first_seen_product_id": "4005043",
       "first_seen_product_name": "Nichols Farms No Shell Salted Roasted Pistachios"
+    },
+    {
+      "name": "Tony's Chocolonely",
+      "isOwnBrand": false,
+      "count_in_sample": 6,
+      "departments_seen_in": [
+        "Pantry"
+      ],
+      "first_seen_product_id": "2964653",
+      "first_seen_product_name": "Tony's Chocolonely Hazelnut Milk Chocolate Bar"
     },
     {
       "name": "Texas-Texas",
@@ -16817,16 +16865,6 @@
       "first_seen_product_name": "Slim Jim 6g Protein Original Snack-Size Smoked Meat Sticks"
     },
     {
-      "name": "Truff",
-      "isOwnBrand": false,
-      "count_in_sample": 5,
-      "departments_seen_in": [
-        "Pantry"
-      ],
-      "first_seen_product_id": "16237537",
-      "first_seen_product_name": "Truff Black Truffle Original Hot Sauce"
-    },
-    {
       "name": "Chester's",
       "isOwnBrand": false,
       "count_in_sample": 5,
@@ -17490,14 +17528,14 @@
       "first_seen_product_name": "Humble House Poblano & Serrano Salsita Verde Cremosa"
     },
     {
-      "name": "Tony's Chocolonely",
+      "name": "Truff",
       "isOwnBrand": false,
       "count_in_sample": 5,
       "departments_seen_in": [
         "Pantry"
       ],
-      "first_seen_product_id": "2964653",
-      "first_seen_product_name": "Tony's Chocolonely Hazelnut Milk Chocolate Bar"
+      "first_seen_product_id": "5082031",
+      "first_seen_product_name": "Truff Spicy Black Truffle Infused Mayonnaise&nbsp;"
     },
     {
       "name": "Gourmet Warehouse",
@@ -17725,6 +17763,16 @@
       ],
       "first_seen_product_id": "2158106",
       "first_seen_product_name": "Mionetto Prosecco Brut Italy Sparkling Wine"
+    },
+    {
+      "name": "Bawi",
+      "isOwnBrand": false,
+      "count_in_sample": 4,
+      "departments_seen_in": [
+        "Beverages"
+      ],
+      "first_seen_product_id": "15832018",
+      "first_seen_product_name": "Bawi La Piña Pineapple Sparkling Agua Fresca 4 pk Cans"
     },
     {
       "name": "Dasani",
@@ -18623,16 +18671,6 @@
       ],
       "first_seen_product_id": "16270513",
       "first_seen_product_name": "Something & Nothing Pineapple & Pink Grapefruit Soda 4 pk Cans"
-    },
-    {
-      "name": "Bawi",
-      "isOwnBrand": false,
-      "count_in_sample": 4,
-      "departments_seen_in": [
-        "Beverages"
-      ],
-      "first_seen_product_id": "16267121",
-      "first_seen_product_name": "Bawi La Maracuyá Passionfruit Sparkling Agua Fresca 4 pk Cans"
     },
     {
       "name": "Spade",
@@ -20734,16 +20772,6 @@
       ],
       "first_seen_product_id": "79158",
       "first_seen_product_name": "Beach Cliff Sardines in Louisiana Hot Sauce"
-    },
-    {
-      "name": "Franklin Barbecue",
-      "isOwnBrand": false,
-      "count_in_sample": 4,
-      "departments_seen_in": [
-        "Pantry"
-      ],
-      "first_seen_product_id": "5471001",
-      "first_seen_product_name": "Franklin Barbecue Original Texas BBQ Sauce"
     },
     {
       "name": "Hobi's Bites",
@@ -26237,16 +26265,6 @@
       "first_seen_product_name": "Sicilian Village Marinated Green Olives"
     },
     {
-      "name": "Terry Black's Barbecue",
-      "isOwnBrand": false,
-      "count_in_sample": 3,
-      "departments_seen_in": [
-        "Pantry"
-      ],
-      "first_seen_product_id": "1853225",
-      "first_seen_product_name": "Terry Black's Barbecue Traditional Spicy Sauce"
-    },
-    {
       "name": "Flavor Mate",
       "isOwnBrand": false,
       "count_in_sample": 3,
@@ -29577,16 +29595,6 @@
       "first_seen_product_name": "Backyard Farms Hand Cut Butter Leaf Lettuce"
     },
     {
-      "name": "Senokot",
-      "isOwnBrand": false,
-      "count_in_sample": 2,
-      "departments_seen_in": [
-        "Health & beauty"
-      ],
-      "first_seen_product_id": "6365542",
-      "first_seen_product_name": "Senokot Extra Strength Natural Vegetable Laxative Tablets"
-    },
-    {
       "name": "Maui Babe",
       "isOwnBrand": false,
       "count_in_sample": 2,
@@ -32216,6 +32224,16 @@
       "first_seen_product_name": "Dockside Classics Gourmet Lobster Cakes"
     },
     {
+      "name": "Golden Crunch",
+      "isOwnBrand": false,
+      "count_in_sample": 2,
+      "departments_seen_in": [
+        "Pantry"
+      ],
+      "first_seen_product_id": "15771548",
+      "first_seen_product_name": "Golden Crunch Roasted Salted Macadamias"
+    },
+    {
       "name": "Talk O' Texas",
       "isOwnBrand": false,
       "count_in_sample": 2,
@@ -34591,6 +34609,16 @@
       "first_seen_product_name": "Jelly Belly Sour Collection Jelly Beans"
     },
     {
+      "name": "Odense",
+      "isOwnBrand": false,
+      "count_in_sample": 2,
+      "departments_seen_in": [
+        "Pantry"
+      ],
+      "first_seen_product_id": "159880",
+      "first_seen_product_name": "Odense Almond Paste"
+    },
+    {
       "name": "Kitten Chow",
       "isOwnBrand": false,
       "count_in_sample": 2,
@@ -35131,16 +35159,6 @@
       "first_seen_product_name": "ThinSlim Foods Zero Net Carb Pizza Crust"
     },
     {
-      "name": "The Prisoner",
-      "isOwnBrand": false,
-      "count_in_sample": 1,
-      "departments_seen_in": [
-        "Beverages"
-      ],
-      "first_seen_product_id": "2184601",
-      "first_seen_product_name": "The Prisoner Red Blend California"
-    },
-    {
       "name": "Niagara",
       "isOwnBrand": false,
       "count_in_sample": 1,
@@ -35149,6 +35167,16 @@
       ],
       "first_seen_product_id": "1282225",
       "first_seen_product_name": "Niagara Purified Drinking Water 32 pk Bottles"
+    },
+    {
+      "name": "The Prisoner",
+      "isOwnBrand": false,
+      "count_in_sample": 1,
+      "departments_seen_in": [
+        "Beverages"
+      ],
+      "first_seen_product_id": "2184601",
+      "first_seen_product_name": "The Prisoner Red Blend California"
     },
     {
       "name": "Reddy Ice",
@@ -36299,16 +36327,6 @@
       ],
       "first_seen_product_id": "5896608",
       "first_seen_product_name": "Live To Give Purified Water"
-    },
-    {
-      "name": "Translations",
-      "isOwnBrand": false,
-      "count_in_sample": 1,
-      "departments_seen_in": [
-        "Beverages"
-      ],
-      "first_seen_product_id": "5834037",
-      "first_seen_product_name": "Translations On Tap Red Blend"
     },
     {
       "name": "McManis Family Vineyards",
@@ -40211,16 +40229,6 @@
       "first_seen_product_name": "Raymond Vineyards Family Classic Cabernet Sauvignon, North Coast"
     },
     {
-      "name": "Wondry",
-      "isOwnBrand": false,
-      "count_in_sample": 1,
-      "departments_seen_in": [
-        "Beverages"
-      ],
-      "first_seen_product_id": "14535514",
-      "first_seen_product_name": "Wondry Organic Cran Apple Martini Wine Cocktail"
-    },
-    {
       "name": "Navigator",
       "isOwnBrand": false,
       "count_in_sample": 1,
@@ -42261,6 +42269,16 @@
       "first_seen_product_name": "CloSYS Ultra-Sensitive Mouthwash Unflavored with optional flavor control"
     },
     {
+      "name": "Zegerid",
+      "isOwnBrand": false,
+      "count_in_sample": 1,
+      "departments_seen_in": [
+        "Health & beauty"
+      ],
+      "first_seen_product_id": "1378347",
+      "first_seen_product_name": "Zegerid OTC 24 Hr Acid Reducer Capsules, Omeprazole & Sodium Bicarbonate"
+    },
+    {
       "name": "Healthy Digestives",
       "isOwnBrand": false,
       "count_in_sample": 1,
@@ -42959,6 +42977,16 @@
       ],
       "first_seen_product_id": "708187",
       "first_seen_product_name": "Colonial Dames Vitamin E Skin Oil 10000 IU"
+    },
+    {
+      "name": "Senokot",
+      "isOwnBrand": false,
+      "count_in_sample": 1,
+      "departments_seen_in": [
+        "Health & beauty"
+      ],
+      "first_seen_product_id": "6365542",
+      "first_seen_product_name": "Senokot Extra Strength Natural Vegetable Laxative Tablets"
     },
     {
       "name": "Dashing Diva",
@@ -46971,16 +46999,6 @@
       "first_seen_product_name": "Silva Linguica Hickory Smoked Portuguese Sausage"
     },
     {
-      "name": "Golden Crunch",
-      "isOwnBrand": false,
-      "count_in_sample": 1,
-      "departments_seen_in": [
-        "Pantry"
-      ],
-      "first_seen_product_id": "15771548",
-      "first_seen_product_name": "Golden Crunch Roasted Salted Macadamias"
-    },
-    {
       "name": "Q & Q",
       "isOwnBrand": false,
       "count_in_sample": 1,
@@ -49531,16 +49549,6 @@
       "first_seen_product_name": "Louisiana Supreme Hot Sauce"
     },
     {
-      "name": "Gordon's",
-      "isOwnBrand": false,
-      "count_in_sample": 1,
-      "departments_seen_in": [
-        "Pantry"
-      ],
-      "first_seen_product_id": "280882",
-      "first_seen_product_name": "Gordon's Old Family Recipe Grub Rub Seasoning With Tenderizer"
-    },
-    {
       "name": "Colavita",
       "isOwnBrand": false,
       "count_in_sample": 1,
@@ -50569,6 +50577,16 @@
       ],
       "first_seen_product_id": "15991039",
       "first_seen_product_name": "Smarties Squashies Raspberry & Cream Flavored Candy"
+    },
+    {
+      "name": "R C Ranch Texas Craft Meats",
+      "isOwnBrand": false,
+      "count_in_sample": 1,
+      "departments_seen_in": [
+        "Pantry"
+      ],
+      "first_seen_product_id": "15988014",
+      "first_seen_product_name": "R C Ranch Texas Craft Meats Wagyu Beef Tallow"
     },
     {
       "name": "Snoozzy",
