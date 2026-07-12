@@ -30,6 +30,7 @@ from lib_heb import (
     make_client, get_product_by_id_resilient, extract_product_summary,
     load_json, save_json, polite_sleep,
     PRODUCTS_FILE, DATA_DIR, WALDRON_STORE_NUMBER,
+    TRACKED_FILE, load_dismissed_ids,
 )
 
 PROGRESS_SAVE_EVERY = 50
@@ -134,6 +135,14 @@ def main():
 
     products = products_data.get("products") or []
     print(f"Total products in catalog: {len(products)}")
+
+    # Skip dismissed products — they never re-enter details.json.
+    # (Full refresh + initial fetch both honor this so dismissed items stay gone.)
+    dismissed = load_dismissed_ids()
+    if dismissed:
+        before = len(products)
+        products = [p for p in products if str(p.get("id")) not in dismissed]
+        print(f"Skipping {before - len(products)} dismissed product(s); {len(products)} remain")
 
     if args.chunk is not None and args.total_chunks is not None:
         # Chunked mode
