@@ -23,7 +23,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from lib_heb import (
     make_client, browse_category, save_json, load_json, polite_sleep,
-    load_blocked_brands,
+    load_blocked_brands, load_dismissed_ids,
     BRANDS_FILE, PRODUCTS_FILE, WALDRON_STORE_NUMBER,
 )
 
@@ -171,12 +171,25 @@ def main():
             "departments_searched": [d for d in depts if d in DEPT_NAME_TO_ID],
         })
 
+    # Skip dismissed products entirely — they never re-enter products.json.
+    dismissed = load_dismissed_ids()
+    if dismissed:
+        before = len(all_products)
+        all_products = {pid: p for pid, p in all_products.items()
+                        if str(pid) not in dismissed}
+        print(f"\nSkipped {before - len(all_products)} dismissed product(s)")
+
+    # Count how many are brand-new (first seen today)
+    new_today = [p for p in all_products.values() if p.get("first_seen") == today]
+    print(f"NEW products discovered this run: {len(new_today)}")
+
     output = {
         "discovered_at": datetime.datetime.utcnow().isoformat() + "Z",
         "store_number": WALDRON_STORE_NUMBER,
         "stats": {
             "brands_enumerated": len(own_brands),
             "products_found": len(all_products),
+            "new_this_run": len(new_today),
             "per_brand": brand_results,
         },
         "products": sorted(
