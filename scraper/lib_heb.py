@@ -58,6 +58,7 @@ PRODUCTS_FILE = DATA_DIR / "products.json"
 PENDING_FILE = DATA_DIR / "pending.json"
 BLOCKLIST_FILE = DATA_DIR / "brand_blocklist.json"
 TRACKED_FILE = DATA_DIR / "tracked.json"
+EXTRA_BRANDS_FILE = DATA_DIR / "extra_brands.json"
 
 # Ensure dirs exist
 DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -242,6 +243,17 @@ def load_dismissed_ids() -> set:
     if not data:
         return set()
     return set(str(x) for x in (data.get("dismissed") or []))
+
+
+def load_extra_brands() -> set:
+    """Return the set of NON-H-E-B brand names the user wants to track anyway
+    (from extra_brands.json). These get promoted into the discovered brand list
+    alongside house brands. Names must match H-E-B's exact spelling. Returns an
+    empty set if the file doesn't exist."""
+    data = load_json(EXTRA_BRANDS_FILE, default=None)
+    if not data:
+        return set()
+    return set(data.get("extra_brands") or [])
 
 
 # =============================================================
