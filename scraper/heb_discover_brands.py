@@ -17,7 +17,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from lib_heb import (
     make_client, browse_category, save_json, polite_sleep,
-    load_blocked_brands,
+    load_blocked_brands, load_extra_brands,
     BRANDS_FILE, WALDRON_STORE_NUMBER,
 )
 
@@ -150,8 +150,27 @@ def main():
             del brands_by_canonical[canonical]
         print(f"  Removed {len(removed)} brand entr{'y' if len(removed)==1 else 'ies'} from output")
 
+    # Promote user-allowlisted national brands so product discovery picks
+    # them up alongside house brands. Matched by exact name (case-insensitive
+    # fallback) against extra_brands.json.
+    extra = load_extra_brands()
+    matched_extra = []
+    if extra:
+        extra_lower = {e.lower() for e in extra}
+        for b in brands_by_canonical.values():
+            if b["isOwnBrand"]:
+                continue
+            if b["name"] in extra or b["name"].lower() in extra_lower:
+                b["isOwnBrand"] = True   # promote so it flows to product discovery
+                b["_userAdded"] = True   # mark for transparency
+                matched_extra.append(b["name"])
+        print(f"\n  Extra brands requested (extra_brands.json): {len(extra)}")
+        for e in sorted(extra):
+            status = "✓ found" if any(m.lower() == e.lower() for m in matched_extra) else "✗ NOT FOUND (check spelling)"
+            print(f"    {status}: {e}")
+
     own_brands = [b for b in brands_by_canonical.values() if b["isOwnBrand"]]
-    print(f"  isOwnBrand=true count (after blocklist): {len(own_brands)}")
+    print(f"  brands to track (house + allowlisted): {len(own_brands)}")
 
     # Sort: own brands first, then by count desc
     sorted_brands = sorted(
