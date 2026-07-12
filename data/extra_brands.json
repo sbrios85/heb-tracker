@@ -1,0 +1,13 @@
+{
+  "extra_brands": [
+    "Franklin Barbecue",
+    "Bolner's Fiesta",
+    "Klass",
+    "The Salt Lick",
+    "El Mexicano",
+    "Gordon's",
+    "Boar's Head",
+    "Terry Black's Barbecue"
+  ],
+  "_note": "Non-H-E-B brands to track for eBay arbitrage (regional TX/Mexican). Names must match H-E-B's exact spelling. Promoted alongside house brands in discovery + full refresh. Discovery prints found/NOT FOUND per brand so mismatches can be corrected."
+}
