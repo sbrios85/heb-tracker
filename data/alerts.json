@@ -10,7 +10,18 @@
       "severity": "critical",
       "detected_at": "2026-07-20T08:37:55.905418Z",
       "resolved": false
+    },
+    {
+      "id": "7421540",
+      "productName": "CAFE Olé by H-E-B Taste of DFW Medium Roast Ground Coffee",
+      "type": "back_in_stock",
+      "message": "Back in stock",
+      "old": "OUT_OF_STOCK",
+      "new": "IN_STOCK",
+      "severity": "info",
+      "detected_at": "2026-07-21T08:06:23.399518Z",
+      "resolved": false
     }
   ],
-  "last_refresh": "2026-07-20T08:37:56.406528Z"
+  "last_refresh": "2026-07-21T08:06:23.900499Z"
 }
