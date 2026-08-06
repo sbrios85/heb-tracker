@@ -21,7 +21,18 @@
       "severity": "info",
       "detected_at": "2026-07-21T08:06:23.399518Z",
       "resolved": false
+    },
+    {
+      "id": "544295",
+      "productName": "CAFE Olé by H-E-B Texas Pecan Medium Roast Ground Coffee - Trial Size",
+      "type": "out_of_stock",
+      "message": "Out of stock (OUT_OF_STOCK)",
+      "old": "IN_STOCK",
+      "new": "OUT_OF_STOCK",
+      "severity": "critical",
+      "detected_at": "2026-08-06T08:13:43.652109Z",
+      "resolved": false
     }
   ],
-  "last_refresh": "2026-08-05T08:14:47.217814Z"
+  "last_refresh": "2026-08-06T08:13:49.154258Z"
 }
