@@ -65,7 +65,139 @@
       "severity": "info",
       "detected_at": "2026-08-26T06:28:17.484621Z",
       "resolved": false
+    },
+    {
+      "id": "1166057",
+      "productName": "CAFE Olé by H-E-B Taste of Austin Medium Roast Ground Coffee - Trial Size",
+      "type": "description_change",
+      "message": "Description changed (possible reformulation)",
+      "old": "Pick up this trial-sized sampler of CAFE Olé by H-E-B Taste of Austin ground coffee. It makes 1 pot ",
+      "new": "Pick up this trial-sized sampler of CAFE Olé by H-E-B Taste of Austin ground coffee. It makes 1 pot ",
+      "severity": "warning",
+      "detected_at": "2026-09-11T10:09:35.960470Z",
+      "resolved": false
+    },
+    {
+      "id": "125813",
+      "productName": "CAFE Olé by H-E-B Taste of San Antonio Medium Roast Ground Coffee",
+      "type": "description_change",
+      "message": "Description changed (possible reformulation)",
+      "old": "For a trio of cinnamon, chocolate and vanilla flavors, try CAFE Olé by H-E-B Taste of San Antonio gr",
+      "new": "For a trio of cinnamon, chocolate and vanilla flavors, try CAFE Olé by H-E-B Taste of San Antonio gr",
+      "severity": "warning",
+      "detected_at": "2026-09-11T10:09:36.782362Z",
+      "resolved": false
+    },
+    {
+      "id": "126786",
+      "productName": "CAFE Olé by H-E-B Taste of San Antonio Medium Roast Ground Coffee - Trial Size",
+      "type": "description_change",
+      "message": "Description changed (possible reformulation)",
+      "old": "Before getting a full-sized bag of CAFE Olé by H-E-B Taste of San Antonio ground coffee, why not giv",
+      "new": "Before getting a full-sized bag of CAFE Olé by H-E-B Taste of San Antonio ground coffee, why not giv",
+      "severity": "warning",
+      "detected_at": "2026-09-11T10:09:37.494501Z",
+      "resolved": false
+    },
+    {
+      "id": "2141916",
+      "productName": "CAFE Olé by H-E-B Rio Grande Especial Medium Roast Ground Coffee",
+      "type": "description_change",
+      "message": "Description changed (possible reformulation)",
+      "old": "CAFE Olé by H-E-B Rio Grande Especial is a medium-bodied ground coffee. Its distinctive cinnamon spi",
+      "new": "CAFE Olé by H-E-B Rio Grande Especial is a medium-bodied ground coffee. Its distinctive cinnamon spi",
+      "severity": "warning",
+      "detected_at": "2026-09-11T10:09:38.873456Z",
+      "resolved": false
+    },
+    {
+      "id": "2141922",
+      "productName": "CAFE Olé by H-E-B Taste of Austin Medium Roast Ground Coffee",
+      "type": "description_change",
+      "message": "Description changed (possible reformulation)",
+      "old": "Medium-bodied, CAFE Olé by H-E-B Taste of Austin offers the flavor of Southern pecans and cinnamon i",
+      "new": "Medium-bodied, CAFE Olé by H-E-B Taste of Austin offers the flavor of Southern pecans and cinnamon i",
+      "severity": "warning",
+      "detected_at": "2026-09-11T10:09:39.831383Z",
+      "resolved": false
+    },
+    {
+      "id": "2141937",
+      "productName": "CAFE Olé by H-E-B Taste of the Hill Country Medium Roast Ground Coffee",
+      "type": "description_change",
+      "message": "Description changed (possible reformulation)",
+      "old": "Get a Taste of the Hill Country in every sip of this CAFE Olé by H-E-B ground coffee. Its vanilla-c",
+      "new": "Get a Taste of the Hill Country in every sip of this CAFE Olé by H-E-B ground coffee. Its vanilla-c",
+      "severity": "warning",
+      "detected_at": "2026-09-11T10:09:40.568979Z",
+      "resolved": false
+    },
+    {
+      "id": "2337503",
+      "productName": "CAFE Olé by H-E-B Houston Blend Medium Roast Ground Coffee",
+      "type": "description_change",
+      "message": "Description changed (possible reformulation)",
+      "old": "Mornings are much easier when you brew a pot of CAFE Olé by H-E-B Houston Blend coffee. Ground from ",
+      "new": "Mornings are much easier when you brew a pot of CAFE Olé by H-E-B Houston Blend coffee. Ground from ",
+      "severity": "warning",
+      "detected_at": "2026-09-11T10:09:41.323028Z",
+      "resolved": false
+    },
+    {
+      "id": "544295",
+      "productName": "CAFE Olé by H-E-B Texas Pecan Medium Roast Ground Coffee - Trial Size",
+      "type": "description_change",
+      "message": "Description changed (possible reformulation)",
+      "old": "Ground from 100% Arabica beans, this trial-sized sampler of CAFE Olé by H-E-B Texas Pecan makes 1 po",
+      "new": "Ground from 100% Arabica beans, this trial-sized sampler of CAFE Olé by H-E-B Texas Pecan makes 1 po",
+      "severity": "warning",
+      "detected_at": "2026-09-11T10:09:42.049920Z",
+      "resolved": false
+    },
+    {
+      "id": "5578026",
+      "productName": "H-E-B Mi Tienda Mango Refresco Soda 6 pk Cans",
+      "type": "description_change",
+      "message": "Description changed (possible reformulation)",
+      "old": "Made with pure cane sugar, H-E-B Mi Tienda Mango Refresco has the bright tropical taste of mango. Be",
+      "new": "Made with pure cane sugar, H-E-B Mi Tienda Mango Refresco has the bright tropical taste of mango. Be",
+      "severity": "warning",
+      "detected_at": "2026-09-11T10:09:42.937735Z",
+      "resolved": false
+    },
+    {
+      "id": "5578031",
+      "productName": "H-E-B Mi Tienda Manzana Refresco Soda 6 pk Cans",
+      "type": "description_change",
+      "message": "Description changed (possible reformulation)",
+      "old": "H-E-B Mi Tienda Manzana Refresco (apple soda) has a light and bubbly apple taste that quickly quench",
+      "new": "H-E-B Mi Tienda Manzana Refresco (apple soda) has a light and bubbly apple taste that quickly quench",
+      "severity": "warning",
+      "detected_at": "2026-09-11T10:09:43.773720Z",
+      "resolved": false
+    },
+    {
+      "id": "583162",
+      "productName": "CAFE Olé by H-E-B Texas Pecan Medium Roast Ground Coffee",
+      "type": "description_change",
+      "message": "Description changed (possible reformulation)",
+      "old": "Ground from 100% Arabica beans, CAFE Olé by H-E-B Texas Pecan coffee is medium-bodied and brimming w",
+      "new": "Ground from 100% Arabica beans, CAFE Olé by H-E-B Texas Pecan coffee is medium-bodied and brimming w",
+      "severity": "warning",
+      "detected_at": "2026-09-11T10:09:44.561488Z",
+      "resolved": false
+    },
+    {
+      "id": "7421540",
+      "productName": "CAFE Olé by H-E-B Taste of DFW Medium Roast Ground Coffee",
+      "type": "description_change",
+      "message": "Description changed (possible reformulation)",
+      "old": "CAFE Olé by H-E-B Taste of DFW coffee offers the delicious taste of creamy caramel, chocolate and nu",
+      "new": "CAFE Olé by H-E-B Taste of DFW coffee offers the delicious taste of creamy caramel, chocolate and nu",
+      "severity": "warning",
+      "detected_at": "2026-09-11T10:09:46.877397Z",
+      "resolved": false
     }
   ],
-  "last_refresh": "2026-09-10T10:13:03.828583Z"
+  "last_refresh": "2026-09-11T10:09:47.378483Z"
 }
