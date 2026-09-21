@@ -219,7 +219,18 @@
       "severity": "info",
       "detected_at": "2026-09-16T10:27:03.928265Z",
       "resolved": false
+    },
+    {
+      "id": "2337503",
+      "productName": "CAFE Olé by H-E-B Houston Blend Medium Roast Ground Coffee",
+      "type": "out_of_stock",
+      "message": "Out of stock (OUT_OF_STOCK)",
+      "old": "IN_STOCK",
+      "new": "OUT_OF_STOCK",
+      "severity": "critical",
+      "detected_at": "2026-09-21T11:21:30.109989Z",
+      "resolved": false
     }
   ],
-  "last_refresh": "2026-09-20T10:15:29.293496Z"
+  "last_refresh": "2026-09-21T11:21:35.800616Z"
 }
