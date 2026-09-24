@@ -263,7 +263,40 @@
       "severity": "info",
       "detected_at": "2026-09-23T10:25:56.605299Z",
       "resolved": false
+    },
+    {
+      "id": "1276329",
+      "productName": "CAFE Olé by H-E-B Medium Roast Crème Brûlée Ground Coffee",
+      "type": "description_change",
+      "message": "Description changed (possible reformulation)",
+      "old": "For coffee that tastes like the rich custard dessert, pick up a bag of CAFE Olé by H-E-B Crème Brûlé",
+      "new": "For coffee that tastes like the rich custard dessert, pick up a bag of CAFE Olé by H-E-B Crème Brûlé",
+      "severity": "warning",
+      "detected_at": "2026-09-24T10:42:15.501601Z",
+      "resolved": false
+    },
+    {
+      "id": "583164",
+      "productName": "CAFE Olé by H-E-B Snickernut Cookie Medium Roast Ground Coffee",
+      "type": "description_change",
+      "message": "Description changed (possible reformulation)",
+      "old": "CAFE Olé by H-E-B Snickernut Cookie coffee is medium-bodied with an irresistible sweet vanilla and s",
+      "new": "CAFE Olé by H-E-B Snickernut Cookie coffee is medium-bodied with an irresistible sweet vanilla and s",
+      "severity": "warning",
+      "detected_at": "2026-09-24T10:42:24.944374Z",
+      "resolved": false
+    },
+    {
+      "id": "583311",
+      "productName": "CAFE Olé by H-E-B Cinnamon Hazelnut Medium Roast Ground Coffee",
+      "type": "description_change",
+      "message": "Description changed (possible reformulation)",
+      "old": "Delightfully different and distinct, CAFE Olé by H-E-B Cinnamon Hazelnut is medium-bodied and perfec",
+      "new": "Delightfully different and distinct, CAFE Olé by H-E-B Cinnamon Hazelnut is medium-bodied and perfec",
+      "severity": "warning",
+      "detected_at": "2026-09-24T10:42:25.912400Z",
+      "resolved": false
     }
   ],
-  "last_refresh": "2026-09-23T10:25:57.106327Z"
+  "last_refresh": "2026-09-24T10:42:27.598169Z"
 }
