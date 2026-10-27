@@ -318,7 +318,18 @@
       "severity": "info",
       "detected_at": "2026-10-21T10:47:24.473508Z",
       "resolved": false
+    },
+    {
+      "id": "5578031",
+      "productName": "H-E-B Mi Tienda Manzana Refresco Soda 6 pk Cans",
+      "type": "out_of_stock",
+      "message": "Out of stock (OUT_OF_STOCK)",
+      "old": "IN_STOCK",
+      "new": "OUT_OF_STOCK",
+      "severity": "critical",
+      "detected_at": "2026-10-27T11:13:43.638165Z",
+      "resolved": false
     }
   ],
-  "last_refresh": "2026-10-26T11:48:28.288407Z"
+  "last_refresh": "2026-10-27T11:13:47.318505Z"
 }
